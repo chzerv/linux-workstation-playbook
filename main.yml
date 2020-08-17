@@ -17,6 +17,30 @@
         - name: Install must-have software.
           include_tasks: "tasks/install-packages.yml"
 
+        # package_facts does NOT work for pacman (Archlinux)
+        - name: Find installed packages (Fedora)
+          package_facts:
+            manager: auto
+          when: ansible_distribution == "Fedora"
+
+        - name: Find installed packages (Archlinux)
+          command: pacman -Qn
+          register: arch_installed_packages
+          no_log: true
+          failed_when: false
+          changed_when: false
+          when: ansible_distribution == "Archlinux"
+
+        - name: Set fact about installed packages in Archlinux.
+          set_fact:
+            installed_packages: "{{ arch_installed_packages.stdout }}"
+          when: ansible_distribution == "Archlinux"
+
+        - name: Set fact about installed packages in Fedora
+          set_fact:
+            installed_packages: "{{ ansible_facts.packages }}"
+          when: ansible_distribution == "Fedora"
+
         - name: Set capabilities.
           include_tasks: tasks/capabilities.yml
           when: configure_capabilities | bool
