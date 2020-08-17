@@ -67,3 +67,6 @@
           include_tasks: tasks/performance.yml
           when: configure_performance | bool
       become: true
+
+    - name: Install packages from third-party sources (pip, npm, flatpak).
+      include_tasks: tasks/extra-packages.yml

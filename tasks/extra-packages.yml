@@ -1,0 +1,51 @@
+---
+- name: Flatpak
+  block:
+    - name: Add the flathub flatpak repository.
+      flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user
+
+    - name: Add the flathub-beta flatpak repository.
+      flatpak_remote:
+        name: flathub-beta
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo
+        method: user
+
+    - name: Add the gnome-nightly flatpak repository.
+      flatpak_remote:
+        name: gnome-nightly
+        state: present
+        flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
+        method: user
+
+- name: Install packages from flatpak.
+  flatpak:
+    name: "{{ item.name | default(item) }}"
+    remote: "{{ item.remote | default('flathub') }}"
+    method: "{{ item.method | default('user') }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ flatpak_packages }}"
+
+- name: Install packages with pip.
+  pip:
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    executable: "{{ item.executable | default(omit) }}"
+    virtualenv: "{{ item.virtualenv | default(omit) }}"
+  with_items: "{{ pip_packages }}"
+
+- name: Install global NPM packages.
+  npm:
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    global: yes
+    executable: "{{ item.executable | default(omit) }}"
+  with_items: "{{ npm_packages }}"
+  environment:
+    npm_config_prefix: ~/.node_modules

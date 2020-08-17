@@ -8,3 +8,23 @@ fedora_enable_rpmfusion_non_free: true
 configure_capabilities: true
 configure_sysctl: true
 configure_performance: true
+
+flatpak_packages: []
+# flatpak_packages:
+#   - name: com.discordapp.Discord
+#     remote: flathub # defaults to flathub
+#     method: user # user/system, default: user
+#     state: present # present/absent/latest, default: present
+
+pip_packages: []
+# pip_packages:
+# - name: mkdocs
+#   state: present # present/absent/latest, default: present
+#   version: "0.16.3" # default: N/A
+#   virtualenv:  ~/.venvs # default: N/A
+
+npm_packages: []
+# npm_packages:
+# - name: webpack
+#   state: present # present/absent/latest, default: present
+#   version: "^2.6" # default: N/A
