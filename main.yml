@@ -16,4 +16,8 @@
 
         - name: Install must-have software.
           include_tasks: "tasks/install-packages.yml"
+
+        - name: Set capabilities.
+          include_tasks: tasks/capabilities.yml
+          when: configure_capabilities | bool
       become: true
