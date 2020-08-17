@@ -70,3 +70,8 @@
 
     - name: Install packages from third-party sources (pip, npm, flatpak).
       include_tasks: tasks/extra-packages.yml
+
+    - include_tasks: tasks/gnome-setup.yml
+      when:
+        - configure_gnome | bool
+        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"

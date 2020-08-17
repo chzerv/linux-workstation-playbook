@@ -1,0 +1,29 @@
+---
+- name: Unbind switch-to-application keybindings from shell.
+  dconf:
+    key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
+    value: "['']"
+  with_sequence: start=1 end=9
+
+- name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
+  capabilities:
+    path: /usr/bin/mutter
+    capability: cap_sys_nice+ep
+    state: present
+  when: mutter_enable_experimental | bool
+
+- name: Enable experimental mutter features.
+  dconf:
+    key: "/org/gnome/mutter/experimental-features"
+    value: "['rt-scheduler', 'autostart-xwayland']"
+  when: mutter_enable_experimental | bool
+
+- name: Change icon captions in nautilus.
+  dconf:
+    key: "/org/gnome/nautilus/icon-view"
+    value: "['size', 'date_modified_with_time', 'none']"
+
+- name: Use a location entry bar instead of a path bar in nautilus.
+  dconf:
+    key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+    value: "false"
