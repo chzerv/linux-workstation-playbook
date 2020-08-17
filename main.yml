@@ -1,0 +1,12 @@
+---
+- hosts: all
+  # connection: local
+
+  vars:
+
+  vars_files:
+    - "vars/default-config.yml"
+
+  tasks:
+    - name: Pre-setup
+      include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
