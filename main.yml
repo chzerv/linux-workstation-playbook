@@ -8,5 +8,8 @@
     - "vars/default-config.yml"
 
   tasks:
-    - name: Pre-setup
-      include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
+    - name: Tasks that require sudo.
+      block:
+        - name: Pre-setup.
+          include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
+      become: true
