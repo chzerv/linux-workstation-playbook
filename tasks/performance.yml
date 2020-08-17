@@ -1,0 +1,34 @@
+- name: Change I/O scheduler depending on disk type (SSD vs HDD).
+  template:
+    src: 60-ioschedulers.rules.j2
+    dest: /etc/udev/rules.d/60-ioschedulers.rules
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure earlyoom
+  lineinfile:
+    dest: /etc/default/earlyoom
+    line: >-
+      EARLYOOM_ARGS="-r 3600 -n
+      --avoid '(^|/)(systemd|Xorg|gnome-shell/Xwayland/sway|sshd)$'
+      --prefer '(^|/)(java|chromium|discord)$'"
+
+- name: Ensure earlyoom service is started and enabled at boot.
+  service:
+    name: earlyoom
+    state: started
+    enabled: true
+
+- name: Find hardware watchdog kernel modules.
+  shell:
+    cmd: wdctl | grep -i identity | awk '{ print $2 }'
+  register: hw_watchdog_module
+  failed_when: false
+  no_log: true
+
+- name: Blacklist hardware watchdog kernel module.
+  kernel_blacklist:
+    name: "{{ hw_watchdog_module.stdout }}"
+    state: present
+  when: hw_watchdog_module is defined

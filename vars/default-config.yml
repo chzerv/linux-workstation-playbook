@@ -7,3 +7,4 @@ fedora_enable_rpmfusion_non_free: true
 
 configure_capabilities: true
 configure_sysctl: true
+configure_performance: true

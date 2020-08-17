@@ -38,4 +38,8 @@
               - name: kernel.sysrq
                 value: 1
           when: configure_sysctl | bool
+
+        - name: Performance tuning.
+          include_tasks: tasks/performance.yml
+          when: configure_performance | bool
       become: true
