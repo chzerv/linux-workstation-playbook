@@ -20,4 +20,22 @@
         - name: Set capabilities.
           include_tasks: tasks/capabilities.yml
           when: configure_capabilities | bool
+
+        - name: Sysctl tweaks.
+          include_role:
+            name: chzerv.sysctl
+          vars:
+            sysctl_required_packages: procps-ng
+            sysctl_entries:
+              - name: vm.swappiness
+                value: 10
+              - name: vm.dirty_ratio
+                value: 6
+              - name: vm.dirty_background_bytes
+                value: 4194304
+              - name: vm.vfs_cache_pressure
+                value: 50
+              - name: kernel.sysrq
+                value: 1
+          when: configure_sysctl | bool
       become: true
