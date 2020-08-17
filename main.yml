@@ -6,6 +6,7 @@
 
   vars_files:
     - "vars/default-config.yml"
+    - "vars/{{ ansible_distribution }}.yml"
 
   tasks:
     - name: Tasks that require sudo.

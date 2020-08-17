@@ -1,0 +1,53 @@
+---
+core_software:
+  - git
+  - tmux
+  - neovim
+  - tilix
+  - bat
+  - zsh
+  - earlyoom
+  - exa
+  - lsd
+  - fd
+  - ripgrep
+  - the_silver_searcher
+  - fzf
+  - flatpak
+  - firewalld
+  - libappindicator-gtk3
+  - libindicator-gtk3
+  - lib32-libappindicator-gtk3
+  - lib32-libindicator-gtk3
+  - podman
+  - podman-docker
+  - buildah
+  - fasd
+  - alacritty
+
+utility_software:
+  - exfat-utils
+  - ntfs-3g
+  - nmap
+  - arp-scan
+  - aspell-el
+  - aspell-en
+  - hunspell-el
+  - hunspell-en_US
+  - python-virtualenvwrapper
+  - npm
+
+monitoring_software:
+  - htop
+  - iftop
+  - iotop
+  - lm_sensors
+  - nethogs
+
+ansible_packages:
+  - ansible
+  - ansible-lint
+  - python-jmespath
+  - molecule
+  - yamllint
+  - vagrant

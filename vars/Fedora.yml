@@ -1,0 +1,52 @@
+---
+core_software:
+  - git
+  - tmux
+  - neovim
+  - tilix
+  - bat
+  - zsh
+  - earlyoom
+  - exa
+  - lsd
+  - fd-find
+  - ripgrep
+  - the_silver_searcher
+  - fzf
+  - flatpak
+  - firewalld
+  - podman
+  - podman-docker
+  - python3-podman
+  - buildah
+
+rpmfusion_software:
+  - ffmpeg
+  - ffmpeg-devel
+
+utility_software:
+  - exfat-utils
+  - ntfs-3g
+  - nmap
+  - arp-scan
+  - aspell-el
+  - aspell-en
+  - hunspell-el
+  - hunspell-en-US
+  - python3-virtualenvwrapper
+  - npm
+
+monitoring_software:
+  - htop
+  - iftop
+  - iotop
+  - lm_sensors
+  - nethogs
+
+ansible_packages:
+  - ansible
+  - python3-ansible-lint
+  - python3-jmespath
+  - python3-molecule
+  - yamllint
+  - vagrant
