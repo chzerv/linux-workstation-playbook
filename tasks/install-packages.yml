@@ -1,0 +1,52 @@
+---
+- name: Install packages in Archlinux.
+  block:
+    - name: Install core packages (Archlinux).
+      pacman:
+        name: "{{ core_software }}"
+        state: present
+
+    - name: Install utility software (Archlinux).
+      pacman:
+        name: "{{ utility_software }}"
+        state: present
+
+    - name: Install monitoring software (Archlinux).
+      pacman:
+        name: "{{ monitoring_software }}"
+        state: present
+
+    - name: Install Ansible related packages (Archlinux).
+      pacman:
+        name: "{{ ansible_packages }}"
+        state: present
+  when: ansible_distribution == "Archlinux"
+
+- name: Install packages in Fedora.
+  block:
+    - name: Install core packages (Fedora).
+      dnf:
+        name: "{{ core_software }}"
+        state: present
+
+    - name: Install packages from RPM Fusion (Fedora).
+      dnf:
+        name: "{{ rpmfusion_software }}"
+        state: present
+      when: fedora_enable_rpmfusion_non_free | bool or fedora_enable_rpmfusion_free | bool
+
+    - name: Install utility software (Fedora).
+      dnf:
+        name: "{{ utility_software }}"
+        state: present
+
+    - name: Install monitoring software (Fedora).
+      dnf:
+        name: "{{ monitoring_software }}"
+        state: present
+
+    - name: Install Ansible related packages (Fedora).
+      dnf:
+        name: "{{ ansible_packages }}"
+        state: present
+  when: ansible_distribution == "Fedora"

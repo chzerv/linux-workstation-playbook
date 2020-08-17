@@ -13,4 +13,7 @@
       block:
         - name: Pre-setup.
           include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
+
+        - name: Install must-have software.
+          include_tasks: "tasks/install-packages.yml"
       become: true
