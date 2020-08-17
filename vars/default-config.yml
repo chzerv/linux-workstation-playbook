@@ -1,0 +1,6 @@
+---
+default_user: "{{ ansible_user_id }}"
+
+arch_enable_multilib: true
+fedora_enable_rpmfusion_free: true
+fedora_enable_rpmfusion_non_free: true
