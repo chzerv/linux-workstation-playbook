@@ -50,3 +50,6 @@ ansible_packages:
   - python3-molecule
   - yamllint
   - vagrant
+
+
+psutil_package_name: python3-psutil

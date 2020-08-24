@@ -1,4 +1,10 @@
 ---
+- name: Install psutil, required for dconf module to work (Archlinux).
+  package:
+    name: "{{ psutil_package_name }}"
+    state: present
+  become: true
+
 - name: Unbind switch-to-application keybindings from shell.
   dconf:
     key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
