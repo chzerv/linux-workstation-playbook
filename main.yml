@@ -15,7 +15,13 @@
           include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
 
         - name: Install must-have software.
-          include_tasks: "tasks/install-packages.yml"
+          include_tasks:
+            file: "tasks/install-packages.yml"
+            apply:
+              tags:
+                - install-software
+          tags:
+            - install-software
 
         # package_facts does NOT work for pacman (Archlinux)
         - name: Find installed packages (Fedora)
@@ -42,36 +48,66 @@
           when: ansible_distribution == "Fedora"
 
         - name: Set capabilities.
-          include_tasks: tasks/capabilities.yml
+          include_tasks:
+            file: tasks/capabilities.yml
+            apply:
+              tags:
+                - capabilities
           when: configure_capabilities | bool
+          tags:
+            - capabilities
 
         - name: Sysctl tweaks.
           include_role:
-            name: chzerv.sysctl
+              name: chzerv.sysctl
+              apply:
+                tags:
+                  - sysctl
           vars:
             sysctl_required_packages: procps-ng
             sysctl_entries:
-              - name: vm.swappiness
-                value: 10
-              - name: vm.dirty_ratio
-                value: 6
-              - name: vm.dirty_background_bytes
-                value: 4194304
-              - name: vm.vfs_cache_pressure
-                value: 50
-              - name: kernel.sysrq
-                value: 1
+            - name: vm.swappiness
+              value: 10
+            - name: vm.dirty_ratio
+              value: 6
+            - name: vm.dirty_background_bytes
+              value: 4194304
+            - name: vm.vfs_cache_pressure
+              value: 50
+            - name: kernel.sysrq
+              value: 1
           when: configure_sysctl | bool
+          tags:
+            - sysctl
 
         - name: Performance tuning.
-          include_tasks: tasks/performance.yml
+          include_tasks:
+            file: tasks/performance.yml
+            apply:
+              tags:
+                - performance
           when: configure_performance | bool
+          tags:
+            - performance
       become: true
 
     - name: Install packages from third-party sources (pip, npm, flatpak).
-      include_tasks: tasks/extra-packages.yml
+      include_tasks:
+        file: tasks/extra-packages.yml
+        apply:
+          tags:
+            - third-party-packages
+      tags:
+        - third-party-packages
 
-    - include_tasks: tasks/gnome-setup.yml
+    - name: GNOME configuration.
+      include_tasks:
+        file: tasks/gnome-setup.yml
+        apply:
+          tags:
+            - gnome
       when:
         - configure_gnome | bool
         - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
+      tags:
+        - gnome
