@@ -35,14 +35,14 @@
     update_cache: true
     upgrade: true
 
-- name: Update pacman mirrorlist (Archlinux)
+- name: Sort pacman mirrorlist according to location and download speeds.(Archlinux)
   block:
     - name: Install reflector to update pacman mirrorlist (Archlinux)
       pacman:
         name: reflector
         state: present
 
-    - name: Update pacman mirrorlist (Archlinux).
-      shell: >-
-        reflector --country Greece --latest 50 --sort rate --age 48
-        --save /etc/pacman.d/mirrorlist
+    - name: Update pacman mirrorlist using reflector (Archlinux).
+      command:
+        cmd: "reflector --country Germany --country United_Kingdom --age 12 --protocol https --sort rate --latest 25 --save /etc/pacman.d/mirrorlist"
+      changed_when: false
