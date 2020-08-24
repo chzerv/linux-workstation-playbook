@@ -61,12 +61,12 @@ configure_systemd: true
 configure_dotfiles: true
 ```
 
-> - Perform `capabilities` related tasks. This can be also control with Ansible tags.
-> - Perform `sysctl` related tasks. This can be also control with Ansible tags.
-> - Perform `performance` related tasks. This can be also control with Ansible tags.
-> - Perform `gnome` related tasks. This can be also control with Ansible tags.
-> - Perform `systemd` related tasks. This can be also control with Ansible tags.
-> - Perform `dotfiles` related tasks. This can be also control with Ansible tags.
+> - Perform `capabilities` related tasks. This can also be controlled via Ansible tags.
+> - Perform `sysctl` related tasks. This can also be controlled via Ansible tags.
+> - Perform `performance` related tasks. This can also be controlled via Ansible tags.
+> - Perform `gnome` related tasks. This can also be controlled via Ansible tags.
+> - Perform `systemd` related tasks. This can also be controlled via Ansible tags.
+> - Perform `dotfiles` related tasks. This can also be controlled via Ansible tags.
 
 ```yaml
 arch_enable_multilib: true
