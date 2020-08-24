@@ -121,3 +121,14 @@
       when: configure_systemd | bool
       tags:
         - systemd
+
+    - name: Dotfiles.
+      block:
+        - name: Clone repo and symlink dotfiles.
+          include_tasks: tasks/dotfiles.yml
+
+        - name: Install and setup applications for the selected dotfiles.
+          include_tasks: "tasks/dotfiles/{{ item }}.yml"
+          with_items: "{{ dotfiles_config_choices }}"
+      when: configure_dotfiles | bool
+      tags: dotfiles
