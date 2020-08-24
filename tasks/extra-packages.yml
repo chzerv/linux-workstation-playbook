@@ -1,26 +1,24 @@
 ---
-- name: Flatpak
-  block:
-    - name: Add the flathub flatpak repository.
-      flatpak_remote:
-        name: flathub
-        state: present
-        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-        method: user
+- name: Add the flathub flatpak repository.
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
 
-    - name: Add the flathub-beta flatpak repository.
-      flatpak_remote:
-        name: flathub-beta
-        state: present
-        flatpakrepo_url: https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo
-        method: user
+- name: Add the flathub-beta flatpak repository.
+  flatpak_remote:
+    name: flathub-beta
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo
+    method: user
 
-    - name: Add the gnome-nightly flatpak repository.
-      flatpak_remote:
-        name: gnome-nightly
-        state: present
-        flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
-        method: user
+- name: Add the gnome-nightly flatpak repository.
+  flatpak_remote:
+    name: gnome-nightly
+    state: present
+    flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
+    method: user
 
 - name: Install packages from flatpak.
   flatpak:
