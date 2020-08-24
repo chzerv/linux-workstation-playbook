@@ -1,17 +1,6 @@
 ---
 - name: Set capabilities for different programs.
   block:
-    - name: Remove the setuid bit from ping.
-      file:
-        path: /usr/bin/ping
-        mode: u-s
-
-    - name: Capabilities for ping
-      capabilities:
-        path: /usr/bin/ping
-        capability: cap_net_raw+p
-        state: present
-
     - name: Capabilities for beep
       capabilities:
         path: /usr/bin/beep
