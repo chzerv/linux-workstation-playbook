@@ -46,3 +46,8 @@
       command:
         cmd: "reflector --country Germany --country United_Kingdom --age 12 --protocol https --sort rate --latest 25 --save /etc/pacman.d/mirrorlist"
       changed_when: false
+
+- name: Update pacman cache after running reflector (Archlinux).
+  pacman:
+    update_cache: true
+    upgrade: true
