@@ -32,6 +32,8 @@ To choose a specific tag, run:
 ansible-playbook -i inventory -K main.yml --tags=dotfiles
 ```
 
+where `dotfiles` can be any of the above.
+
 # What does this do?
 
 This playbook performs tasks like:
