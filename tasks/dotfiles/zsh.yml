@@ -1,0 +1,24 @@
+---
+- name: zsh | Ensure zsh is installed
+  package:
+    name: zsh
+    state: present
+  become: true
+
+- name: zsh | Make zsh the default shell.
+  user:
+    name: "{{ default_user }}"
+    shell: /bin/zsh
+  become: true
+
+- name: zsh | Clone zinit repository.
+  git:
+    repo: "https://github.com/zdharma/zinit.git"
+    dest: "{{ ansible_user_dir }}/.zinit/bin"
+    version: master
+
+- name: zsh | Symlink zshenv to $HOME.
+  file:
+    src: "{{ dotfiles_local_destination }}/zshenv"
+    dest: "{{ ansible_user_dir }}/.zshenv"
+    state: link

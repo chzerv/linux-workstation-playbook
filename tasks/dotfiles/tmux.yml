@@ -1,0 +1,13 @@
+---
+- name: tmux | Ensure tmux is installed
+  package:
+    name: tmux
+    state: present
+  become: true
+
+- name: tmux | Clone tpm plugin manager.
+  git:
+    repo: "https://github.com/tmux-plugins/tpm.git"
+    dest: "{{ ansible_user_dir }}/.tmux/plugins/tpm"
+    version: master
+  when: "'tmux' in dotfiles_config_choices"

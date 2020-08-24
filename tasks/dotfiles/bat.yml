@@ -1,0 +1,6 @@
+---
+- name: Ensure bat is installed
+  package:
+    name: bat
+    state: present
+  become: true

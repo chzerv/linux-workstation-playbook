@@ -1,0 +1,21 @@
+---
+- name: Enable the alacritty copr repository in Fedora.
+  command:
+    cmd: dnf copr enable pschyska/alacritty
+    warn: false
+  changed_when: false
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Install alacritty in Fedora.
+  dnf:
+    name: alacritty
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora"
+ 
+- name: alacritty | Clone alacritty-theme.
+  git:
+    repo: "https://github.com/eendroroy/alacritty-theme"
+    dest: "{{ ansible_user_dir }}/.config/alacritty/alacritty-theme"
+    version: master

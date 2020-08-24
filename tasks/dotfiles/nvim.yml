@@ -1,0 +1,29 @@
+---
+- name: neovim | Ensure neovim is installed.
+  package:
+    name: neovim
+    state: present
+  become: true
+
+- name: neovim | Install requirements for coc.vim (Archlinux)
+  pacman:
+    name:
+      - nodejs
+      - yarn
+    state: present
+  become: true
+  when: ansible_distribution == "Archlinux"
+
+- name: neovim | Install requirements for coc.vim (Fedora)
+  dnf:
+    name:
+      - nodejs
+      - yarnpkg
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: neovim | Install neovim plugins.
+  command:
+    cmd: "nvim -es -u {{ ansible_user_dir }}/.config/nvim/init.vim -i NONE -c 'PlugInstall' -c 'qa'"
+  ignore_errors: true

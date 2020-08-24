@@ -10,6 +10,7 @@ configure_sysctl: true
 configure_performance: true
 configure_gnome: true
 configure_systemd: true
+configure_dotfiles: true
 
 flatpak_packages: []
 # flatpak_packages:
@@ -32,3 +33,16 @@ npm_packages: []
 #   version: "^2.6" # default: N/A
 
 mutter_enable_experimental: false
+
+dotfiles_repo: git@github.com:chzerv/dotfiles.git
+dotfiles_local_destination: "{{ ansible_user_dir }}/dotfiles"
+dotfiles_accept_hostkey: true
+
+dotfiles_config_choices:
+  - alacritty
+  - bat
+  - nvim
+  - tilix
+  - tmux
+  - zsh
+  - doom

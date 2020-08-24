@@ -1,0 +1,14 @@
+- name: Yay setup.
+  block:
+    - name: Clone yay from AUR.
+      git:
+        repo: "https://aur.archlinux.org/yay.git"
+        dest: "{{ ansible_user_dir }}/AUR/yay"
+        version: master
+
+    - name: Compile yay.
+      command: makepkg -sirc --noconfirm
+      args:
+        chdir: ~/AUR/yay
+      changed_when: false
+  when: ansible_distribution == "Archlinux"
