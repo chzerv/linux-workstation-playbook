@@ -9,6 +9,7 @@ configure_capabilities: true
 configure_sysctl: true
 configure_performance: true
 configure_gnome: true
+configure_systemd: true
 
 flatpak_packages: []
 # flatpak_packages:

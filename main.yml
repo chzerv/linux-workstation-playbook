@@ -111,3 +111,13 @@
         - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
       tags:
         - gnome
+
+    - name: Create custom low resource systemd slice.
+      include_tasks:
+        file: tasks/systemd-user-setup.yml
+        apply:
+          tags:
+            - systemd
+      when: configure_systemd | bool
+      tags:
+        - systemd

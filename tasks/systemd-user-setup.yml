@@ -1,0 +1,38 @@
+---
+- name: Create systemd user override directory.
+  file:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d"
+    state: directory
+  become: true
+
+- name: Enable user delegation.
+  blockinfile:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/override.conf"
+    block: |
+      [Service]
+      Delegate=yes
+    create: true
+    mode: '0600'
+  become: true
+
+- name: Create the ~/.config/systemd/user directory.
+  file:
+    path: "{{ ansible_user_dir }}/.config/systemd/user"
+    state: directory
+   
+- name: Create custom low resource slice.
+  template:
+    src: config/systemd/user/low_res.slice.j2
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/low_res.slice"
+    owner: "{{ ansible_user }}"
+    mode: 0644
+
+- name: Reload systemd.
+  systemd:
+    daemon_reload: true
+  become: true
+
+- name: Reload system for user.
+  systemd:
+    daemon_reload: true
+    scope: user
