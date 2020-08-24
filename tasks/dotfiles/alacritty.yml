@@ -1,7 +1,7 @@
 ---
 - name: Enable the alacritty copr repository in Fedora.
   command:
-    cmd: dnf copr enable pschyska/alacritty
+    cmd: dnf copr enable pschyska/alacritty -y
     warn: false
   changed_when: false
   become: true
