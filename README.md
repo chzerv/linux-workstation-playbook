@@ -25,6 +25,7 @@ ansible-playbook main.yml --list-tags
 - `gnome` will only run GNOME related tasks.
 - `systemd` will only run systemd related tasks.
 - `dotfiles` will only run dotfiles related tasks.
+- `install-extra-packages` will only run tasks that install packages using flatpak/npm/pip.
 
 To choose a specific tag, run:
 

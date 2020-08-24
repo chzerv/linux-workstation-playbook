@@ -96,9 +96,9 @@
         file: tasks/extra-packages.yml
         apply:
           tags:
-            - third-party-packages
+            - install-extra-packages
       tags:
-        - third-party-packages
+        - install-extra-packages
 
     - name: GNOME configuration.
       include_tasks:
