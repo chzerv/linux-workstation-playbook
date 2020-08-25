@@ -33,3 +33,26 @@
   dconf:
     key: "/org/gnome/nautilus/preferences/always-use-location-entry"
     value: "false"
+
+- name: Create Nautilus templates
+  block:
+    - name: Create "Empty file" template for Nautilus.
+      template:
+        src: Templates/empty-file.j2
+        dest: "{{ ansible_user_dir }}/Templates/Empty\ File"
+        owner: "{{ ansible_user_id }}"
+        mode: '0644'
+
+    - name: Create "Bash script" template for Nautilus.
+      template:
+        src: Templates/bash-script.j2
+        dest: "{{ ansible_user_dir }}/Templates/Bash\ Script"
+        owner: "{{ ansible_user_id }}"
+        mode: '0644'
+
+    - name: Create "Empty file" template for Nautilus.
+      template:
+        src: Templates/python-script.j2
+        dest: "{{ ansible_user_dir }}/Templates/Python\ Script"
+        owner: "{{ ansible_user_id }}"
+        mode: '0644'
