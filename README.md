@@ -91,7 +91,7 @@ fedora_enable_rpmfusion_non_free: true
 flatpak_packages:
   - name: com.discordapp.Discord
     remote: flathub # defaults to flathub
-    method: user # user/system, default: user
+    method: user # user/system, default: system
     state: present # present/absent/latest, default: present
 
 # OR...
@@ -103,7 +103,7 @@ flatpak_packages:
 >
 > - Packages will be installed, unless `state` is set to `absent` which will remove them.
 > - Packages will be installed from `flathub`, unless `remote` is specified.
-> - Packages will be installed for the current user, unless `method` is set to `system`.
+> - Packages will be installed system wide, unless `method` is set to `user`.
 
 ```yaml
 pip_packages:

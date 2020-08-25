@@ -4,27 +4,27 @@
     name: flathub
     state: present
     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-    method: user
+    method: system
 
 - name: Add the flathub-beta flatpak repository.
   flatpak_remote:
     name: flathub-beta
     state: present
     flatpakrepo_url: https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo
-    method: user
+    method: system
 
 - name: Add the gnome-nightly flatpak repository.
   flatpak_remote:
     name: gnome-nightly
     state: present
     flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
-    method: user
+    method: system
 
 - name: Install packages from flatpak.
   flatpak:
     name: "{{ item.name | default(item) }}"
     remote: "{{ item.remote | default('flathub') }}"
-    method: "{{ item.method | default('user') }}"
+    method: "{{ item.method | default('system') }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ flatpak_packages }}"
 
