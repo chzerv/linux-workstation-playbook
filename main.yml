@@ -130,5 +130,6 @@
         apply:
           tags:
             - misc
+      when: configure_misc | bool
       tags:
         - misc

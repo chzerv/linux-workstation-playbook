@@ -26,6 +26,7 @@ ansible-playbook main.yml --list-tags
 - `systemd` will only run systemd related tasks.
 - `dotfiles` will only run dotfiles related tasks.
 - `install-extra-packages` will only run tasks that install packages using flatpak/npm/pip.
+- `misc` will only run misc tasks.
 
 To choose a specific tag, run:
 
@@ -37,15 +38,19 @@ where `dotfiles` can be any of the above.
 
 # What does this do?
 
-This playbook performs tasks like:
+This playbook performs the following tasks:
 
 - Configure pacman and dnf so they both provide better output and are faster.
-- Update system and install packages.
+- Update system and install packages (npm, pip and flatpak are also supported).
 - Better handling of OOM conditions by tweaking Virtual Memory and installing/configuring [earlyoom](https://github.com/rfjakob/earlyoom).
 - Change I/O schedulers depending on disk type (SSD vs HDD vs NVMe).
 - Disable watchdogs for better performance and lower power consumption.
 - Download my dotfiles and symlink them to the right places.
 - Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
+- Apply some minor Gnome Shell tweaks.
+- Change ansible roles path.
+- Change gpg-agent's `default-cache-ttl` and `max-cache-ttl` values.
+- Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
 
 # Stuff that still have to be done manually
 
@@ -61,6 +66,7 @@ configure_performance: true
 configure_gnome: true
 configure_systemd: true
 configure_dotfiles: true
+configure_misc: true
 ```
 
 > - Perform `capabilities` related tasks. This can also be controlled via Ansible tags.
@@ -69,6 +75,7 @@ configure_dotfiles: true
 > - Perform `gnome` related tasks. This can also be controlled via Ansible tags.
 > - Perform `systemd` related tasks. This can also be controlled via Ansible tags.
 > - Perform `dotfiles` related tasks. This can also be controlled via Ansible tags.
+> - Perform `misc` tasks. This can also be controlled via Ansible tags.
 
 ```yaml
 arch_enable_multilib: true
@@ -152,3 +159,15 @@ dotfiles_config_choices:
 ```
 
 > The applications for which configuration will be applied. Probably only works for my own [dotfiles](https://github.com/chzerv/dotfiles).
+
+```yaml
+gpg_agent_default_cache_ttl: "28800"
+gpg_agent_max_cache_ttl: "28800"
+ansible_roles_path: "~/Code/Infra/Ansible/roles"
+disable_pam_systemd_homed: true
+```
+
+> - gpg-agent's default-cache-ttl value.
+> - gpg-agent's max-cache-ttl value.
+> - The path where Ansible will store and look for roles.
+> - Whether to disable pam_systemd_homed.so pam module. **Only applies in Archlinux**.

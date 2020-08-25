@@ -18,6 +18,7 @@ flatpak_packages: []
 #     remote: flathub # defaults to flathub
 #     method: user # user/system, default: user
 #     state: present # present/absent/latest, default: present
+configure_misc: true
 
 pip_packages: []
 # pip_packages:
