@@ -25,6 +25,7 @@
     line: "roles_path = {{ ansible_roles_path }}"
     mode: '0644'
   become: true
+  when: "'ansible in installed_packages'"
 
 - name: Stop pam_systemd_homed.so spamming the journal when using sudo.
   block:

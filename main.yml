@@ -31,10 +31,12 @@
                 - gnome
                 - capabilities
                 - install-software
+                - misc
           tags:
             - gnome
             - capabilities
             - install-software
+            - misc
 
         - name: Set capabilities.
           include_tasks:
