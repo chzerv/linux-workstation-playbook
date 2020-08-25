@@ -13,5 +13,5 @@
   git:
     repo: "https://github.com/hlissner/doom-emacs.git"
     dest: "{{ ansible_user_dir }}/.emacs.d"
-    version: master
+    version: develop
   when: not emacs_dir_exists.stat.exists
