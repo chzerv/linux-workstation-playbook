@@ -1,0 +1,20 @@
+---
+- name: Ensure ~/.gnupg directory exists.
+  file:
+    path: "{{ ansible_user_dir }}/.gnupg"
+    state: directory
+   
+- name: Configure gpg agent.
+  template:
+    src: gnupg/gpg-agent.conf.j2
+    dest: "{{ ansible_user_dir }}/.gnupg/gpg-agent.conf"
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Configure ansible.cfg
+  lineinfile:
+    path: /etc/ansible/ansible.cfg
+    regexp: "^roles_path"
+    line: "roles_path = ~/Code/Infra/Ansible/roles"
+    mode: '0644'
+
