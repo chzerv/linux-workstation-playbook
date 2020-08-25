@@ -1,14 +1,17 @@
-- name: Doom Emacs setup.
-  block:
-    - name: Install emacs
-      package:
-        name: emacs
-        state: present
-      become: true
+- name: Install emacs
+  package:
+    name: emacs
+    state: present
+  become: true
 
-    - name: Clone Doom Emacs.
-      git:
-        repo: "https://github.com/hlissner/doom-emacs.git"
-        dest: "{{ ansible_user_dir }}/.emacs.d"
-        depth: 1
-        version: master
+- name: Ensure ~/.emacs.d exists.
+  stat:
+    path: "{{ ansible_user_dir }}/.emacs.d"
+  register: emacs_dir_exists
+
+- name: Clone Doom Emacs.
+  git:
+    repo: "https://github.com/hlissner/doom-emacs.git"
+    dest: "{{ ansible_user_dir }}/.emacs.d"
+    version: master
+  when: not emacs_dir_exists.stat.exists
