@@ -17,4 +17,5 @@
     regexp: "^roles_path"
     line: "roles_path = ~/Code/Infra/Ansible/roles"
     mode: '0644'
+  become: true
 
