@@ -45,4 +45,6 @@
         replace: '# \1'
         backup: true
       become: true
-  when: ansible_distribution == "Archlinux"
+  when:
+    - ansible_distribution == "Archlinux"
+    - disable_pam_systemd_homed | bool
