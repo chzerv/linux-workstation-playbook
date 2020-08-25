@@ -22,7 +22,7 @@
   lineinfile:
     path: /etc/ansible/ansible.cfg
     regexp: "^roles_path"
-    line: "roles_path = ~/Code/Infra/Ansible/roles"
+    line: "roles_path = {{ ansible_roles_path }}"
     mode: '0644'
   become: true
 
