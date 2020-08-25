@@ -121,3 +121,12 @@
           with_items: "{{ dotfiles_config_choices }}"
       when: configure_dotfiles | bool
       tags: dotfiles
+
+    - name: Misc tweaks
+      include_tasks:
+        file: tasks/misc.yml
+        apply:
+          tags:
+            - misc
+      tags:
+        - misc
