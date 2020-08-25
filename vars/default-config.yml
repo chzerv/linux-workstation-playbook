@@ -7,6 +7,7 @@ fedora_enable_rpmfusion_non_free: true
 
 configure_capabilities: true
 configure_sysctl: true
+configure_security: true
 configure_performance: true
 configure_gnome: true
 configure_systemd: true

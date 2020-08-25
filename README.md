@@ -21,6 +21,7 @@ ansible-playbook main.yml --list-tags
 
 - `capabilities` will only run capabilities related tasks.
 - `sysctl` will only run sysctl related tasks.
+- `security` will only run security related tasks.
 - `performance` will only run performance related tasks.
 - `gnome` will only run GNOME related tasks.
 - `systemd` will only run systemd related tasks.
@@ -45,6 +46,7 @@ This playbook performs the following tasks:
 - Better handling of OOM conditions by tweaking Virtual Memory and installing/configuring [earlyoom](https://github.com/rfjakob/earlyoom).
 - Change I/O schedulers depending on disk type (SSD vs HDD vs NVMe).
 - Disable watchdogs for better performance and lower power consumption.
+- Perform some basic system hardening using my [security Ansible role](https://galaxy.ansible.com/chzerv/security). Make sure to check the role for available variables.
 - Download my dotfiles and symlink them to the right places.
 - Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
 - Apply some minor Gnome Shell tweaks.
@@ -62,6 +64,7 @@ This playbook performs the following tasks:
 ```yaml
 configure_capabilities: true
 configure_sysctl: true
+configure_security: true
 configure_performance: true
 configure_gnome: true
 configure_systemd: true
@@ -71,6 +74,7 @@ configure_misc: true
 
 > - Perform `capabilities` related tasks. This can also be controlled via Ansible tags.
 > - Perform `sysctl` related tasks. This can also be controlled via Ansible tags.
+> - Perform `security` related tasks. This can also be controlled via Ansible tags.
 > - Perform `performance` related tasks. This can also be controlled via Ansible tags.
 > - Perform `gnome` related tasks. This can also be controlled via Ansible tags.
 > - Perform `systemd` related tasks. This can also be controlled via Ansible tags.

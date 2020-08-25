@@ -71,6 +71,16 @@
           tags:
             - sysctl
 
+        - name: Security tweaks.
+          include_role:
+            name: chzerv.security
+            apply:
+              tags:
+                - security
+          when: configure_security | bool
+          tags:
+            - security
+
         - name: Performance tuning.
           include_tasks:
             file: tasks/performance.yml
