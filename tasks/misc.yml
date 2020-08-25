@@ -19,3 +19,23 @@
     mode: '0644'
   become: true
 
+- name: Stop pam_systemd_homed.so spamming the journal when using sudo.
+  block:
+    - name: Modify pam_unix.so's control so it only jumps one line on success.
+      pamd:
+        name: system-auth
+        type: auth
+        control: '[success=2 default=ignore]'
+        module_path: pam_unix.so
+        new_control: '[success=1 default=ignore]'
+        backup: true
+      become: true
+
+    - name: Comment out pam_systemd_homed.so line.
+      replace:
+        path: /etc/pam.d/system-auth
+        regexp: '^(-auth\s*[success=1\s default=ignore].*)'
+        replace: '# \1'
+        backup: true
+      become: true
+  when: ansible_distribution == "Archlinux"
