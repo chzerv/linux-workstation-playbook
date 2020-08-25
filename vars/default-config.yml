@@ -36,7 +36,7 @@ npm_packages: []
 
 mutter_enable_experimental: false
 
-dotfiles_repo: git@github.com:chzerv/dotfiles.git
+dotfiles_repo: https://github.com/chzerv/dotfiles.git
 dotfiles_local_destination: "{{ ansible_user_dir }}/dotfiles"
 dotfiles_accept_hostkey: true
 
