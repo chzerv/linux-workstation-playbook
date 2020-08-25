@@ -14,4 +14,10 @@
     repo: "https://github.com/hlissner/doom-emacs.git"
     dest: "{{ ansible_user_dir }}/.emacs.d"
     version: develop
+    depth: 1
   when: not emacs_dir_exists.stat.exists
+
+- name: Install Doom Emacs.
+  command:
+    cmd: "{{ ansible_user_dir }}/.emacs.d/bin/doom -y install"
+  changed_when: true

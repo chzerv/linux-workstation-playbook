@@ -56,7 +56,6 @@ This playbook performs the following tasks:
 
 # Stuff that still have to be done manually
 
-- Install Doom Emacs: `~/.emacs.d/bin/doom install`.
 - Install tmux plugins: `$prefix + I` in an already running tmux session.
 
 # Variables, their default values and their explanations
