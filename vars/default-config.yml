@@ -46,3 +46,6 @@ dotfiles_config_choices:
   - tmux
   - zsh
   - doom
+
+gpg_agent_default_cache_ttl: "28800"
+gpg_agent_max_cache_ttl: "28800"

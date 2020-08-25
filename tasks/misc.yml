@@ -5,11 +5,18 @@
     state: directory
    
 - name: Configure gpg agent.
-  template:
-    src: gnupg/gpg-agent.conf.j2
-    dest: "{{ ansible_user_dir }}/.gnupg/gpg-agent.conf"
-    owner: "{{ ansible_user_id }}"
+  lineinfile:
+    path: "{{ ansible_user_dir }}/.gnupg/gpg-agent.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
     mode: '0644'
+    create: true
+    backup: true
+  with_items:
+    - regexp: "^max-cache-ttl"
+      line: "max-cache-ttl {{ gpg_agent_max_cache_ttl }}"
+    - regexp: "^default-cache-ttl"
+      line: "default-cache-ttl {{ gpg_agent_default_cache_ttl }}"
 
 - name: Configure ansible.cfg
   lineinfile:
