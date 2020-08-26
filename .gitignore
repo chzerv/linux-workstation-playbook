@@ -1,4 +1,4 @@
 .vagrant
 Vagrantfile
-files/**
+files/id**
 **/keys.yml
