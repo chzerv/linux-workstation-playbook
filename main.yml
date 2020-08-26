@@ -23,21 +23,6 @@
           tags:
             - install-software
 
-        - name: Gather facts.
-          include_tasks:
-            file: tasks/gather-facts.yml
-            apply:
-              tags:
-                - gnome
-                - capabilities
-                - install-software
-                - misc
-          tags:
-            - gnome
-            - capabilities
-            - install-software
-            - misc
-
         - name: Set capabilities.
           include_tasks:
             file: tasks/capabilities.yml

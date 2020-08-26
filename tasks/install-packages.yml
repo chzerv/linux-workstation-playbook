@@ -50,3 +50,6 @@
         name: "{{ ansible_packages }}"
         state: present
   when: ansible_distribution == "Fedora"
+
+- name: Gather facts.
+  include_tasks: gather-facts.yml

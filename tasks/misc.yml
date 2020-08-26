@@ -1,4 +1,7 @@
 ---
+- name: Gather facts.
+  include_tasks: gather-facts.yml
+
 - name: Ensure ~/.gnupg directory exists.
   file:
     path: "{{ ansible_user_dir }}/.gnupg"

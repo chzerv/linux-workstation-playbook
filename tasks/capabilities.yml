@@ -1,4 +1,7 @@
 ---
+- name: Gather facts.
+  include_tasks: gather-facts.yml
+
 - name: Set capabilities for different programs.
   block:
     - name: Capabilities for beep
