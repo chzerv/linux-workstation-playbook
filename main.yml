@@ -94,7 +94,6 @@
             - gnome
       when:
         - configure_gnome | bool
-        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
       tags:
         - gnome
 

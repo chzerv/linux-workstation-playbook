@@ -1,41 +1,50 @@
 ---
-- name: Install psutil, required for dconf module to work (Archlinux).
-  package:
-    name: "{{ psutil_package_name }}"
-    state: present
-  become: true
+- name: Gather facts.
+  include_tasks: gather-facts.yml
 
-- name: Unbind switch-to-application keybindings from shell.
-  dconf:
-    key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
-    value: "['']"
-  with_sequence: start=1 end=9
-
-- name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
-  capabilities:
-    path: /usr/bin/mutter
-    capability: cap_sys_nice+ep
-    state: present
-  when: mutter_enable_experimental | bool
-
-- name: Enable experimental mutter features.
-  dconf:
-    key: "/org/gnome/mutter/experimental-features"
-    value: "['rt-scheduler', 'autostart-xwayland']"
-  when: mutter_enable_experimental | bool
-
-- name: Change icon captions in nautilus.
-  dconf:
-    key: "/org/gnome/nautilus/icon-view"
-    value: "['size', 'date_modified_with_time', 'none']"
-
-- name: Use a location entry bar instead of a path bar in nautilus.
-  dconf:
-    key: "/org/gnome/nautilus/preferences/always-use-location-entry"
-    value: "false"
-
-- name: Create Nautilus templates
+- name: Configure GNOME.
   block:
+    - name: Ensure psutil, required for the dconf module to work is installed (Archlinux).
+      package:
+        name: "{{ psutil_package_name }}"
+        state: present
+      become: true
+
+    - name: Ensure dconf is installed
+      package:
+        name: dconf
+        state: present
+      become: true
+
+    - name: Unbind switch-to-application keybindings from shell.
+      dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
+        value: "['']"
+      with_sequence: start=1 end=9
+
+    - name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
+      capabilities:
+        path: /usr/bin/mutter
+        capability: cap_sys_nice+ep
+        state: present
+      when: mutter_enable_experimental | bool
+
+    - name: Enable experimental mutter features.
+      dconf:
+        key: "/org/gnome/mutter/experimental-features"
+        value: "['rt-scheduler', 'autostart-xwayland']"
+      when: mutter_enable_experimental | bool
+
+    - name: Change icon captions in nautilus.
+      dconf:
+        key: "/org/gnome/nautilus/icon-view"
+        value: "['size', 'date_modified_with_time', 'none']"
+
+    - name: Use a location entry bar instead of a path bar in nautilus.
+      dconf:
+        key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+        value: "false"
+
     - name: Create "Empty file" template for Nautilus.
       template:
         src: Templates/empty-file.j2
@@ -56,3 +65,4 @@
         dest: "{{ ansible_user_dir }}/Templates/Python\ Script"
         owner: "{{ ansible_user_id }}"
         mode: '0644'
+  when: "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
