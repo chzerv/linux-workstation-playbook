@@ -40,7 +40,6 @@
                 tags:
                   - sysctl
           vars:
-            sysctl_required_packages: procps-ng
             sysctl_entries:
             - name: vm.swappiness
               value: 10
@@ -62,6 +61,11 @@
             apply:
               tags:
                 - security
+          vars:
+            - security_fail2ban_enabled: false
+            - security_kern_hidepid_value: "0"
+            - security_autoupdates_enabled: false
+            - security_nproc_limit: false
           when: configure_security | bool
           tags:
             - security
