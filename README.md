@@ -3,8 +3,42 @@
 [![Archlinux](https://img.shields.io/badge/arch-linux-blue.svg?style=flat-square&logo=Arch-Linux&logoColor=white)](https://archlinux.org)
 [![Fedora](https://img.shields.io/badge/Fedora-v32-blue.svg?style=flat-square&logo=Fedora&logoColor=white&)](https://getfedora.org)
 
-This playbook automates the standard setup I do on my Linux box(es).
+This playbook performs all the standard setup I do on my Linux box(es).
 I usually use Fedora and/or Archlinux, so those are the only supported distributions.
+
+# What does this do?
+
+This playbook performs the following tasks:
+
+- Configure `pacman` and `dnf` so they provide better output and are faster.
+
+- **[tags=install-software, install-extra-software]** Update system and install packages (npm, pip and flatpak are also supported).
+
+- **[tags=performance]** Try to improve performance, especially in OOM conditions, by:
+
+  - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom).
+  - Change I/O schedulers depending on disk type (SSD vs HDD vs NVMe).
+  - Disable watchdogs for better performance and lower power consumption.
+
+- **[tags=security]** Perform some basic system hardening using my [security Ansible role](https://galaxy.ansible.com/chzerv/security). Make sure to check the role for available variables.
+
+- **[tags=dotfiles]** Clone my [dotfiles](https://github.com/chzerv/dotfiles), symlink them to the right places and install required packages.
+
+- **[tags=capabilities]** Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
+
+- **[tags=systemd]** Allow users to manage CPU and Memory resources using `cgroups` and create a user-defined slice. This slice can be then used to limit the resources that some user services consume. Read more on `cgroups` in the [Arch Wiki article](https://wiki.archlinux.org/index.php/Cgroups).
+
+- **[tags=gnome]** Configure GNOME Shell to my liking. This includes:
+
+  - Change keybindings.
+  - Disable some search providers.
+  - Change system-wide fonts.
+
+- **[tags=misc]** Minor configuration changes like:
+
+  - Change `roles_path` and `remote_tmp` in `ansible.cfg`.
+  - Increase `default-cache-ttl` and `max-cache-ttl` values in `gpg-agent.conf`
+  - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
 
 # Usage
 
@@ -13,21 +47,7 @@ I usually use Fedora and/or Archlinux, so those are the only supported distribut
 3. Install required Ansible roles: `ansible-galaxy install -r requirements.yml`
 4. Run the playbook: `ansible-playbook -i inventory -K main.yml`. Enter your password when prompted.
 
-All the tasks are tagged. To list all available tags, run:
-
-```sh
-ansible-playbook main.yml --list-tags
-```
-
-- `capabilities` will only run capabilities related tasks.
-- `sysctl` will only run sysctl related tasks.
-- `security` will only run security related tasks.
-- `performance` will only run performance related tasks.
-- `gnome` will only run GNOME related tasks.
-- `systemd` will only run systemd related tasks.
-- `dotfiles` will only run dotfiles related tasks.
-- `install-extra-software` will only run tasks that install packages using flatpak/npm/pip.
-- `misc` will only run misc tasks.
+As show in the [What does this do?](https://github.com/chzerv/linux-workstation-playbook#what-does-this-do) section, all tasks are tagged.
 
 To choose a specific tag, run:
 
@@ -35,24 +55,13 @@ To choose a specific tag, run:
 ansible-playbook -i inventory -K main.yml --tags=dotfiles
 ```
 
+Or, if you want to include all the tags except some, run:
+
+```sh
+ansible-playbook -i inventory -K main.yml --skip-tags=dotfiles
+```
+
 where `dotfiles` can be any of the above.
-
-# What does this do?
-
-This playbook performs the following tasks:
-
-- Configure pacman and dnf so they both provide better output and are faster.
-- Update system and install packages (npm, pip and flatpak are also supported).
-- Better handling of OOM conditions by tweaking Virtual Memory and installing/configuring [earlyoom](https://github.com/rfjakob/earlyoom).
-- Change I/O schedulers depending on disk type (SSD vs HDD vs NVMe).
-- Disable watchdogs for better performance and lower power consumption.
-- Perform some basic system hardening using my [security Ansible role](https://galaxy.ansible.com/chzerv/security). Make sure to check the role for available variables.
-- Download my dotfiles and symlink them to the right places.
-- Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
-- Apply some minor Gnome Shell tweaks.
-- Change ansible roles path.
-- Change gpg-agent's `default-cache-ttl` and `max-cache-ttl` values.
-- Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
 
 # Stuff that still have to be done manually
 
@@ -71,14 +80,16 @@ configure_dotfiles: true
 configure_misc: true
 ```
 
-> - Perform `capabilities` related tasks. This can also be controlled via Ansible tags.
-> - Perform `sysctl` related tasks. This can also be controlled via Ansible tags.
-> - Perform `security` related tasks. This can also be controlled via Ansible tags.
-> - Perform `performance` related tasks. This can also be controlled via Ansible tags.
-> - Perform `gnome` related tasks. This can also be controlled via Ansible tags.
-> - Perform `systemd` related tasks. This can also be controlled via Ansible tags.
-> - Perform `dotfiles` related tasks. This can also be controlled via Ansible tags.
-> - Perform `misc` tasks. This can also be controlled via Ansible tags.
+> - Perform `capabilities` related tasks.
+> - Perform `sysctl` related tasks.
+> - Perform `security` related tasks.
+> - Perform `performance` related tasks.
+> - Perform `gnome` related tasks.
+> - Perform `systemd` related tasks.
+> - Perform `dotfiles` related tasks.
+> - Perform `misc` tasks.
+>
+> If you prefer using tags, just leave these variables to `true` and use tags instead.
 
 ```yaml
 arch_enable_multilib: true
@@ -141,12 +152,12 @@ mutter_enable_experimental: false
 > Whether to enable mutter experimental features or not.
 
 ```yaml
-dotfiles_repo: git@github.com:chzerv/dotfiles.git
+dotfiles_repo: https://github.com/chzerv/dotfiles.git
 dotfiles_local_destination: "{{ ansible_user_dir }}/dotfiles"
 dotfiles_accept_hostkey: true
 ```
 
-> - The remote repository where dotfiles are present.
+> - The remote repository where dotfiles are stored.
 > - Where the remote repository will be cloned to.
 > - Whether to accept the requested SSH host key or not (only needed if using SSH to clone the remote repository).
 
