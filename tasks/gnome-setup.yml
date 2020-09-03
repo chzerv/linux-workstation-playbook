@@ -4,23 +4,13 @@
 
 - name: Configure GNOME.
   block:
-    - name: Ensure psutil, required for the dconf module to work is installed (Archlinux).
+    - name: Ensure psutil, required for the dconf module to work, and dconf are installed.
       package:
-        name: "{{ psutil_package_name }}"
+        name:
+          - "{{ psutil_package_name }}"
+          - dconf
         state: present
       become: true
-
-    - name: Ensure dconf is installed
-      package:
-        name: dconf
-        state: present
-      become: true
-
-    - name: Unbind switch-to-application keybindings from shell.
-      dconf:
-        key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
-        value: "['']"
-      with_sequence: start=1 end=9
 
     - name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
       capabilities:
@@ -35,34 +25,119 @@
         value: "['rt-scheduler', 'autostart-xwayland']"
       when: mutter_enable_experimental | bool
 
-    - name: Change icon captions in nautilus.
+    - name: Create template files for nautilus file manager.
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ ansible_user_dir }}/Templates/{{ item.dest }}"
+        owner: "{{ ansible_user_id }}"
+        mode: '0644'
+      with_items:
+        - src: Templates/empty-file.j2
+          dest: "Empty\ File"
+        - src: Templates/bash-script.j2
+          dest: "Bash\ Script"
+        - src: Templates/python-script.j2
+          dest: "Python\ Script"
+
+    - name: Unbind switch-to-application keybindings from shell.
       dconf:
-        key: "/org/gnome/nautilus/icon-view"
-        value: "['size', 'date_modified_with_time', 'none']"
+        key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
+        value: "['']"
+      with_sequence: start=1 end=9
 
-    - name: Use a location entry bar instead of a path bar in nautilus.
+    - name: Change GNOME keybindings.
       dconf:
-        key: "/org/gnome/nautilus/preferences/always-use-location-entry"
-        value: "false"
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: "/org/gnome/desktop/wm/keybindings/close"
+          value: "['<Super>q']"
+        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1"
+          value: "['<Shift><Super>exclam']"
+        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2"
+          value: "['<Shift><Super>at']"
+        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3"
+          value: "['<Shift><Super>numbersign']"
+        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4"
+          value: "['<Shift><Super>dollar']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1"
+          value: "['<Super>1']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2"
+          value: "['<Super>2']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3"
+          value: "['<Super>3']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4"
+          value: "['<Super>4']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-applications"
+          value: "['<Alt>Tab']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
+          value: "['<Shift><Alt>Tab']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+          value: "['<Super>Tab']"
+        - key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
+          value: "['<Shift><Super>Tab']"
+        - key: "/org/gnome/desktop/input-sources/xkb-options"
+          value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
 
-    - name: Create "Empty file" template for Nautilus.
-      template:
-        src: Templates/empty-file.j2
-        dest: "{{ ansible_user_dir }}/Templates/Empty\ File"
-        owner: "{{ ansible_user_id }}"
-        mode: '0644'
+    - name: Disable search providers and change their order.
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: "/org/gnome/desktop/search-providers/disabled"
+          value: >
+            "['org.gnome.Contacts.desktop',
+            'org.gnome.Documents.desktop',
+            'org.gnome.Boxes.desktop',
+            'org.gnome.Photos.desktop',
+            'org.gnome.Terminal.desktop',
+            'org.gnome.Software.desktop',
+            'org.gnome.Epiphany.desktop',
+            'org.gnome.seahorse.Application.desktop']"
+        - key: "/org/gnome/desktop/search-providers/sort-order"
+          value: >
+            "['org.gnome.Nautilus.desktop',
+            'org.gnome.Calculator.desktop',
+            'org.gnome.Calendar.desktop',
+            'org.gnome.Characters.desktop',
+            'org.gnome.clocks.desktop',
+            'org.gnome.Contacts.desktop',
+            'org.gnome.Documents.desktop',
+            'org.gnome.Boxes.desktop']"
 
-    - name: Create "Bash script" template for Nautilus.
-      template:
-        src: Templates/bash-script.j2
-        dest: "{{ ansible_user_dir }}/Templates/Bash\ Script"
-        owner: "{{ ansible_user_id }}"
-        mode: '0644'
+    - name: Use a different font in the Shell.
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: "/org/gnome/desktop/interface/font-name"
+          value: "'Noto Sans 11'"
+        - key: "/org/gnome/desktop/wm/preferences/titlebar-font"
+          value: "'Noto Sans Semi-Bold 11'"
+        - key: "/org/gnome/desktop/interface/monospace-font-name"
+          value: "'Source Code Pro 12'"
 
-    - name: Create "Empty file" template for Nautilus.
-      template:
-        src: Templates/python-script.j2
-        dest: "{{ ansible_user_dir }}/Templates/Python\ Script"
-        owner: "{{ ansible_user_id }}"
-        mode: '0644'
+    - name: Misc tweaks.
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
+          value: "'flat'"
+        - key: "/org/gnome/desktop/input-sources/sources"
+          value: "[('xkb', 'us'), ('xkb', 'gr')]"
+        - key: "/org/gnome/desktop/wm/preferences/button-layout"
+          value: "'icon:minimize,maximize,close'"
+        - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
+          value: "'minimize'"
+        - key: "/org/gnome/software/download-updates"
+          value: "false"
+        - key: "/org/gnome/nautilus/icon-view"
+          value: "['size', 'date_modified_with_time', 'none']"
+        - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+          value: "false"
   when: "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
