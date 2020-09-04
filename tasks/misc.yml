@@ -37,7 +37,7 @@
         line: "remote_tmp = /tmp"
         mode: '0644'
   become: true
-  when: "'ansible in installed_packages'"
+  when: "'ansible' in installed_packages"
 
 - name: Stop pam_systemd_homed.so spamming the journal when using sudo.
   block:
