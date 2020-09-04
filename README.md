@@ -39,6 +39,9 @@ This playbook performs the following tasks:
   - Change `roles_path` and `remote_tmp` in `ansible.cfg`.
   - Increase `default-cache-ttl` and `max-cache-ttl` values in `gpg-agent.conf`
   - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
+  - Add additional kernel parameters. Only works for `GRUB` and `systemd-boot`.
+  - Allow current user to run podman container rootless.
+  - Enable overclocking for AMD GPUs.
 
 # Usage
 
@@ -179,9 +182,13 @@ gpg_agent_default_cache_ttl: "28800"
 gpg_agent_max_cache_ttl: "28800"
 ansible_roles_path: "~/Code/Infra/Ansible/roles"
 disable_pam_systemd_homed: true
+enable_rootless_podman: true
+allow_amdgpu_overclock: true
 ```
 
 > - gpg-agent's default-cache-ttl value.
 > - gpg-agent's max-cache-ttl value.
 > - The path where Ansible will store and look for roles.
 > - Whether to disable pam_systemd_homed.so pam module. **Only applies in Archlinux**.
+> - Whether to allow the current user to run podman containers without root. If set to `true`, the `cgroup_no_v1="all"` kernel parameter will be set, which effectively disables cgroups v1 and enables cgroups v2. **DO NOT** use this if you want to use `docker` instead of `podman`.
+> - Whether to allow overclocking for AMD GPUs. If set to `true`, the `amdgpu.ppfeaturemask=0xfffd7fff` kernel parameter will be set.
