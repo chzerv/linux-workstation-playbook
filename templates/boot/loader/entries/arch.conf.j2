@@ -1,0 +1,5 @@
+title Arch Linux
+linux /vmlinuz-linux
+initrd /amd-ucode.img
+initrd /initramfs-linux.img
+options root=UUID={{ ansible_mounts | json_query('[?mount == `/`] | [0].uuid') }} rw loglevel=3 quiet{% if allow_amdgpu_overclock | bool %} amdgpu.ppfeaturemask=0xfffd7fff{% endif %}{%if enable_rootless_podman | bool %} cgroup_no_v1="all"{% endif %}

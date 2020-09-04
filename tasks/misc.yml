@@ -61,3 +61,42 @@
   when:
     - ansible_distribution == "Archlinux"
     - disable_pam_systemd_homed | bool
+
+- name: Add additional kernel parameters (Archlinux, systemd-boot).
+  template:
+    src: boot/loader/entries/arch.conf.j2
+    dest: /boot/loader/entries/arch.conf
+    mode: '0755'
+    backup: true
+  become: true
+  when:
+    - not grub_is_installed.stat.exists | bool
+    - ansible_distribution == "Archlinux"
+
+- name: Add additional kernel parameters (GRUB).
+  template:
+    src: etc/default/grub.j2
+    dest: /etc/default/grub
+    mode: '0644'
+    backup: true
+  become: true
+  when:
+    - grub_is_installed.stat.exists | bool
+
+- name: Enable rootless podman.
+  block:
+    - name: Allocate UIDs for the current user.
+      lineinfile:
+        path: /etc/subuid
+        regexp: "^{{ ansible_user_id }}"
+        line: "{{ ansible_user_id }}:100000:65536"
+        create: true
+
+    - name: Allocate GIDs for the current user's group.
+      lineinfile:
+        path: /etc/subgid
+        regexp: "^{{ ansible_user_id }}"
+        line: "{{ ansible_user_id }}:100000:65536"
+        create: true
+  become: true
+  when: enable_rootless_podman | bool

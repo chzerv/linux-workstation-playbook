@@ -22,3 +22,8 @@
   set_fact:
     installed_packages: "{{ ansible_facts.packages }}"
   when: ansible_distribution == "Fedora"
+
+- name: Check if the GRUB bootloader is used.
+  stat:
+    path: /etc/default/grub
+  register: grub_is_installed

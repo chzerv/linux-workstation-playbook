@@ -53,3 +53,5 @@ gpg_agent_default_cache_ttl: "28800"
 gpg_agent_max_cache_ttl: "28800"
 ansible_roles_path: "~/Code/Infra/Ansible/roles"
 disable_pam_systemd_homed: true
+enable_rootless_podman: true
+allow_amdgpu_overclock: true
