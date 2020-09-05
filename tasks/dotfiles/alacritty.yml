@@ -13,9 +13,22 @@
     state: present
   become: true
   when: ansible_distribution == "Fedora"
- 
+
 - name: alacritty | Clone alacritty-theme.
   git:
     repo: "https://github.com/eendroroy/alacritty-theme"
     dest: "{{ ansible_user_dir }}/.config/alacritty/alacritty-theme"
     version: master
+
+- name: alacritty | Install alacritty-colorscheme in it's own venv.
+  pip:
+    name: alacritty-colorscheme
+    virtualenv: "{{ ansible_user_dir }}/.config/alacritty/.alacritty-venv"
+    virtualenv_python: python3.8
+
+- name: alacritty | Set colorscheme using alacritty-colorscheme
+  shell:
+    cmd: >-
+      source .alacritty-venv/bin/activate &&
+      alacritty-colorscheme -C alacritty-theme/themes -a one_dark.yaml
+    chdir: "{{ ansible_user_dir }}/.config/alacritty"
