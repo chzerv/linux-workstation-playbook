@@ -27,3 +27,4 @@
   command:
     cmd: "nvim -es -u {{ ansible_user_dir }}/.config/nvim/init.vim -i NONE -c 'PlugInstall' -c 'qa'"
   ignore_errors: true
+  changed_when: false

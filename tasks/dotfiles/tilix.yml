@@ -13,3 +13,4 @@
 
 - name: Load configuration into tilix.
   shell: "dconf load /com/gexperts/Tilix/ < {{ ansible_user_dir }}/.config/tilix/tilix.dconf"
+  changed_when: false

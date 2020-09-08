@@ -32,3 +32,4 @@
       source .alacritty-venv/bin/activate &&
       alacritty-colorscheme -C alacritty-theme/themes -a one_dark.yaml
     chdir: "{{ ansible_user_dir }}/.config/alacritty"
+  changed_when: false
