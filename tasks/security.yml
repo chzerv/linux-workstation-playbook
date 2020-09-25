@@ -45,3 +45,13 @@
         capability: cap_net_admin,cap_net_raw+ep
         state: present
       when: "'nethogs' in installed_packages"
+
+- name: Security tweaks.
+  include_role:
+    name: chzerv.security
+  vars:
+    - security_ssh_port: 22
+    - security_fail2ban_enabled: false
+    - security_kern_hidepid_value: "0"
+    - security_autoupdates_enabled: false
+    - security_nproc_limit: false

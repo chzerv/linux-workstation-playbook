@@ -23,16 +23,6 @@
           tags:
             - install-software
 
-        - name: Set capabilities.
-          include_tasks:
-            file: tasks/capabilities.yml
-            apply:
-              tags:
-                - capabilities
-          when: configure_capabilities | bool
-          tags:
-            - capabilities
-
         - name: Sysctl tweaks.
           include_role:
               name: chzerv.sysctl
@@ -56,16 +46,7 @@
             - sysctl
 
         - name: Security tweaks.
-          include_role:
-            name: chzerv.security
-            apply:
-              tags:
-                - security
-          vars:
-            - security_fail2ban_enabled: false
-            - security_kern_hidepid_value: "0"
-            - security_autoupdates_enabled: false
-            - security_nproc_limit: false
+          include_tasks: tasks/security.yml
           when: configure_security | bool
           tags:
             - security
