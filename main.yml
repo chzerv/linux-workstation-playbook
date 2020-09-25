@@ -65,7 +65,7 @@
 
     - name: Install packages from third-party sources (pip, npm, flatpak).
       include_tasks:
-        file: tasks/extra-packages.yml
+        file: tasks/install-extra-packages.yml
         apply:
           tags:
             - install-extra-software
