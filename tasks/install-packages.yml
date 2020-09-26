@@ -20,6 +20,16 @@
       pacman:
         name: "{{ ansible_packages }}"
         state: present
+
+    - name: Install software for writing (Archlinux).
+      pacman:
+        name: "{{ writing_software }}"
+        state: present
+
+    - name: Install software for managing BTRFS snapshots (Archlinux).
+      pacman:
+        name: "{{ btrfs_packages }}"
+        state: present
   when: ansible_distribution == "Archlinux"
 
 - name: Install packages in Fedora.
@@ -48,6 +58,16 @@
     - name: Install Ansible related packages (Fedora).
       dnf:
         name: "{{ ansible_packages }}"
+        state: present
+
+    - name: Install software for writing (Fedora).
+      dnf:
+        name: "{{ writing_software }}"
+        state: present
+
+    - name: Install software for managing BTRFS snapshots (Fedora).
+      dnf:
+        name: "{{ btrfs_packages }}"
         state: present
   when: ansible_distribution == "Fedora"
 

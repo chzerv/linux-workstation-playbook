@@ -19,6 +19,7 @@ core_software:
   - podman-docker
   - python3-podman
   - buildah
+  - flameshot
 
 rpmfusion_software:
   - ffmpeg
@@ -51,5 +52,14 @@ ansible_packages:
   - yamllint
   - vagrant
 
+writing_software:
+  - texlive-scheme-full
+  - pandoc
+  - marked
+  - proselint
+
+btrfs_packages:
+  - snapper
+  - python3-dnf-plugin-snapper
 
 psutil_package_name: python3-psutil

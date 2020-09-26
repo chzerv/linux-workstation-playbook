@@ -24,6 +24,7 @@ core_software:
   - buildah
   - fasd
   - alacritty
+  - flameshot
 
 utility_software:
   - exfat-utils
@@ -51,5 +52,16 @@ ansible_packages:
   - molecule
   - yamllint
   - vagrant
+
+writing_software:
+  - texlive-most texlive-langgreek texlive-langextra
+  - pandoc
+  - marked
+  - proselint
+
+btrfs_packages:
+  - snapper
+  - snap-pac
+  - grub-btrfs
 
 psutil_package_name: python-psutil
