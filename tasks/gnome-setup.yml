@@ -39,7 +39,7 @@
         - src: Templates/python-script.j2
           dest: "Python\ Script"
 
-    - name: Unbind switch-to-application keybindings from shell.
+    - name: Don't use switch-to-application default shortcuts.
       dconf:
         key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
         value: "['']"
@@ -136,8 +136,62 @@
           value: "'minimize'"
         - key: "/org/gnome/software/download-updates"
           value: "false"
-        - key: "/org/gnome/nautilus/icon-view"
+        - key: "/org/gnome/nautilus/icon-view/captions"
           value: "['size', 'date_modified_with_time', 'none']"
         - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
           value: "false"
+        - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
+          value: "true"
+        - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+          value: "true"
+
+    - name: Unbind keys.
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: area-screenshot
+          value: "['']"
+        - key: area-screenshot-clip
+          value: "['']"
+        - key: screenshot
+          value: "['']"
+        - key: screenshot-clip
+          value: "['']"
+        - key: window-screenshot
+          value: "['']"
+        - key: window-screenshot-clip
+          value: "['']"
+
+    - name: Add custom keybindings.
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys{{ item.key }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      with_items:
+        - key: "/custom-keybindings/custom0/binding"
+          value: "['<Super>e']"
+        - key: "/custom-keybindings/custom0/command"
+          value: "['nautilus']"
+        - key: "/custom-keybindings/custom0/name"
+          value: "['Nautilus']"
+        - key: "/custom-keybindings/custom1/binding"
+          value: "['<Super>Return']"
+        - key: "/custom-keybindings/custom1/command"
+          value: "['tilix']"
+        - key: "/custom-keybindings/custom1/name"
+          value: "['Tilix']"
+        - key: "/custom-keybindings/custom2/binding"
+          value: "['<Primary>Print']"
+        - key: "/custom-keybindings/custom2/command"
+          value: "['flameshot gui']"
+        - key: "/custom-keybindings/custom2/name"
+          value: "['Flameshot']"
+        - key: "/custom-keybindings"
+          value: >-
+            "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
+            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']"
   when: "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
