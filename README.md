@@ -12,7 +12,7 @@ This playbook performs the following tasks:
 
 - Configure `pacman` and `dnf` so they provide better output and are faster.
 
-- **[tags=install-software, install-extra-software]** Update system and install packages (npm, pip and flatpak are also supported).
+- **[tags=install-packages, install-extra-packages]** Update system and install packages (npm, pip and flatpak are also supported).
 
 - **[tags=performance]** Try to improve performance, especially in OOM conditions, by:
 

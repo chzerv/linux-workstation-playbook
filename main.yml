@@ -28,9 +28,9 @@
             file: "tasks/install-packages.yml"
             apply:
               tags:
-                - install-software
+                - install-packages
           tags:
-            - install-software
+            - install-packages
 
         - name: Sysctl tweaks.
           include_role:
@@ -77,9 +77,9 @@
         file: tasks/install-extra-packages.yml
         apply:
           tags:
-            - install-extra-software
+            - install-extra-packages
       tags:
-        - install-extra-software
+        - install-extra-packages
 
     - name: GNOME configuration.
       include_tasks:
