@@ -1,0 +1,6 @@
+---
+- name: Ensure required packages are installed.
+  package:
+    name: waybar
+    state: present
+  become: true

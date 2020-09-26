@@ -1,0 +1,6 @@
+---
+- name: Ensure required packages are installed.
+  package:
+    name: wofi
+    state: present
+  become: true

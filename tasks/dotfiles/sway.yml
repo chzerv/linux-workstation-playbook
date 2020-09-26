@@ -1,0 +1,10 @@
+---
+- name: Ensure required packages are installed.
+  package:
+    name:
+      - sway
+      - swaylock
+      - swayidle
+      - gammastep
+    state: present
+  become: true

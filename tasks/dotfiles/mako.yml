@@ -1,0 +1,5 @@
+- name: Ensure required packages are installed.
+  package:
+    name: mako
+    state: present
+  become: true
