@@ -9,6 +9,15 @@
     - "vars/{{ ansible_distribution }}.yml"
 
   tasks:
+    - name: Gather facts.
+      include_tasks:
+        file: tasks/gather-facts.yml
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
     - name: Tasks that require sudo.
       block:
         - name: Pre-setup.
@@ -79,6 +88,7 @@
           tags:
             - gnome
       when:
+        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
         - configure_gnome | bool
       tags:
         - gnome

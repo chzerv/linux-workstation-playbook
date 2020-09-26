@@ -1,197 +1,192 @@
 ---
-- name: Gather facts.
-  include_tasks: gather-facts.yml
+# - name: Configure GNOME.
+- name: Ensure psutil, required for the dconf module to work, and dconf are installed.
+  package:
+    name:
+      - "{{ psutil_package_name }}"
+      - dconf
+    state: present
+  become: true
 
-- name: Configure GNOME.
-  block:
-    - name: Ensure psutil, required for the dconf module to work, and dconf are installed.
-      package:
-        name:
-          - "{{ psutil_package_name }}"
-          - dconf
-        state: present
-      become: true
+- name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
+  capabilities:
+    path: /usr/bin/mutter
+    capability: cap_sys_nice+ep
+    state: present
+  when: mutter_enable_experimental | bool
 
-    - name: Ensure CAP_SYS_NICE capability is set if experimental mutter features are used.
-      capabilities:
-        path: /usr/bin/mutter
-        capability: cap_sys_nice+ep
-        state: present
-      when: mutter_enable_experimental | bool
+- name: Enable experimental mutter features.
+  dconf:
+    key: "/org/gnome/mutter/experimental-features"
+    value: "['rt-scheduler', 'autostart-xwayland']"
+  when: mutter_enable_experimental | bool
 
-    - name: Enable experimental mutter features.
-      dconf:
-        key: "/org/gnome/mutter/experimental-features"
-        value: "['rt-scheduler', 'autostart-xwayland']"
-      when: mutter_enable_experimental | bool
+- name: Create template files for nautilus file manager.
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/Templates/{{ item.dest }}"
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
+  with_items:
+    - src: Templates/empty-file.j2
+      dest: "Empty\ File"
+    - src: Templates/bash-script.j2
+      dest: "Bash\ Script"
+    - src: Templates/python-script.j2
+      dest: "Python\ Script"
 
-    - name: Create template files for nautilus file manager.
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ ansible_user_dir }}/Templates/{{ item.dest }}"
-        owner: "{{ ansible_user_id }}"
-        mode: '0644'
-      with_items:
-        - src: Templates/empty-file.j2
-          dest: "Empty\ File"
-        - src: Templates/bash-script.j2
-          dest: "Bash\ Script"
-        - src: Templates/python-script.j2
-          dest: "Python\ Script"
+- name: Don't use switch-to-application default shortcuts.
+  dconf:
+    key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
+    value: "['']"
+  with_sequence: start=1 end=9
 
-    - name: Don't use switch-to-application default shortcuts.
-      dconf:
-        key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
-        value: "['']"
-      with_sequence: start=1 end=9
+- name: Change GNOME keybindings.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/wm/keybindings/close"
+      value: "['<Super>q']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1"
+      value: "['<Shift><Super>exclam']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2"
+      value: "['<Shift><Super>at']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3"
+      value: "['<Shift><Super>numbersign']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4"
+      value: "['<Shift><Super>dollar']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1"
+      value: "['<Super>1']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2"
+      value: "['<Super>2']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3"
+      value: "['<Super>3']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4"
+      value: "['<Super>4']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-applications"
+      value: "['<Alt>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
+      value: "['<Shift><Alt>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+      value: "['<Super>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
+      value: "['<Shift><Super>Tab']"
+    - key: "/org/gnome/desktop/input-sources/xkb-options"
+      value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
 
-    - name: Change GNOME keybindings.
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: "/org/gnome/desktop/wm/keybindings/close"
-          value: "['<Super>q']"
-        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1"
-          value: "['<Shift><Super>exclam']"
-        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2"
-          value: "['<Shift><Super>at']"
-        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3"
-          value: "['<Shift><Super>numbersign']"
-        - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4"
-          value: "['<Shift><Super>dollar']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1"
-          value: "['<Super>1']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2"
-          value: "['<Super>2']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3"
-          value: "['<Super>3']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4"
-          value: "['<Super>4']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-applications"
-          value: "['<Alt>Tab']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
-          value: "['<Shift><Alt>Tab']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-windows"
-          value: "['<Super>Tab']"
-        - key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
-          value: "['<Shift><Super>Tab']"
-        - key: "/org/gnome/desktop/input-sources/xkb-options"
-          value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
+- name: Disable search providers and change their order.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/search-providers/disabled"
+      value: >
+        "['org.gnome.Contacts.desktop',
+        'org.gnome.Documents.desktop',
+        'org.gnome.Boxes.desktop',
+        'org.gnome.Photos.desktop',
+        'org.gnome.Terminal.desktop',
+        'org.gnome.Software.desktop',
+        'org.gnome.Epiphany.desktop',
+        'org.gnome.seahorse.Application.desktop']"
+    - key: "/org/gnome/desktop/search-providers/sort-order"
+      value: >
+        "['org.gnome.Nautilus.desktop',
+        'org.gnome.Calculator.desktop',
+        'org.gnome.Calendar.desktop',
+        'org.gnome.Characters.desktop',
+        'org.gnome.clocks.desktop',
+        'org.gnome.Contacts.desktop',
+        'org.gnome.Documents.desktop',
+        'org.gnome.Boxes.desktop']"
 
-    - name: Disable search providers and change their order.
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: "/org/gnome/desktop/search-providers/disabled"
-          value: >
-            "['org.gnome.Contacts.desktop',
-            'org.gnome.Documents.desktop',
-            'org.gnome.Boxes.desktop',
-            'org.gnome.Photos.desktop',
-            'org.gnome.Terminal.desktop',
-            'org.gnome.Software.desktop',
-            'org.gnome.Epiphany.desktop',
-            'org.gnome.seahorse.Application.desktop']"
-        - key: "/org/gnome/desktop/search-providers/sort-order"
-          value: >
-            "['org.gnome.Nautilus.desktop',
-            'org.gnome.Calculator.desktop',
-            'org.gnome.Calendar.desktop',
-            'org.gnome.Characters.desktop',
-            'org.gnome.clocks.desktop',
-            'org.gnome.Contacts.desktop',
-            'org.gnome.Documents.desktop',
-            'org.gnome.Boxes.desktop']"
+- name: Use a different font in the Shell.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/interface/font-name"
+      value: "'Noto Sans 11'"
+    - key: "/org/gnome/desktop/wm/preferences/titlebar-font"
+      value: "'Noto Sans Semi-Bold 11'"
+    - key: "/org/gnome/desktop/interface/monospace-font-name"
+      value: "'Source Code Pro 12'"
 
-    - name: Use a different font in the Shell.
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: "/org/gnome/desktop/interface/font-name"
-          value: "'Noto Sans 11'"
-        - key: "/org/gnome/desktop/wm/preferences/titlebar-font"
-          value: "'Noto Sans Semi-Bold 11'"
-        - key: "/org/gnome/desktop/interface/monospace-font-name"
-          value: "'Source Code Pro 12'"
+- name: Misc tweaks.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
+      value: "'flat'"
+    - key: "/org/gnome/desktop/input-sources/sources"
+      value: "[('xkb', 'us'), ('xkb', 'gr')]"
+    - key: "/org/gnome/desktop/wm/preferences/button-layout"
+      value: "'icon:minimize,maximize,close'"
+    - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
+      value: "'minimize'"
+    - key: "/org/gnome/software/download-updates"
+      value: "false"
+    - key: "/org/gnome/nautilus/icon-view/captions"
+      value: "['size', 'date_modified_with_time', 'none']"
+    - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+      value: "false"
+    - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
+      value: "true"
+    - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+      value: "true"
 
-    - name: Misc tweaks.
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
-          value: "'flat'"
-        - key: "/org/gnome/desktop/input-sources/sources"
-          value: "[('xkb', 'us'), ('xkb', 'gr')]"
-        - key: "/org/gnome/desktop/wm/preferences/button-layout"
-          value: "'icon:minimize,maximize,close'"
-        - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
-          value: "'minimize'"
-        - key: "/org/gnome/software/download-updates"
-          value: "false"
-        - key: "/org/gnome/nautilus/icon-view/captions"
-          value: "['size', 'date_modified_with_time', 'none']"
-        - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
-          value: "false"
-        - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
-          value: "true"
-        - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
-          value: "true"
+- name: Unbind keys.
+  dconf:
+    key: "/org/gnome/settings-daemon/plugins/media-keys/{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: area-screenshot
+      value: "['']"
+    - key: area-screenshot-clip
+      value: "['']"
+    - key: screenshot
+      value: "['']"
+    - key: screenshot-clip
+      value: "['']"
+    - key: window-screenshot
+      value: "['']"
+    - key: window-screenshot-clip
+      value: "['']"
 
-    - name: Unbind keys.
-      dconf:
-        key: "/org/gnome/settings-daemon/plugins/media-keys/{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: area-screenshot
-          value: "['']"
-        - key: area-screenshot-clip
-          value: "['']"
-        - key: screenshot
-          value: "['']"
-        - key: screenshot-clip
-          value: "['']"
-        - key: window-screenshot
-          value: "['']"
-        - key: window-screenshot-clip
-          value: "['']"
-
-    - name: Add custom keybindings.
-      dconf:
-        key: "/org/gnome/settings-daemon/plugins/media-keys{{ item.key }}"
-        value: "{{ item.value }}"
-        state: "{{ item.state | default('present') }}"
-      with_items:
-        - key: "/custom-keybindings/custom0/binding"
-          value: "['<Super>e']"
-        - key: "/custom-keybindings/custom0/command"
-          value: "['nautilus']"
-        - key: "/custom-keybindings/custom0/name"
-          value: "['Nautilus']"
-        - key: "/custom-keybindings/custom1/binding"
-          value: "['<Super>Return']"
-        - key: "/custom-keybindings/custom1/command"
-          value: "['tilix']"
-        - key: "/custom-keybindings/custom1/name"
-          value: "['Tilix']"
-        - key: "/custom-keybindings/custom2/binding"
-          value: "['<Primary>Print']"
-        - key: "/custom-keybindings/custom2/command"
-          value: "['flameshot gui']"
-        - key: "/custom-keybindings/custom2/name"
-          value: "['Flameshot']"
-        - key: "/custom-keybindings"
-          value: >-
-            "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
-            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
-            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
-            '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']"
-  when: "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
+- name: Add custom keybindings.
+  dconf:
+    key: "/org/gnome/settings-daemon/plugins/media-keys{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/custom-keybindings/custom0/binding"
+      value: "['<Super>e']"
+    - key: "/custom-keybindings/custom0/command"
+      value: "['nautilus']"
+    - key: "/custom-keybindings/custom0/name"
+      value: "['Nautilus']"
+    - key: "/custom-keybindings/custom1/binding"
+      value: "['<Super>Return']"
+    - key: "/custom-keybindings/custom1/command"
+      value: "['tilix']"
+    - key: "/custom-keybindings/custom1/name"
+      value: "['Tilix']"
+    - key: "/custom-keybindings/custom2/binding"
+      value: "['<Primary>Print']"
+    - key: "/custom-keybindings/custom2/command"
+      value: "['flameshot gui']"
+    - key: "/custom-keybindings/custom2/name"
+      value: "['Flameshot']"
+    - key: "/custom-keybindings"
+      value: >-
+        "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']"
