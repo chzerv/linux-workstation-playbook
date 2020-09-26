@@ -30,6 +30,7 @@
       pacman:
         name: "{{ btrfs_packages }}"
         state: present
+      when: "root_fs_type == ['btrfs']"
   when: ansible_distribution == "Archlinux"
 
 - name: Install packages in Fedora.
@@ -69,6 +70,7 @@
       dnf:
         name: "{{ btrfs_packages }}"
         state: present
+      when: "root_fs_type == ['btrfs']"
   when: ansible_distribution == "Fedora"
 
 - name: Gather facts.

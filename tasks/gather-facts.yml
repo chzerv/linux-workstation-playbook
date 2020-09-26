@@ -18,10 +18,14 @@
     installed_packages: "{{ arch_installed_packages.stdout }}"
   when: ansible_distribution == "Archlinux"
 
-- name: Set fact about installed packages in Fedora
+- name: Set fact about installed packages in Fedora.
   set_fact:
     installed_packages: "{{ ansible_facts.packages }}"
   when: ansible_distribution == "Fedora"
+
+- name: Set fact about the root filesystem type.
+  set_fact:
+    root_fs_type: "{{ ansible_mounts | json_query('[? mount == `/`].fstype') }}"
 
 - name: Check if the GRUB bootloader is used.
   stat:
