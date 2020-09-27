@@ -17,8 +17,8 @@ This playbook performs the following tasks:
 - **[tags=performance]** Try to improve performance, especially in OOM conditions, by:
 
   - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom).
-  - Change I/O schedulers depending on disk type (SSD vs HDD vs NVMe).
-  - Disable watchdogs for better performance and lower power consumption.
+  - Changing I/O schedulers depending on disk type (SSD v HDD v NVMe).
+  - Disabling watchdogs (can also provide lower power consumption).
 
 - **[tags=security]** Perform some basic system hardening using my [security Ansible role](https://galaxy.ansible.com/chzerv/security). Make sure to check the role for available variables.
 
@@ -26,22 +26,28 @@ This playbook performs the following tasks:
 
 - **[tags=capabilities]** Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
 
-- **[tags=systemd]** Allow users to manage CPU and Memory resources using `cgroups` and create a user-defined slice. This slice can be then used to limit the resources that some user services consume. Read more on `cgroups` in the [Arch Wiki article](https://wiki.archlinux.org/index.php/Cgroups).
-
 - **[tags=gnome]** Configure GNOME Shell to my liking. This includes:
 
-  - Change keybindings.
-  - Disable some search providers.
-  - Change system-wide fonts.
+  - Change default keybindings and add new keybindings.
+  - Change the fonts used in the Shell.
+  - Configure input sources.
+  - Nautilus tweaks.
+  - and others..
 
 - **[tags=misc]** Minor configuration changes like:
 
   - Change `roles_path` and `remote_tmp` in `ansible.cfg`.
-  - Increase `default-cache-ttl` and `max-cache-ttl` values in `gpg-agent.conf`
+  - Increase `default-cache-ttl` and `max-cache-ttl` values for `gpg-agent`.
   - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
   - Add additional kernel parameters. Only works for `GRUB` and `systemd-boot`.
-  - Allow current user to run podman container rootless.
   - Enable overclocking for AMD GPUs.
+  - Enable user delegation so users can manage CPU and Memory resources using `cgroups` and create a custom systemd `slice` with lower resources. 
+    This slice can be used to limit the amount of resources a service uses.
+  
+- **[tags=virtualization]** Setup virtualization. More specifically:
+  
+  + Enable rootless `podman`.
+  + Use my [libvirt Ansible role](https://galaxy.ansible.com/chzerv/libvirt) to install and configure `libvirt`.
 
 # Usage
 
@@ -103,6 +109,21 @@ fedora_enable_rpmfusion_non_free: true
 > - Enable `multilib` repository for Arch linux
 > - Enable Fedora's `RPMFustion Free` repository.
 > - Enable Fedora's `RPMFustion Non Free` repository.
+
+``` yaml
+flatpak_repositories: []
+# flatpak_repositories:
+#   - name: flathub
+#     state: present #present/absent, default: present
+#     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#     method: system #system/user, default: system
+```
+
+> Flatpak repositories to add/remove.
+>
+> - `name` and `flatpakrepo_url` are **required**.
+> - `state` defaults to `present`, unless otherwise specified.
+> - `method` defaults to `system`, unless otherwise specified.
 
 ```yaml
 flatpak_packages:
