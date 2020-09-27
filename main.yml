@@ -5,7 +5,7 @@
   vars:
 
   vars_files:
-    - "vars/default-config.yml"
+    - "defaults/main.yml"
     - "vars/{{ ansible_distribution }}.yml"
 
   tasks:
