@@ -46,7 +46,6 @@
         module_path: pam_unix.so
         new_control: '[success=1 default=ignore]'
         backup: true
-      become: true
 
     - name: Comment out pam_systemd_homed.so line.
       replace:
@@ -54,7 +53,7 @@
         regexp: '^(-auth\s*[success=1\s default=ignore].*)'
         replace: '# \1'
         backup: true
-      become: true
+  become: true
   when:
     - ansible_distribution == "Archlinux"
     - disable_pam_systemd_homed | bool
@@ -79,3 +78,41 @@
   become: true
   when:
     - grub_is_installed.stat.exists | bool
+
+- name: Create systemd user override directory.
+  file:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d"
+    state: directory
+  become: true
+
+- name: Enable user delegation.
+  blockinfile:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/override.conf"
+    block: |
+      [Service]
+      Delegate=yes
+    create: true
+    mode: '0600'
+  become: true
+
+- name: Create the ~/.config/systemd/user directory.
+  file:
+    path: "{{ ansible_user_dir }}/.config/systemd/user"
+    state: directory
+   
+- name: Create custom low resource slice.
+  template:
+    src: config/systemd/user/low_res.slice.j2
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/low_res.slice"
+    owner: "{{ ansible_user }}"
+    mode: 0644
+
+- name: Reload systemd daemon.
+  systemd:
+    daemon_reload: true
+  become: true
+
+- name: Reload systemd daemon for the user.
+  systemd:
+    daemon_reload: true
+    scope: user
