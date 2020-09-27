@@ -1,24 +1,11 @@
 ---
-- name: Add the flathub flatpak repository.
+- name: Manage flatpak repositories.
   flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-    method: system
-
-- name: Add the flathub-beta flatpak repository.
-  flatpak_remote:
-    name: flathub-beta
-    state: present
-    flatpakrepo_url: https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo
-    method: system
-
-- name: Add the gnome-nightly flatpak repository.
-  flatpak_remote:
-    name: gnome-nightly
-    state: present
-    flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
-    method: system
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    flatpakrepo_url: "{{ item.flatpakrepo_url }}"
+    method: "{{ item.method | default('system') }}"
+  with_items: "{{ flatpak_repositories }}"
 
 - name: Install packages from flatpak.
   flatpak:

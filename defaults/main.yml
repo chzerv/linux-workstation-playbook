@@ -14,6 +14,13 @@ configure_systemd: true
 configure_misc: true
 configure_dotfiles: true
 
+flatpak_repositories: []
+# flatpak_repositories:
+#   - name: flathub
+#     state: present #present/absent, default: present
+#     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#     method: system #system/user, default: system
+
 flatpak_packages: []
 # flatpak_packages:
 #   - name: com.discordapp.Discord
