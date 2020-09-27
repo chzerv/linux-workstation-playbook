@@ -72,6 +72,16 @@
             - performance
       become: true
 
+    - name: Misc tweaks
+      include_tasks:
+        file: tasks/misc.yml
+        apply:
+          tags:
+            - misc
+      when: configure_misc | bool
+      tags:
+        - misc
+
     - name: Install packages from third-party sources (pip, npm, flatpak).
       include_tasks:
         file: tasks/install-extra-packages.yml
@@ -80,28 +90,6 @@
             - install-extra-packages
       tags:
         - install-extra-packages
-
-    - name: GNOME configuration.
-      include_tasks:
-        file: tasks/gnome-setup.yml
-        apply:
-          tags:
-            - gnome
-      when:
-        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
-        - configure_gnome | bool
-      tags:
-        - gnome
-
-    - name: Create custom low resource systemd slice.
-      include_tasks:
-        file: tasks/systemd-user-setup.yml
-        apply:
-          tags:
-            - systemd
-      when: configure_systemd | bool
-      tags:
-        - systemd
 
     - name: Dotfiles.
       block:
@@ -114,12 +102,14 @@
       when: configure_dotfiles | bool
       tags: dotfiles
 
-    - name: Misc tweaks
+    - name: GNOME configuration.
       include_tasks:
-        file: tasks/misc.yml
+        file: tasks/gnome-setup.yml
         apply:
           tags:
-            - misc
-      when: configure_misc | bool
+            - gnome
+      when:
+        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
+        - configure_gnome | bool
       tags:
-        - misc
+        - gnome
