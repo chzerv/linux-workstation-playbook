@@ -56,7 +56,11 @@
             - sysctl
 
         - name: Security tweaks.
-          include_tasks: tasks/security.yml
+          include_tasks:
+            file: tasks/security.yml
+            apply:
+              tags:
+                - security
           when: configure_security | bool
           tags:
             - security
