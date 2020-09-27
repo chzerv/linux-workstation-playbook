@@ -1,5 +1,4 @@
 ---
-# - name: Configure GNOME.
 - name: Ensure psutil, required for the dconf module to work, and dconf are installed.
   package:
     name:
@@ -13,6 +12,7 @@
     path: /usr/bin/mutter
     capability: cap_sys_nice+ep
     state: present
+  become: true
   when: mutter_enable_experimental | bool
 
 - name: Enable experimental mutter features.
@@ -21,7 +21,7 @@
     value: "['rt-scheduler', 'autostart-xwayland']"
   when: mutter_enable_experimental | bool
 
-- name: Create template files for nautilus file manager.
+- name: Create template files for Nautilus file manager.
   template:
     src: "{{ item.src }}"
     dest: "{{ ansible_user_dir }}/Templates/{{ item.dest }}"
@@ -35,13 +35,32 @@
     - src: Templates/python-script.j2
       dest: "Python\ Script"
 
-- name: Don't use switch-to-application default shortcuts.
+- name: Unbind default switch-to-application keys.
   dconf:
     key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
     value: "['']"
   with_sequence: start=1 end=9
 
-- name: Change GNOME keybindings.
+- name: Unbind default screenshot keys.
+  dconf:
+    key: "/org/gnome/settings-daemon/plugins/media-keys/{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: area-screenshot
+      value: "['']"
+    - key: area-screenshot-clip
+      value: "['']"
+    - key: screenshot
+      value: "['']"
+    - key: screenshot-clip
+      value: "['']"
+    - key: window-screenshot
+      value: "['']"
+    - key: window-screenshot-clip
+      value: "['']"
+
+- name: Change default GNOME keybindings.
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -73,92 +92,6 @@
       value: "['<Super>Tab']"
     - key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
       value: "['<Shift><Super>Tab']"
-    - key: "/org/gnome/desktop/input-sources/xkb-options"
-      value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
-
-- name: Disable search providers and change their order.
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    state: "{{ item.state | default('present') }}"
-  with_items:
-    - key: "/org/gnome/desktop/search-providers/disabled"
-      value: >
-        "['org.gnome.Contacts.desktop',
-        'org.gnome.Documents.desktop',
-        'org.gnome.Boxes.desktop',
-        'org.gnome.Photos.desktop',
-        'org.gnome.Terminal.desktop',
-        'org.gnome.Software.desktop',
-        'org.gnome.Epiphany.desktop',
-        'org.gnome.seahorse.Application.desktop']"
-    - key: "/org/gnome/desktop/search-providers/sort-order"
-      value: >
-        "['org.gnome.Nautilus.desktop',
-        'org.gnome.Calculator.desktop',
-        'org.gnome.Calendar.desktop',
-        'org.gnome.Characters.desktop',
-        'org.gnome.clocks.desktop',
-        'org.gnome.Contacts.desktop',
-        'org.gnome.Documents.desktop',
-        'org.gnome.Boxes.desktop']"
-
-- name: Use a different font in the Shell.
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    state: "{{ item.state | default('present') }}"
-  with_items:
-    - key: "/org/gnome/desktop/interface/font-name"
-      value: "'Noto Sans 11'"
-    - key: "/org/gnome/desktop/wm/preferences/titlebar-font"
-      value: "'Noto Sans Semi-Bold 11'"
-    - key: "/org/gnome/desktop/interface/monospace-font-name"
-      value: "'Source Code Pro 12'"
-
-- name: Misc tweaks.
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    state: "{{ item.state | default('present') }}"
-  with_items:
-    - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
-      value: "'flat'"
-    - key: "/org/gnome/desktop/input-sources/sources"
-      value: "[('xkb', 'us'), ('xkb', 'gr')]"
-    - key: "/org/gnome/desktop/wm/preferences/button-layout"
-      value: "'icon:minimize,maximize,close'"
-    - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
-      value: "'minimize'"
-    - key: "/org/gnome/software/download-updates"
-      value: "false"
-    - key: "/org/gnome/nautilus/icon-view/captions"
-      value: "['size', 'date_modified_with_time', 'none']"
-    - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
-      value: "false"
-    - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
-      value: "true"
-    - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
-      value: "true"
-
-- name: Unbind keys.
-  dconf:
-    key: "/org/gnome/settings-daemon/plugins/media-keys/{{ item.key }}"
-    value: "{{ item.value }}"
-    state: "{{ item.state | default('present') }}"
-  with_items:
-    - key: area-screenshot
-      value: "['']"
-    - key: area-screenshot-clip
-      value: "['']"
-    - key: screenshot
-      value: "['']"
-    - key: screenshot-clip
-      value: "['']"
-    - key: window-screenshot
-      value: "['']"
-    - key: window-screenshot-clip
-      value: "['']"
 
 - name: Add custom keybindings.
   dconf:
@@ -188,5 +121,51 @@
       value: >-
         "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
         '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
-        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/',
-        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']"
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']"
+
+- name: Configure input sources.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/input-sources/xkb-options"
+      value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
+    - key: "/org/gnome/desktop/input-sources/sources"
+      value: "[('xkb', 'us'), ('xkb', 'gr')]"
+
+- name: Change GNOME Shell's font.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/interface/font-name"
+      value: "'Noto Sans 11'"
+    - key: "/org/gnome/desktop/wm/preferences/titlebar-font"
+      value: "'Noto Sans Semi-Bold 11'"
+    - key: "/org/gnome/desktop/interface/monospace-font-name"
+      value: "'Source Code Pro 12'"
+
+- name: Misc tweaks.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
+      value: "'flat'"
+    - key: "/org/gnome/desktop/wm/preferences/button-layout"
+      value: "'icon:minimize,maximize,close'"
+    - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
+      value: "'minimize'"
+    - key: "/org/gnome/software/download-updates"
+      value: "false"
+    - key: "/org/gnome/nautilus/icon-view/captions"
+      value: "['size', 'date_modified_with_time', 'none']"
+    - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+      value: "false"
+    - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
+      value: "true"
+    - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+      value: "true"
