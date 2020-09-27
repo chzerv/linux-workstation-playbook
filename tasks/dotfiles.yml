@@ -26,7 +26,13 @@
         state: directory
         mode: '0755'
 
-- name: Create symlinks.
+    - name: Ensure ~/.local/bin exists.
+      file:
+        path: "{{ ansible_user_dir }}/.local/bin"
+        state: directory
+        mode: '0755'
+
+- name: Create symlinks to ~/.config.
   file:
     src: "{{ dotfiles_local_destination }}/config/{{ item }}"
     dest: "{{ ansible_user_dir }}/.config/{{ item }}"
@@ -34,4 +40,20 @@
     mode: '0755'
   with_items: "{{ dotfiles_config_choices }}"
   loop_control:
-    label: "Symlinked dotfiles/{{ item }} to ~/.config/{{ item }}"
+    label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
+
+- name: Create symlinks to ~/.local/bin.
+  file:
+    src: "{{ dotfiles_local_destination }}/scripts/"
+    dest: "{{ ansible_user_dir }}/.local/bin/scripts"
+    state: link
+    mode: '0755'
+
+- name: Create symlinks to $HOME.
+  file:
+    src: '{{ dotfiles_local_destination }}/{{ item }}'
+    dest: "{{ ansible_user_dir }}/.{{ item }}"
+    state: link
+    mode: '0644'
+  with_items:
+    - gitconfig

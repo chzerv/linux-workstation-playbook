@@ -1,6 +1,0 @@
----
-- name: git setup | symlink gitconfig.
-  file:
-    src: "{{ dotfiles_local_destination }}/gitconfig"
-    dest: "{{ ansible_user_dir }}/.gitconfig"
-    state: link
