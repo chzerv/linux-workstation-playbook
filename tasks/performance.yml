@@ -1,4 +1,5 @@
-- name: Change I/O scheduler depending on disk type (SSD vs HDD).
+---
+- name: Change I/O scheduler depending on disk type (NVMe v SSD v HDD).
   template:
     src: 60-ioschedulers.rules.j2
     dest: /etc/udev/rules.d/60-ioschedulers.rules
@@ -11,7 +12,7 @@
     dest: /etc/default/earlyoom
     line: >-
       EARLYOOM_ARGS="-r 3600 -n
-      --avoid '(^|/)(systemd|Xorg|gnome-shell/Xwayland/sway|sshd)$'
+      --avoid '(^|/)(systemd|Xorg|gnome-shell|Xwayland|sway|sshd)$'
       --prefer '(^|/)(java|chromium|discord)$'"
 
 - name: Ensure earlyoom service is started and enabled at boot.
