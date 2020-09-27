@@ -30,6 +30,13 @@
       insertafter: "^VerbosePkgLists"
       line: "ILoveCandy"
 
+- name: Configure makepkg.
+  template:
+    src: etc/makepkg.conf.j2
+    dest: /etc/makepkg.conf
+    mode: '0644'
+    backup: true
+
 - name: Ensure system is up-to-date (ArchLinux)
   pacman:
     update_cache: true

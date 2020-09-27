@@ -37,6 +37,7 @@ utility_software:
   - hunspell-en_US
   - python-virtualenvwrapper
   - npm
+  - ccache
 
 monitoring_software:
   - htop
