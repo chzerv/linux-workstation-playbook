@@ -74,6 +74,15 @@
           when: configure_performance | bool
           tags:
             - performance
+
+        - name: Virtualization.
+          include_tasks:
+            file: tasks/virtualization.yml
+            apply:
+              tags:
+                - virtualization
+          tags:
+            - virtualization
       become: true
 
     - name: Misc tweaks

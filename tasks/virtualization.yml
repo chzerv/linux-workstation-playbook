@@ -18,7 +18,7 @@
   when: enable_rootless_podman | bool
 
 - name: Install and configure libvirt.
-  icnlude_role:
+  include_role:
     name: chzerv.libvirt
   vars:
     libvirt_users_in_libvirt_group: "{{ ansible_user_id }}"
