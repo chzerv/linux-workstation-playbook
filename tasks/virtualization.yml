@@ -1,0 +1,28 @@
+---
+- name: Enable rootless podman.
+  block:
+    - name: Allocate UIDs for the current user.
+      lineinfile:
+        path: /etc/subuid
+        regexp: "^{{ ansible_user_id }}"
+        line: "{{ ansible_user_id }}:100000:65536"
+        create: true
+
+    - name: Allocate GIDs for the current user's group.
+      lineinfile:
+        path: /etc/subgid
+        regexp: "^{{ ansible_user_id }}"
+        line: "{{ ansible_user_id }}:100000:65536"
+        create: true
+  become: true
+  when: enable_rootless_podman | bool
+
+- name: Install and configure libvirt.
+  icnlude_role:
+    name: chzerv.libvirt
+  vars:
+    libvirt_users_in_libvirt_group: "{{ ansible_user_id }}"
+    libvirt_install_virt_manager: true
+    libvirt_uefi_vm_support: true
+    libvirt_access_vms_using_hostnames: false
+

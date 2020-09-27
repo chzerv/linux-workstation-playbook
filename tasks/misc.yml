@@ -79,21 +79,3 @@
   become: true
   when:
     - grub_is_installed.stat.exists | bool
-
-- name: Enable rootless podman.
-  block:
-    - name: Allocate UIDs for the current user.
-      lineinfile:
-        path: /etc/subuid
-        regexp: "^{{ ansible_user_id }}"
-        line: "{{ ansible_user_id }}:100000:65536"
-        create: true
-
-    - name: Allocate GIDs for the current user's group.
-      lineinfile:
-        path: /etc/subgid
-        regexp: "^{{ ansible_user_id }}"
-        line: "{{ ansible_user_id }}:100000:65536"
-        create: true
-  become: true
-  when: enable_rootless_podman | bool
