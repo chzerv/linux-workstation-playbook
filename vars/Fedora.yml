@@ -18,6 +18,7 @@ core_software:
   - podman
   - podman-docker
   - python3-podman
+  - crun
   - buildah
   - flameshot
 
