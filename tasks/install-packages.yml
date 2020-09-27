@@ -24,6 +24,12 @@
     name: "{{ writing_software }}"
     state: present
 
+- name: Install fonts.
+  package:
+    name: "{{ font_packages }}"
+    state: present
+  become: true
+
 - name: Install packages from RPMFusion (Fedora).
   package:
     name: '{{ rpmfusion_software }}'

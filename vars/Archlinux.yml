@@ -66,4 +66,12 @@ btrfs_packages:
   - snap-pac
   - grub-btrfs
 
+font_packages:
+  - adobe-source-code-pro-fonts
+  - noto-fonts
+  - noto-fonts-emoji
+  - noto-fonts-cjk
+  - powerline-fonts
+  - ttf-hack
+
 psutil_package_name: python-psutil
