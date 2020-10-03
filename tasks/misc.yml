@@ -17,6 +17,8 @@
       line: "max-cache-ttl {{ gpg_agent_max_cache_ttl }}"
     - regexp: "^default-cache-ttl"
       line: "default-cache-ttl {{ gpg_agent_default_cache_ttl }}"
+    - regexp: "^pinentry-program*"
+      line: "pinentry-program /usr/bin/pinentry-gnome3"
 
 - name: Configure ansible.cfg.
   block:
