@@ -21,3 +21,52 @@
   command:
     cmd: "{{ ansible_user_dir }}/.emacs.d/bin/doom -y install"
   changed_when: true
+
+- name: Ensure ~/.local/share/applications exists.
+  file:
+    path: "{{ ansible_user_dir }}/.local/share/applications"
+    state: directory
+
+- name: Ensure ~/.local/share/mime/packages exists.
+  file:
+    path: "{{ ansible_user_dir }}/.local/share/mime/packages"
+    state: directory
+
+- name: Ensure a desktop file for emacsclient is present.
+  template:
+    src: local/share/applications/emacs-client.desktop.j2
+    dest: "{{ ansible_user_dir }}/.local/share/applications/emacs-client.desktop"
+
+- name: Ensure a mime type for Org-mode is present.
+  template:
+    src: local/share/mime/packages/org.xml.j2
+    dest: "{{ ansible_user_dir }}/.local/share/mime/packages/org.xml"
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Ensure the mime database is up-to-date.
+  command:
+    cmd: update-mime-database ~/.local/share/mime
+
+- name: Ensure emacs is the default handler for the text/org mime type.
+  command:
+    cmd: xdg-mime default emacs.desktop text/org
+
+# TODO: Automatically create a firefox bookmarklet.
+- name: Ensure a mime type for Org-protocol is present.
+  template:
+    src: local/share/mime/packages/org-protocol.desktop.j2
+    dest: "{{ ansible_user_dir }}/.local/share/mime/packages/org.xml"
+    owner: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Associate org-protocol links with the desktop file.
+  command:
+    cmd: xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+- name: Ensure dependencies of enabled modules are installed.
+  package:
+    name:
+      - graphviz
+      - gnuplot
+    state: present
+  become: true
