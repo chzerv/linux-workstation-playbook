@@ -3,13 +3,14 @@
   file:
     path: "{{ ansible_user_dir }}/.gnupg"
     state: directory
-   
+    mode: "0700"
+
 - name: Configure gpg agent.
   lineinfile:
     path: "{{ ansible_user_dir }}/.gnupg/gpg-agent.conf"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-    mode: '0644'
+    mode: "0644"
     create: true
     backup: true
   with_items:
@@ -27,14 +28,14 @@
         path: /etc/ansible/ansible.cfg
         regexp: "^#roles_path"
         line: "roles_path = {{ ansible_roles_path }}"
-        mode: '0644'
+        mode: "0644"
 
     - name: Change Ansible's remote_tmp path.
       lineinfile:
         path: /etc/ansible/ansible.cfg
         regexp: "^#remote_tmp"
         line: "remote_tmp = /tmp"
-        mode: '0644'
+        mode: "0644"
   become: true
   when: "'ansible' in installed_packages"
 
@@ -44,9 +45,9 @@
       pamd:
         name: system-auth
         type: auth
-        control: '[success=2 default=ignore]'
+        control: "[success=2 default=ignore]"
         module_path: pam_unix.so
-        new_control: '[success=1 default=ignore]'
+        new_control: "[success=1 default=ignore]"
         backup: true
 
     - name: Comment out pam_systemd_homed.so line.
@@ -64,7 +65,7 @@
   template:
     src: boot/loader/entries/arch.conf.j2
     dest: /boot/loader/entries/arch.conf
-    mode: '0755'
+    mode: "0755"
     backup: true
   become: true
   when:
@@ -75,7 +76,7 @@
   template:
     src: etc/default/grub.j2
     dest: /etc/default/grub
-    mode: '0644'
+    mode: "0644"
     backup: true
   become: true
   when:
@@ -85,6 +86,7 @@
   file:
     path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d"
     state: directory
+    mode: "0644"
   become: true
 
 - name: Enable user delegation.
@@ -94,14 +96,15 @@
       [Service]
       Delegate=yes
     create: true
-    mode: '0600'
+    mode: "0600"
   become: true
 
 - name: Ensure the ~/.config/systemd/user directory exists.
   file:
     path: "{{ ansible_user_dir }}/.config/systemd/user"
     state: directory
-   
+    mode: "0644"
+
 - name: Create custom systemd user slice.
   template:
     src: config/systemd/user/low_res.slice.j2

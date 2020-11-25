@@ -7,6 +7,7 @@
         regexp: "^{{ ansible_user_id }}"
         line: "{{ ansible_user_id }}:100000:65536"
         create: true
+        mode: "0644"
 
     - name: Allocate GIDs for the current user's group.
       lineinfile:
@@ -14,6 +15,7 @@
         regexp: "^{{ ansible_user_id }}"
         line: "{{ ansible_user_id }}:100000:65536"
         create: true
+        mode: "0644"
   become: true
   when: enable_rootless_podman | bool
 
@@ -25,4 +27,3 @@
     libvirt_install_virt_manager: true
     libvirt_uefi_vm_support: true
     libvirt_access_vms_using_hostnames: false
-

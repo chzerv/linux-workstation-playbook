@@ -26,6 +26,7 @@
     cmd: wdctl | grep -i identity | awk '{ print $2 }'
   register: hw_watchdog_module
   failed_when: false
+  changed_when: false
   no_log: true
 
 - name: Blacklist hardware watchdog kernel module.
