@@ -72,8 +72,6 @@
 
 - name: Ensure dependencies of enabled modules are installed.
   package:
-    name:
-      - graphviz
-      - gnuplot
+    name: "{{ emacs_packages }}"
     state: present
   become: true

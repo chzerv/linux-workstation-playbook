@@ -75,3 +75,9 @@ font_packages:
   - ttf-hack
 
 psutil_package_name: python-psutil
+
+emacs_packages:
+  - python-isort
+  - python-black
+  - gnuplot
+  - graphviz

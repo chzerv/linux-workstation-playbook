@@ -72,3 +72,9 @@ font_packages:
   - powerline-fonts
 
 psutil_package_name: python3-psutil
+
+emacs_packages:
+  - python3-isort
+  - black
+  - gnuplot
+  - graphviz
