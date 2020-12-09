@@ -32,7 +32,7 @@
 
 - name: Install packages from RPMFusion (Fedora).
   package:
-    name: '{{ rpmfusion_software }}'
+    name: "{{ rpmfusion_software }}"
     state: present
   when:
     - ansible_distribution == "Fedora"
@@ -43,4 +43,3 @@
     name: "{{ btrfs_packages }}"
     state: present
   when: "root_fs_type == ['btrfs']"
-

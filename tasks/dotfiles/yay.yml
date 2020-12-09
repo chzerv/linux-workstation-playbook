@@ -1,3 +1,4 @@
+---
 - name: Yay setup.
   block:
     - name: Clone yay from AUR.
