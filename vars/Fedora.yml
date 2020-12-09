@@ -70,6 +70,7 @@ font_packages:
   - google-noto-emoji-color-fonts
   - google-noto-emoji-fonts
   - powerline-fonts
+  - fira-code-fonts
 
 psutil_package_name: python3-psutil
 

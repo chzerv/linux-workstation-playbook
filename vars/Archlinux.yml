@@ -73,6 +73,7 @@ font_packages:
   - noto-fonts-cjk
   - powerline-fonts
   - ttf-hack
+  - ttf-fira-code
 
 psutil_package_name: python-psutil
 
