@@ -99,6 +99,12 @@
     mode: "0600"
   become: true
 
+- name: Ensure the ~/.config directory exists.
+  file:
+    path: "{{ ansible_user_dir }}/.config"
+    state: directory
+    mode: "0755"
+
 - name: Ensure the ~/.config/systemd/user directory exists.
   file:
     path: "{{ ansible_user_dir }}/.config/systemd/user"
