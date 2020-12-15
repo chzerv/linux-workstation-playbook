@@ -39,6 +39,7 @@ utility_software:
   - python-virtualenvwrapper
   - npm
   - ccache
+  - reflector
 
 monitoring_software:
   - htop

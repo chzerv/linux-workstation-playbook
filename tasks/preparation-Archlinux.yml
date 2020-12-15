@@ -34,34 +34,10 @@
   template:
     src: etc/makepkg.conf.j2
     dest: /etc/makepkg.conf
-    mode: '0644'
+    mode: "0644"
     backup: true
 
 - name: Ensure system is up-to-date (ArchLinux)
-  pacman:
-    update_cache: true
-    upgrade: true
-
-- name: Sort pacman mirrorlist according to location and download speeds.(Archlinux)
-  block:
-    - name: Install reflector to update pacman mirrorlist (Archlinux)
-      pacman:
-        name: reflector
-        state: present
-
-    - name: Update pacman mirrorlist using reflector (Archlinux).
-      command:
-        cmd: ">
-        reflector --country Germany
-        --country United_Kingdom
-        --age 12
-        --protocol https
-        --sort rate
-        --latest 25
-        --save /etc/pacman.d/mirrorlist"
-      changed_when: false
-
-- name: Update pacman cache after running reflector (Archlinux).
   pacman:
     update_cache: true
     upgrade: true

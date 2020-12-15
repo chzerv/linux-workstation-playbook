@@ -116,7 +116,7 @@
     src: config/systemd/user/low_res.slice.j2
     dest: "{{ ansible_user_dir }}/.config/systemd/user/low_res.slice"
     owner: "{{ ansible_user }}"
-    mode: 0644
+    mode: "0644"
 
 - name: Reload systemd daemon.
   systemd:
@@ -127,3 +127,27 @@
   systemd:
     daemon_reload: true
     scope: user
+
+- name: Pacman hook for reflector (Archlinux)
+  block:
+    - name: Ensure /etc/pacman.d/hooks exists.
+      file:
+        path: /etc/pacman.d/hooks
+        state: directory
+        mode: "0755"
+
+    - name: Create pacman hook for reflector (Archlinux)
+      template:
+        src: etc/pacman.d/hooks/mirror-upgrade.hook.j2
+        dest: /etc/pacman.d/hooks/mirror-upgrade.hook
+        owner: root
+        mode: "0644"
+
+    - name: Configure reflector (Archlinux)
+      template:
+        src: etc/xdg/reflector/reflector.conf.j2
+        dest: /etc/xdg/reflector/reflector.conf
+        owner: root
+        mode: "0644"
+  become: true
+  when: ansible_distribution == "Archlinux"
