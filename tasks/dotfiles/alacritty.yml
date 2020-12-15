@@ -24,7 +24,7 @@
   pip:
     name: alacritty-colorscheme
     virtualenv: "{{ ansible_user_dir }}/.config/alacritty/.alacritty-venv"
-    virtualenv_python: python3.8
+    virtualenv_python: python3.9
 
 - name: alacritty | Set colorscheme using alacritty-colorscheme
   shell:
