@@ -109,7 +109,7 @@
   file:
     path: "{{ ansible_user_dir }}/.config/systemd/user"
     state: directory
-    mode: "0644"
+    mode: "0755"
 
 - name: Create custom systemd user slice.
   template:
