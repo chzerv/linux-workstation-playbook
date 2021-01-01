@@ -1,0 +1,13 @@
+[Unit]
+Description=Emacs as a service
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
+; PIDFile=/%t/%n-pid
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

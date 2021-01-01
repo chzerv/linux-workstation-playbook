@@ -64,3 +64,10 @@
     name: "{{ emacs_packages }}"
     state: present
   become: true
+
+- name: Ensure a systemd service file for emacs daemon exists.
+  template:
+    src: config/systemd/user/emacs-daemon.service.j2
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/emacs-daemon.service"
+    owner: "{{ ansible_user }}"
+    mode: "0644"
