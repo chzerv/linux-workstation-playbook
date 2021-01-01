@@ -99,18 +99,6 @@
     mode: "0600"
   become: true
 
-- name: Ensure the ~/.config directory exists.
-  file:
-    path: "{{ ansible_user_dir }}/.config"
-    state: directory
-    mode: "0755"
-
-- name: Ensure the ~/.config/systemd/user directory exists.
-  file:
-    path: "{{ ansible_user_dir }}/.config/systemd/user"
-    state: directory
-    mode: "0755"
-
 - name: Create custom systemd user slice.
   template:
     src: config/systemd/user/low_res.slice.j2

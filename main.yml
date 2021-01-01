@@ -18,6 +18,15 @@
       tags:
         - always
 
+    - name: Create directories.
+      include_tasks:
+        file: tasks/base.yml
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
     - name: Tasks that require sudo.
       block:
         - name: Pre-setup.

@@ -23,18 +23,6 @@
     cmd: "{{ ansible_user_dir }}/.emacs.d/bin/doom -y install"
   changed_when: true
 
-- name: Ensure ~/.local/share/applications exists.
-  file:
-    path: "{{ ansible_user_dir }}/.local/share/applications"
-    state: directory
-    mode: "0644"
-
-- name: Ensure ~/.local/share/mime/packages exists.
-  file:
-    path: "{{ ansible_user_dir }}/.local/share/mime/packages"
-    state: directory
-    mode: "0644"
-
 - name: Ensure a desktop file for emacsclient is present.
   template:
     src: local/share/applications/emacs-client.desktop.j2
