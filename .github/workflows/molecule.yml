@@ -1,0 +1,42 @@
+---
+name: Ansible Molecule
+"on":
+  pull_request:
+  push:
+    paths-ignore:
+      - "README.md"
+  schedule:
+    - cron: "5 8 * * 1"
+
+jobs:
+  test:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - image: "fedora"
+            tag: "latest"
+          - image: "archlinux"
+            tag: latest
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v2
+
+      - name: Set up python3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install test dependencies.
+        run: |
+          pip3 install docker yamllint ansible-lint molecule molecule-docker
+
+      - name: Run molecule test
+        run: molecule test
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+          IMAGE: ${{ matrix.config.image }}
+          TAG: ${{ matrix.config.tag }}
