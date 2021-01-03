@@ -18,6 +18,6 @@ platforms:
 provisioner:
   name: ansible
   playbooks:
-    converge: "../../main.yml"
+    converge: "${MOLECULE_PLAYBOOK:-converge.yml}"
 verifier:
   name: ansible
