@@ -28,7 +28,6 @@
   package:
     name: "{{ font_packages }}"
     state: present
-  become: true
 
 - name: Install packages from RPMFusion (Fedora).
   package:
