@@ -33,6 +33,9 @@ jobs:
         run: |
           pip3 install docker yamllint ansible-lint molecule molecule-docker
 
+      - name: Install required ansible roles.
+        run: ansible-galaxy install -r requirements.yml
+
       - name: Run molecule test
         run: molecule test
         env:
