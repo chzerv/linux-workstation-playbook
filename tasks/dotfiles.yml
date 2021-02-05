@@ -19,12 +19,14 @@
         path: "{{ ansible_user_dir }}/.local/share"
         state: directory
         mode: "0755"
+        owner: "{{ ansible_user_id }}"
 
     - name: Ensure ~/.local/bin exists.
       file:
         path: "{{ ansible_user_dir }}/.local/bin"
         state: directory
         mode: "0755"
+        owner: "{{ ansible_user_id }}"
 
 - name: Create symlinks to ~/.config.
   file:
@@ -51,3 +53,4 @@
     mode: "0644"
   with_items:
     - gitconfig
+    - latexmkrc

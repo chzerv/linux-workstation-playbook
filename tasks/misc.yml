@@ -4,15 +4,18 @@
     path: "{{ ansible_user_dir }}/.gnupg"
     state: directory
     mode: "0700"
+    owner: "{{ ansible_user_id }}"
 
 - name: Configure gpg agent.
   lineinfile:
     path: "{{ ansible_user_dir }}/.gnupg/gpg-agent.conf"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-    mode: "0644"
     create: true
     backup: true
+    mode: "0644"
+    owner: root
+    group: root
   with_items:
     - regexp: "^max-cache-ttl"
       line: "max-cache-ttl {{ gpg_agent_max_cache_ttl }}"
@@ -21,14 +24,16 @@
     - regexp: "^pinentry-program*"
       line: "pinentry-program /usr/bin/pinentry-gnome3"
 
-- name: Configure ansible.cfg.
+- name: Configure Ansible.
   block:
-    - name: Change Ansible roles path.
+    - name: Change where Ansible roles are saved.
       lineinfile:
         path: /etc/ansible/ansible.cfg
         regexp: "^#roles_path"
         line: "roles_path = {{ ansible_roles_path }}"
         mode: "0644"
+        owner: root
+        group: root
 
     - name: Change Ansible's remote_tmp path.
       lineinfile:
@@ -36,106 +41,32 @@
         regexp: "^#remote_tmp"
         line: "remote_tmp = /tmp"
         mode: "0644"
+        owner: root
+        group: root
   become: true
   when: "'ansible' in installed_packages"
-
-- name: Stop pam_systemd_homed.so spamming the journal when using sudo.
-  block:
-    - name: Modify pam_unix.so's control so it only jumps one line on success.
-      pamd:
-        name: system-auth
-        type: auth
-        control: "[success=2 default=ignore]"
-        module_path: pam_unix.so
-        new_control: "[success=1 default=ignore]"
-        backup: true
-
-    - name: Comment out pam_systemd_homed.so line.
-      replace:
-        path: /etc/pam.d/system-auth
-        regexp: '^(-auth\s*[success=1\s default=ignore].*)'
-        replace: '# \1'
-        backup: true
-  become: true
-  when:
-    - ansible_distribution == "Archlinux"
-    - disable_pam_systemd_homed | bool
-
-- name: Add additional kernel parameters (Archlinux, systemd-boot).
-  template:
-    src: boot/loader/entries/arch.conf.j2
-    dest: /boot/loader/entries/arch.conf
-    mode: "0755"
-    backup: true
-  become: true
-  when:
-    - not grub_is_installed.stat.exists | bool
-    - ansible_distribution == "Archlinux"
 
 - name: Add additional kernel parameters (GRUB).
   template:
     src: etc/default/grub.j2
     dest: /etc/default/grub
-    mode: "0644"
     backup: true
+    mode: "0644"
+    owner: root
+    group: root
   become: true
   when:
     - grub_is_installed.stat.exists | bool
 
-- name: Create systemd user override directory.
-  file:
-    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d"
-    state: directory
-    mode: "0644"
-  become: true
-
-- name: Enable user delegation.
-  blockinfile:
-    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/override.conf"
-    block: |
-      [Service]
-      Delegate=yes
-    create: true
-    mode: "0600"
-  become: true
-
-- name: Create custom systemd user slice.
+- name: Add additional kernel parameters (Archlinux, systemd-boot).
   template:
-    src: config/systemd/user/low_res.slice.j2
-    dest: "{{ ansible_user_dir }}/.config/systemd/user/low_res.slice"
-    owner: "{{ ansible_user }}"
+    src: boot/loader/entries/arch.conf.j2
+    dest: /boot/loader/entries/arch.conf
+    backup: true
     mode: "0644"
-
-- name: Reload systemd daemon.
-  systemd:
-    daemon_reload: true
+    owner: root
+    group: root
   become: true
-
-- name: Reload systemd daemon for the user.
-  systemd:
-    daemon_reload: true
-    scope: user
-
-- name: Pacman hook for reflector (Archlinux)
-  block:
-    - name: Ensure /etc/pacman.d/hooks exists.
-      file:
-        path: /etc/pacman.d/hooks
-        state: directory
-        mode: "0755"
-
-    - name: Create pacman hook for reflector (Archlinux)
-      template:
-        src: etc/pacman.d/hooks/mirror-upgrade.hook.j2
-        dest: /etc/pacman.d/hooks/mirror-upgrade.hook
-        owner: root
-        mode: "0644"
-
-    - name: Configure reflector (Archlinux)
-      template:
-        src: etc/xdg/reflector/reflector.conf.j2
-        dest: /etc/xdg/reflector/reflector.conf
-        owner: root
-        mode: "0644"
-  become: true
-  when: ansible_distribution == "Archlinux"
+  when:
+    - not grub_is_installed.stat.exists | bool
+    - ansible_distribution == "Archlinux"

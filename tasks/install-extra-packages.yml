@@ -21,10 +21,10 @@
     state: "{{ item.state | default('present') }}"
     version: "{{ item.version | default(omit) }}"
     executable: "{{ item.executable | default(omit) }}"
-    virtualenv: "{{ item.virtualenv | default(omit) }}"
+    virtualenv: "{{ item.virtualenv | default('~/.venvs') }}"
   with_items: "{{ pip_packages }}"
 
-- name: Install global NPM packages.
+- name: Install packages with npm, globally.
   npm:
     name: "{{ item.name | default(item) }}"
     state: "{{ item.state | default('present') }}"
@@ -33,4 +33,4 @@
     executable: "{{ item.executable | default(omit) }}"
   with_items: "{{ npm_packages }}"
   environment:
-    npm_config_prefix: ~/.node_modules
+    npm_config_prefix: "{{ npm_installation_path }}"

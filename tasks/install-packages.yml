@@ -1,39 +1,46 @@
 ---
 - name: Install core packages.
   package:
-    name: "{{ core_software }}"
+    name: "{{ core_packages }}"
     state: present
+  when: core_packages is defined
 
-- name: Install utility software.
+- name: Install utility packages.
   package:
-    name: "{{ utility_software }}"
+    name: "{{ utility_packages }}"
     state: present
+  when: utility_packages is defined
 
-- name: Install monitoring software.
+- name: Install packages for monitoring stuff.
   package:
-    name: "{{ monitoring_software }}"
+    name: "{{ monitoring_packages }}"
     state: present
+  when: monitoring_packages is defined
 
-- name: Install Ansible packages.
+- name: Install packages for Ansible to work.
   package:
     name: "{{ ansible_packages }}"
     state: present
+  when: ansible_packages is defined
 
-- name: Install software for writing.
+- name: Install packages for writing prose.
   package:
-    name: "{{ writing_software }}"
+    name: "{{ prose_packages }}"
     state: present
+  when: prose_packages is defined
 
 - name: Install fonts.
   package:
     name: "{{ font_packages }}"
     state: present
+  when: font_packages is defined
 
 - name: Install packages from RPMFusion (Fedora).
   package:
-    name: "{{ rpmfusion_software }}"
+    name: "{{ rpmfusion_packages }}"
     state: present
   when:
+    - rpmfusion_packages is defined
     - ansible_distribution == "Fedora"
     - fedora_enable_rpmfusion_non_free | bool or fedora_enable_rpmfusion_free | bool
 
@@ -41,4 +48,6 @@
   package:
     name: "{{ btrfs_packages }}"
     state: present
-  when: "root_fs_type == ['btrfs']"
+  when:
+    - btrfs_packages is defined
+    - "root_fs_type == ['btrfs']"

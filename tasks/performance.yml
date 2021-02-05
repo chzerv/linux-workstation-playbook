@@ -3,9 +3,9 @@
   template:
     src: 60-ioschedulers.rules.j2
     dest: /etc/udev/rules.d/60-ioschedulers.rules
+    mode: 0644
     owner: root
     group: root
-    mode: 0644
 
 - name: Configure earlyoom
   lineinfile:
@@ -14,6 +14,9 @@
       EARLYOOM_ARGS="-r 3600 -n
       --avoid '(^|/)(systemd|Xorg|gnome-shell|Xwayland|sway|sshd)$'
       --prefer '(^|/)(java|chromium|discord)$'"
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Ensure earlyoom service is started and enabled at boot.
   service:

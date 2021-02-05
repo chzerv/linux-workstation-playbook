@@ -5,14 +5,17 @@ arch_enable_multilib: true
 fedora_enable_rpmfusion_free: true
 fedora_enable_rpmfusion_non_free: true
 
-configure_capabilities: true
-configure_sysctl: true
-configure_security: true
-configure_performance: true
-configure_gnome: true
-configure_systemd: true
-configure_misc: true
-configure_dotfiles: true
+lwp_install_packages: true
+lwp_install_extra_packages: true
+lwp_configure_systemd: true
+lwp_tweak_sysctl: true
+lwp_tweak_performance: true
+lwp_harden_system: true
+lwp_apply_capabilities: true
+lwp_configure_gnome: true
+lwp_dotfiles: true
+lwp_virtualization: true
+lwp_misc: true
 
 flatpak_repositories: []
 # flatpak_repositories:
@@ -33,13 +36,43 @@ pip_packages: []
 # - name: mkdocs
 #   state: present # present/absent/latest, default: present
 #   version: "0.16.3" # default: N/A
-#   virtualenv:  ~/.venvs # default: N/A
+#   virtualenv: ~/.venvs # default: ~/.venvs
+
+# Where to install packages from npm.
+npm_installation_path: "{{ ansible_user_dir }}/.node_modules"
 
 npm_packages: []
 # npm_packages:
 # - name: webpack
 #   state: present # present/absent/latest, default: present
 #   version: "^2.6" # default: N/A
+
+# chzerv.sysctl
+sysctl_required_packages: procps-ng
+sysctl_entries:
+  - name: vm.swappiness
+    value: 10
+  - name: vm.dirty_ratio
+    value: 6
+  - name: vm.dirty_background_bytes
+    value: 4194304
+  - name: vm.vfs_cache_pressure
+    value: 50
+  - name: kernel.sysrq
+    value: 1
+
+# chzerv.security
+security_ssh_port: 22
+security_fail2ban_enabled: false
+security_kern_hidepid_value: "0"
+security_autoupdates_enabled: false
+security_nproc_limit: false
+
+# chzerv.libvirt
+libvirt_users_in_libvirt_group: "{{ ansible_user_id }}"
+libvirt_install_virt_manager: true
+libvirt_uefi_vm_support: true
+libvirt_access_vms_using_hostnames: false
 
 mutter_enable_experimental: false
 

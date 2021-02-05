@@ -8,112 +8,74 @@
     - "defaults/main.yml"
     - "vars/{{ ansible_distribution }}.yml"
 
-  tasks:
+  pre_tasks:
     - name: Gather facts.
       include_tasks:
-        file: tasks/gather-facts.yml
-        apply:
-          tags:
-            - always
-      tags:
-        - always
+        file: "tasks/gather-facts.yml"
 
-    - name: Create directories.
+    - name: Preparation.
       include_tasks:
-        file: tasks/base.yml
-        apply:
-          tags:
-            - always
-      tags:
-        - always
+        file: "tasks/preparation.yml"
 
-    - name: Tasks that require sudo.
-      block:
-        - name: Pre-setup.
-          include_tasks: "tasks/preparation-{{ ansible_distribution }}.yml"
-
-        - name: Install must-have software.
-          include_tasks:
-            file: "tasks/install-packages.yml"
-            apply:
-              tags:
-                - install-packages
-          tags:
-            - install-packages
-
-        - name: Sysctl tweaks.
-          include_role:
-            name: chzerv.sysctl
-            apply:
-              tags:
-                - sysctl
-          vars:
-            sysctl_required_packages: procps-ng
-            sysctl_entries:
-              - name: vm.swappiness
-                value: 10
-              - name: vm.dirty_ratio
-                value: 6
-              - name: vm.dirty_background_bytes
-                value: 4194304
-              - name: vm.vfs_cache_pressure
-                value: 50
-              - name: kernel.sysrq
-                value: 1
-          when: configure_sysctl | bool
-          tags:
-            - sysctl
-
-        - name: Security tweaks.
-          include_tasks:
-            file: tasks/security.yml
-            apply:
-              tags:
-                - security
-          when: configure_security | bool
-          tags:
-            - security
-
-        - name: Performance tuning.
-          include_tasks:
-            file: tasks/performance.yml
-            apply:
-              tags:
-                - performance
-          when: configure_performance | bool
-          tags:
-            - performance
-
-        - name: Virtualization.
-          include_tasks:
-            file: tasks/virtualization.yml
-            apply:
-              tags:
-                - virtualization
-          tags:
-            - virtualization
-      become: true
-
-    - name: Misc tweaks
+    - name: Distribution specific setup.
       include_tasks:
-        file: tasks/misc.yml
-        apply:
-          tags:
-            - misc
-      when: configure_misc | bool
-      tags:
-        - misc
+        file: "tasks/setup-{{ ansible_distribution }}.yml"
 
-    - name: Install packages from third-party sources (pip, npm, flatpak).
+  tasks:
+    - name: Install packages from official repositories.
       include_tasks:
-        file: tasks/install-extra-packages.yml
+        file: "tasks/install-packages.yml"
         apply:
-          tags:
-            - install-extra-packages
-      tags:
-        - install-extra-packages
+          become: true
+      when: lwp_install_packages | bool
 
-    - name: Dotfiles.
+    - name: Install packages from third party repositories (pip, npm, flatpak).
+      include_tasks:
+        file: "tasks/install-extra-packages.yml"
+      when: lwp_install_extra_packages | bool
+
+    - name: Systemd related configuration.
+      include_tasks:
+        file: "tasks/systemd.yml"
+      when: lwp_configure_systemd | bool
+
+    - name: Sysctl tweaks.
+      include_role:
+        name: chzerv.sysctl
+        apply:
+          become: true
+      when:
+        - lwp_tweak_sysctl | bool
+
+    - name: Performance tuning.
+      include_tasks:
+        file: "tasks/performance.yml"
+        apply:
+          become: true
+      when: lwp_tweak_performance | bool
+
+    - name: Security tweaks.
+      include_role:
+        name: chzerv.security
+        apply:
+          become: true
+      when: lwp_harden_system | bool
+
+    - name: Setup capabilities for known programs.
+      include_tasks:
+        file: "tasks/capabilities.yml"
+        apply:
+          become: true
+      when: lwp_apply_capabilities | bool
+
+    - name: Configure GNOME.
+      include_tasks:
+        file: tasks/gnome-setup.yml
+      when:
+        - lwp_configure_gnome | bool
+        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
+
+    - name: Setup dotfiles.
       block:
         - name: Clone repo and symlink dotfiles.
           include_tasks: tasks/dotfiles.yml
@@ -121,17 +83,16 @@
         - name: Install and setup applications for the selected dotfiles.
           include_tasks: "tasks/dotfiles/{{ item }}.yml"
           with_items: "{{ dotfiles_config_choices }}"
-      when: configure_dotfiles | bool
-      tags: dotfiles
+      when: lwp_dotfiles | bool
 
-    - name: GNOME configuration.
+    - name: Virtualization.
       include_tasks:
-        file: tasks/gnome-setup.yml
+        file: tasks/virtualization.yml
         apply:
-          tags:
-            - gnome
-      when:
-        - "'gnome-shell' in installed_packages or 'gnome-shell-performance' in installed_packages"
-        - configure_gnome | bool
-      tags:
-        - gnome
+          become: true
+      when: lwp_virtualization | bool
+
+    - name: Misc tweaks
+      include_tasks:
+        file: tasks/misc.yml
+      when: lwp_misc | bool

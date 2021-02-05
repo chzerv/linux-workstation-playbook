@@ -3,22 +3,32 @@
   file:
     path: "{{ ansible_user_dir }}/.local/share/applications"
     state: directory
-    mode: "0644"
+    mode: "0755"
+    owner: "{{ ansible_user_id }}"
 
 - name: Ensure the ~/.local/share/mime/packages directory exists.
   file:
     path: "{{ ansible_user_dir }}/.local/share/mime/packages"
     state: directory
-    mode: "0644"
+    mode: "0755"
+    owner: "{{ ansible_user_id }}"
 
 - name: Ensure the ~/.config directory exists.
   file:
     path: "{{ ansible_user_dir }}/.config"
     state: directory
     mode: "0755"
+    owner: "{{ ansible_user_id }}"
 
 - name: Ensure the ~/.config/systemd/user directory exists.
   file:
     path: "{{ ansible_user_dir }}/.config/systemd/user"
     state: directory
     mode: "0755"
+    owner: "{{ ansible_user_id }}"
+
+- name: Distribution specific preparation.
+  include_tasks:
+    file: "preparation-{{ ansible_distribution }}.yml"
+    apply:
+      become: true

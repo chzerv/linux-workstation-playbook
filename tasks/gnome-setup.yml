@@ -21,12 +21,19 @@
     value: "['rt-scheduler', 'autostart-xwayland']"
   when: mutter_enable_experimental | bool
 
+- name: Ensure the ~/Templates directory exists.
+  file:
+    path: "{{ ansible_user_dir }}/Templates"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user_id }}"
+
 - name: Create template files for Nautilus file manager.
   template:
     src: "{{ item.src }}"
     dest: "{{ ansible_user_dir }}/Templates/{{ item.dest }}"
-    owner: "{{ ansible_user_id }}"
     mode: "0644"
+    owner: "{{ ansible_user_id }}"
   with_items:
     - src: Templates/empty-file.j2
       dest: "Empty\ File"
@@ -41,12 +48,15 @@
       file:
         path: "{{ ansible_user_dir }}/.config/autostart"
         state: directory
-        mode: "0644"
+        mode: "0755"
+        owner: "{{ ansible_user_id }}"
+
     - name: Create a desktop file for gnome-software-service.
       template:
         src: config/autostart/gnome-software-service.desktop.j2
-        desktop: "{{ ansible_user_dir }}/.config/autostart/gnome-software-service.desktop"
+        dest: "{{ ansible_user_dir }}/.config/autostart/gnome-software-service.desktop"
         mode: "0644"
+        owner: "{{ ansible_user_id }}"
 
 - name: Unbind default switch-to-application keys.
   dconf:

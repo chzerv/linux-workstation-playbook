@@ -1,40 +1,11 @@
 ---
-- name: Enable mulitlib repository for pacman (Archlinux).
-  blockinfile:
-    path: /etc/pacman.conf
-    insertafter: '^#\[multilib\]'
-    backup: true
-    block: |
-      [multilib]
-      Include = /etc/pacman.d/mirrorlist
-  when: arch_enable_multilib | bool
-
-- name: Improve pacman's output (ArchLinux).
-  lineinfile:
-    dest: /etc/pacman.conf
-    regexp: "^{{ item.regexp }}"
-    insertafter: "{{ item.insertafter | default(omit) }}"
-    line: "{{ item.line }}"
-    state: present
-    backup: true
-  with_items:
-    - regexp: '^\#UseSyslog'
-      line: "UseSyslog"
-    - regexp: '^\#Color'
-      line: "Color"
-    - regexp: '^\#TotalDownload'
-      line: "TotalDownload"
-    - regexp: "^#VerbosePkgLists"
-      line: "VerbosePkgLists"
-    - regexp: "^ILoveCandy"
-      insertafter: "^VerbosePkgLists"
-      line: "ILoveCandy"
-
-- name: Configure makepkg.
+- name: Configure pacman (Archlinux).
   template:
-    src: etc/makepkg.conf.j2
-    dest: /etc/makepkg.conf
+    src: etc/pacman.conf.j2
+    dest: /etc/pacman.conf
     mode: "0644"
+    owner: root
+    group: root
     backup: true
 
 - name: Ensure system is up-to-date (ArchLinux)

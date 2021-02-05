@@ -1,44 +1,12 @@
 ---
 - name: Configure dnf (Fedora).
-  block:
-    - name: Make dnf faster (Fedora).
-      lineinfile:
-        dest: /etc/dnf/dnf.conf
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        backup: true
-      with_items:
-        - regexp: "^max_parallel_downloads"
-          line: "max_parallel_downloads=10"
-        - regexp: "^fastestmirror"
-          line: "fastestmirror=1"
-
-    - name: Enable dnf caching (Fedora).
-      lineinfile:
-        dest: /etc/dnf/dnf.conf
-        regexp: "^keepcache"
-        line: "keepcache=1"
-        backup: true
-
-    - name: Add colors to dnf output (Fedora).
-      blockinfile:
-        path: /etc/dnf/dnf.conf
-        block: |
-          color=always
-          color_list_installed_older=yellow
-          color_list_installed_newer=bold,yellow
-          color_list_installed_reinstall=dim,cyan
-          color_list_installed_running_kernel=bold,underline
-          color_list_installed_extra=bold,red
-          color_list_available_upgrade=bold,blue
-          color_list_available_downgrade=dim,magenta
-          color_list_available_install=bold,cyan
-          color_list_available_reinstall=bold,underline,green
-          color_list_available_running_kernel=bold,underline
-          color_search_match=bold,magenta
-          color_update_installed=bg:red
-          color_update_local=dim,green
-          color_update_remote=bold,green
+  template:
+    src: etc/dnf/dnf.conf.j2
+    dest: /etc/dnf/dnf.conf
+    mode: "0644"
+    owner: root
+    group: root
+    backup: true
 
 - name: Ensure system is up-to-date (Fedora).
   dnf:
@@ -50,12 +18,14 @@
   dnf:
     name: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
     state: present
+    disable_gpg_check: true
   when: fedora_enable_rpmfusion_free | bool
 
 - name: Enable RPM Fusion Non-Free (Fedora).
   dnf:
     name: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
     state: present
+    disable_gpg_check: true
   when: fedora_enable_rpmfusion_non_free | bool
 
 # The dnf module doesn't support these functions, so the shell module

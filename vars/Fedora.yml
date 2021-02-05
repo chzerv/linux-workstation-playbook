@@ -1,5 +1,5 @@
 ---
-core_software:
+core_packages:
   - git
   - tmux
   - neovim
@@ -22,11 +22,11 @@ core_software:
   - buildah
   - flameshot
 
-rpmfusion_software:
+rpmfusion_packages:
   - ffmpeg
   - ffmpeg-devel
 
-utility_software:
+utility_packages:
   - exfat-utils
   - ntfs-3g
   - nmap
@@ -37,31 +37,14 @@ utility_software:
   - hunspell-en-US
   - python3-virtualenvwrapper
   - npm
+  - python3-pip
 
-monitoring_software:
+monitoring_packages:
   - htop
   - iftop
   - iotop
   - lm_sensors
   - nethogs
-
-ansible_packages:
-  - ansible
-  - python3-ansible-lint
-  - python3-jmespath
-  - python3-molecule
-  - yamllint
-  - vagrant
-
-writing_software:
-  - texlive-scheme-full
-  - pandoc
-  - marked
-  - proselint
-
-btrfs_packages:
-  - snapper
-  - python3-dnf-plugin-snapper
 
 font_packages:
   - adobe-source-code-pro-fonts
@@ -72,10 +55,28 @@ font_packages:
   - powerline-fonts
   - fira-code-fonts
 
-psutil_package_name: python3-psutil
+ansible_packages:
+  - ansible
+  - python3-ansible-lint
+  - python3-jmespath
+  - python3-molecule
+  - yamllint
+  - vagrant
+
+prose_packages:
+  - texlive-scheme-full
+  - pandoc
+  - marked
+  - proselint
+
+btrfs_packages:
+  - snapper
+  - python3-dnf-plugin-snapper
 
 emacs_packages:
   - python3-isort
   - black
   - gnuplot
   - graphviz
+
+psutil_package_name: python3-psutil

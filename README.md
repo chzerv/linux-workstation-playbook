@@ -1,7 +1,7 @@
 # Linux Workstation Setup Playbook
 
 [![Archlinux](https://img.shields.io/badge/arch-linux-blue.svg?style=flat-square&logo=Arch-Linux&logoColor=white)](https://archlinux.org)
-[![Fedora](https://img.shields.io/badge/Fedora-v32-blue.svg?style=flat-square&logo=Fedora&logoColor=white&)](https://getfedora.org)
+[![Fedora](https://img.shields.io/badge/Fedora-33-blue.svg?style=flat-square&logo=Fedora&logoColor=white&)](https://getfedora.org)
 
 This playbook performs all the standard setup I do on my Linux box(es).
 I usually use Fedora and/or Archlinux, so those are the only supported distributions.
@@ -12,21 +12,31 @@ This playbook performs the following tasks:
 
 - Configure `pacman` and `dnf` so they provide better output and are faster.
 
-- **[tags=install-packages, install-extra-packages]** Update system and install packages (npm, pip and flatpak are also supported).
+- Install packages (npm, pip and flatpak are also supported).
 
-- **[tags=performance]** Try to improve performance, especially in OOM conditions, by:
+- Configure `systemd` so regular users can manage CPU and memory limits using [systemd slices](https://www.freedesktop.org/software/systemd/man/systemd.slice.html).
 
-  - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom).
+- Use my [sysctl role](https://github.com/chzerv/ansible-role-sysctl) to change `sysctl` values.
+  Those values are defined using Ansible variables.
+
+- Try to improve performance by:
+
+  - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom). 
   - Changing I/O schedulers depending on disk type (SSD v HDD v NVMe).
   - Disabling watchdogs (can also provide lower power consumption).
 
-- **[tags=security]** Perform some basic system hardening using my [security Ansible role](https://galaxy.ansible.com/chzerv/security). Make sure to check the role for available variables.
+- Use my [security Ansible role](https://github.com/chzerv/ansible-role-security) to perform basic system hardening. The role can be configured through Ansible variables.
 
-- **[tags=dotfiles]** Clone my [dotfiles](https://github.com/chzerv/dotfiles), symlink them to the right places and install required packages.
+- Set capabilities for some known programs that require `sudo`. This way, any user can use them without privilege elevation. These programs are:
 
-- **[tags=capabilities]** Set capabilities for some programs that require sudo. This way, any user can use them without privilege elevation.
+  - `beep`,
+  - `chvt`
+  - `iftop`,
+  - `mii-tool`
+  - `mtr-packet` and
+  - `nethogs`
 
-- **[tags=gnome]** Configure GNOME Shell to my liking. This includes:
+- Configure the GNOME Desktop Environment. The configuration includes:
 
   - Change default keybindings and add new keybindings.
   - Change the fonts used in the Shell.
@@ -34,17 +44,23 @@ This playbook performs the following tasks:
   - Nautilus tweaks.
   - and others..
 
-- **[tags=misc]** Minor configuration changes like:
+- Clone my [dotfiles](https://github.com/chzerv/dotfiles), symlink them to the right places and install required packages.
+
+- Archlinux specific tweaks like:
+
+  - Make `makepkg` use all available CPU cores for compiling.
+  - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
+  - Setup `pacman` hooks for `reflector`, so the mirrorlist is automatically generated whenever there is an update. 
+  - Configure `reflector`.
+
+- Minor configuration changes like:
 
   - Change `roles_path` and `remote_tmp` in `ansible.cfg`.
   - Increase `default-cache-ttl` and `max-cache-ttl` values for `gpg-agent`.
-  - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
   - Add additional kernel parameters. Only works for `GRUB` and `systemd-boot`.
   - Enable overclocking for AMD GPUs.
-  - Enable user delegation so users can manage CPU and Memory resources using `cgroups` and create a custom systemd `slice` with lower resources. 
-    This slice can be used to limit the amount of resources a service uses.
   
-- **[tags=virtualization]** Setup virtualization. More specifically:
+- Setup virtualization. More specifically:
   
   + Enable rootless `podman`.
   + Use my [libvirt Ansible role](https://galaxy.ansible.com/chzerv/libvirt) to install and configure `libvirt`.
@@ -54,23 +70,8 @@ This playbook performs the following tasks:
 1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 2. Clone this repository to your machine: `git clone https://github.com/chzerv/linux-workstation-playbook.git`
 3. Install required Ansible roles: `ansible-galaxy install -r requirements.yml`
+4. Make sure to **read** the variables and their explanations below.
 4. Run the playbook: `ansible-playbook -i inventory -K main.yml`. Enter your password when prompted.
-
-As show in the [What does this do?](https://github.com/chzerv/linux-workstation-playbook#what-does-this-do) section, all tasks are tagged.
-
-To choose a specific tag, run:
-
-```sh
-ansible-playbook -i inventory -K main.yml --tags=dotfiles
-```
-
-Or, if you want to include all the tags except some, run:
-
-```sh
-ansible-playbook -i inventory -K main.yml --skip-tags=dotfiles
-```
-
-where `dotfiles` can be any of the above.
 
 # Stuff that still have to be done manually
 
@@ -79,26 +80,30 @@ where `dotfiles` can be any of the above.
 # Variables, their default values and their explanations
 
 ```yaml
-configure_capabilities: true
-configure_sysctl: true
-configure_security: true
-configure_performance: true
-configure_gnome: true
-configure_systemd: true
-configure_dotfiles: true
-configure_misc: true
+lwp_install_packages: true
+lwp_install_extra_packages: true
+lwp_configure_systemd: true
+lwp_tweak_sysctl: true
+lwp_tweak_performance: true
+lwp_harden_system: true
+lwp_apply_capabilities: true
+lwp_configure_gnome: true
+lwp_dotfiles: true
+lwp_virtualization: true
+lwp_misc: true
 ```
 
-> - Perform `capabilities` related tasks.
-> - Perform `sysctl` related tasks.
-> - Perform `security` related tasks.
-> - Perform `performance` related tasks.
-> - Perform `gnome` related tasks.
-> - Perform `systemd` related tasks.
-> - Perform `dotfiles` related tasks.
-> - Perform `misc` tasks.
->
-> If you prefer using tags, just leave these variables to `true` and use tags instead.
+> - Install packages from the official repositories.
+> - Install packages from third party repositories (npm, pip, flatpak).
+> - Apply systemd related tweaks.
+> - Tweak `sysctl` values.
+> - Apply performance tweaks.
+> - Apply basic hardening to the system.
+> - Change capabilities for some known programs.
+> - Configure GNOME.
+> - Setup my [dotfiles](https://github.com/chzerv/dotfiles).
+> - Setup virtualization.
+> - Perform some misc tasks.
 
 ```yaml
 arch_enable_multilib: true
@@ -148,14 +153,14 @@ pip_packages:
   - name: mkdocs
     state: present # present/absent/latest, default: present
     version: "0.16.3" # default: N/A
-    virtualenv: ~/.venvs # default: N/A
+    virtualenv: ~/.venvs # default: ~/.venvs
 ```
 
 > Packages to install with Python's `pip`. By default:
 >
 > - Packages will be installed, unless `state` is set to `absent` which will remove them, or `latest` which will update them.
 > - The latest version of a package will be installed unless the `version` argument is specified.
-> - Packages will be installed globally unless the `virtualenv` argument is set, which will install them inside an **already setup** virtual environment.
+> - Packages will be installed in the `~/.venvs` virtual environment, unless the `virtualenv` argument is set to another path.
 
 ```yaml
 npm_packages:
@@ -168,6 +173,42 @@ npm_packages:
 >
 > - Packages will be installed, unless `state` is set to `absent` which will remove them, or `latest` which will update them.
 > - The latest version of a package will be installed unless the `version` argument is specified.
+
+``` yaml
+sysctl_required_packages: procps-ng
+sysctl_entries:
+  - name: vm.swappiness
+    value: 10
+  - name: vm.dirty_ratio
+    value: 6
+  - name: vm.dirty_background_bytes
+    value: 4194304
+  - name: vm.vfs_cache_pressure
+    value: 50
+  - name: kernel.sysrq
+    value: 1
+```
+
+> Tweak `sysctl` values using my [sysctl role](https://github.com/chzerv/ansible-role-sysctl). Make sure to check the role itself for more details. 
+
+``` yaml
+security_ssh_port: 22
+security_fail2ban_enabled: false
+security_kern_hidepid_value: "0"
+security_autoupdates_enabled: false
+security_nproc_limit: false
+```
+
+> Variables specific to my [security Ansible role](https://github.com/chzerv/ansible-role-security). Make sure to check the role for more details.
+
+``` yaml
+libvirt_users_in_libvirt_group: "{{ ansible_user_id }}"
+libvirt_install_virt_manager: true
+libvirt_uefi_vm_support: true
+libvirt_access_vms_using_hostnames: false
+```
+
+> Variables specific to my [libvirt Ansible role](https://github.com/chzerv/ansible-role-libvirt). Make sure to check the role for more details.
 
 ```yaml
 mutter_enable_experimental: false

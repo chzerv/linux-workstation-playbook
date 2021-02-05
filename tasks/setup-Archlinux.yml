@@ -1,0 +1,58 @@
+---
+- name: Configure makepkg (Archlinux).
+  template:
+    src: etc/makepkg.conf.j2
+    dest: /etc/makepkg.conf
+    backup: true
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+
+- name: Stop pam_systemd_homed.so spamming the journal when using sudo (Archlinux).
+  block:
+    - name: Modify pam_unix.so's control so it only jumps one line on success (Archlinux).
+      pamd:
+        name: system-auth
+        type: auth
+        control: "[success=2 default=ignore]"
+        module_path: pam_unix.so
+        new_control: "[success=1 default=ignore]"
+        backup: true
+
+    - name: Comment out pam_systemd_homed.so line (Archlinux).
+      replace:
+        path: /etc/pam.d/system-auth
+        regexp: '^(-auth\s*[success=1\s default=ignore].*)'
+        replace: '# \1'
+        backup: true
+  become: true
+  when: disable_pam_systemd_homed | bool
+
+- name: Pacman hook for reflector (Archlinux)
+  block:
+    - name: Ensure /etc/pacman.d/hooks exists (Archlinux).
+      file:
+        path: /etc/pacman.d/hooks
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: Create pacman hook for reflector (Archlinux).
+      template:
+        src: etc/pacman.d/hooks/mirror-upgrade.hook.j2
+        dest: /etc/pacman.d/hooks/mirror-upgrade.hook
+        mode: "0644"
+        owner: root
+        group: root
+  become: true
+
+- name: Configure reflector (Archlinux).
+  template:
+    src: etc/xdg/reflector/reflector.conf.j2
+    dest: /etc/xdg/reflector/reflector.conf
+    mode: "0644"
+    owner: root
+    group: root
+  become: true

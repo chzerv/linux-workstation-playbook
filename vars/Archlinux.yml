@@ -1,5 +1,5 @@
 ---
-core_software:
+core_packages:
   - git
   - tmux
   - neovim
@@ -27,7 +27,7 @@ core_software:
   - alacritty
   - flameshot
 
-utility_software:
+utility_packages:
   - exfat-utils
   - ntfs-3g
   - nmap
@@ -38,34 +38,16 @@ utility_software:
   - hunspell-en_US
   - python-virtualenvwrapper
   - npm
+  - python-pip
   - ccache
   - reflector
 
-monitoring_software:
+monitoring_packages:
   - htop
   - iftop
   - iotop
   - lm_sensors
   - nethogs
-
-ansible_packages:
-  - ansible
-  - ansible-lint
-  - python-jmespath
-  - molecule
-  - yamllint
-  - vagrant
-
-writing_software:
-  - texlive-most texlive-langgreek texlive-langextra
-  - pandoc
-  - marked
-  - proselint
-
-btrfs_packages:
-  - snapper
-  - snap-pac
-  - grub-btrfs
 
 font_packages:
   - adobe-source-code-pro-fonts
@@ -76,10 +58,29 @@ font_packages:
   - ttf-hack
   - ttf-fira-code
 
-psutil_package_name: python-psutil
+ansible_packages:
+  - ansible
+  - ansible-lint
+  - python-jmespath
+  - molecule
+  - yamllint
+  - vagrant
+
+prose_packages:
+  - texlive-most texlive-langgreek texlive-langextra
+  - pandoc
+  - marked
+  - proselint
+
+btrfs_packages:
+  - snapper
+  - snap-pac
+  - grub-btrfs
 
 emacs_packages:
   - python-isort
   - python-black
   - gnuplot
   - graphviz
+
+psutil_package_name: python-psutil

@@ -1,0 +1,42 @@
+---
+- name: Set capabilities for 'beep'.
+  capabilities:
+    path: /usr/bin/beep
+    capability: cap_dac_override,cap_sys_tty_config+ep
+    state: present
+  when: "'beep' in installed_packages"
+
+- name: Set capabilities for 'chvt'.
+  capabilities:
+    path: /usr/bin/chvt
+    capability: cap_dac_read_search,cap_sys_tty_config+ep
+    state: present
+  when: "'kbd' in installed_packages"
+
+- name: Set capabilities for 'iftop'.
+  capabilities:
+    path: /usr/sbin/iftop
+    capability: cap_net_raw+ep
+    state: present
+  when: "'iftop' in installed_packages"
+
+- name: Set capabilities for 'mii-tool'.
+  capabilities:
+    path: /usr/sbin/mii-tool
+    capability: cap_net_admin+ep
+    state: present
+  when: "'net-tools' in installed_packages"
+
+- name: Set capabilities for 'mtr-packet'.
+  capabilities:
+    path: /usr/bin/mtr-packet
+    capability: cap_net_raw+ep
+    state: present
+  when: "'mtr' in installed_packages"
+
+- name: Set capabilities for 'nethogs'.
+  capabilities:
+    path: /usr/sbin/nethogs
+    capability: cap_net_admin,cap_net_raw+ep
+    state: present
+  when: "'nethogs' in installed_packages"

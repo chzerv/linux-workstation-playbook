@@ -46,11 +46,10 @@
     cmd: xdg-mime default emacs.desktop text/org
   changed_when: true
 
-# TODO: Automatically create a firefox bookmarklet.
 - name: Ensure a mime type for Org-protocol is present.
   template:
-    src: local/share/mime/packages/org-protocol.desktop.j2
-    dest: "{{ ansible_user_dir }}/.local/share/mime/packages/org.xml"
+    src: local/share/applications/org-protocol.desktop.j2
+    dest: "{{ ansible_user_dir }}/.local/share/applications/org-protocol.desktop"
     owner: "{{ ansible_user_id }}"
     mode: "0644"
 
