@@ -38,6 +38,7 @@ utility_packages:
   - python3-virtualenvwrapper
   - npm
   - python3-pip
+  - dbus-broker
 
 monitoring_packages:
   - htop

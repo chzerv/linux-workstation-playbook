@@ -41,6 +41,7 @@ utility_packages:
   - python-pip
   - ccache
   - reflector
+  - dbus-broker
 
 monitoring_packages:
   - htop

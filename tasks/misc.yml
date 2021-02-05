@@ -70,3 +70,10 @@
   when:
     - not grub_is_installed.stat.exists | bool
     - ansible_distribution == "Archlinux"
+
+- name: Ensure dbus-broker is enabled on boot.
+  systemd:
+    state: started
+    enabled: true
+    scope: global
+  become: true
