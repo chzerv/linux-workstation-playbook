@@ -18,8 +18,11 @@
         file: "tasks/preparation.yml"
 
     - name: Distribution specific setup.
-      include_tasks:
-        file: "tasks/setup-{{ ansible_distribution }}.yml"
+      include_tasks: "{{ item }}"
+      vars:
+        findme:
+          - "tasks/setup-{{ ansible_distribution }}.yml"
+      loop: "{{ query('first_found', findme, errors='ignore') }}"
 
   tasks:
     - name: Install packages from official repositories.
