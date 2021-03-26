@@ -23,6 +23,7 @@
       line: "default-cache-ttl {{ gpg_agent_default_cache_ttl }}"
     - regexp: "^pinentry-program*"
       line: "pinentry-program /usr/bin/pinentry-gnome3"
+  become: true
 
 - name: Configure Ansible.
   block:

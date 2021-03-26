@@ -68,5 +68,5 @@
   template:
     src: config/systemd/user/emacs-daemon.service.j2
     dest: "{{ ansible_user_dir }}/.config/systemd/user/emacs-daemon.service"
-    owner: "{{ ansible_user }}"
+    owner: "{{ ansible_user_id }}"
     mode: "0644"
