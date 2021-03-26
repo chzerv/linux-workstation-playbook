@@ -1,5 +1,7 @@
 ---
 core_packages:
+  - devtools
+  - pacman-contrib
   - git
   - tmux
   - neovim
