@@ -29,25 +29,6 @@
   become: true
   when: disable_pam_systemd_homed | bool
 
-- name: Pacman hook for reflector (Archlinux)
-  block:
-    - name: Ensure /etc/pacman.d/hooks exists (Archlinux).
-      file:
-        path: /etc/pacman.d/hooks
-        state: directory
-        mode: "0755"
-        owner: root
-        group: root
-
-    - name: Create pacman hook for reflector (Archlinux).
-      template:
-        src: etc/pacman.d/hooks/mirror-upgrade.hook.j2
-        dest: /etc/pacman.d/hooks/mirror-upgrade.hook
-        mode: "0644"
-        owner: root
-        group: root
-  become: true
-
 - name: Configure reflector (Archlinux).
   template:
     src: etc/xdg/reflector/reflector.conf.j2
@@ -55,4 +36,11 @@
     mode: "0644"
     owner: root
     group: root
+  become: true
+
+- name: Enable the reflector timer.
+  systemd:
+    name: reflector.timer
+    state: started
+    enabled: true
   become: true
