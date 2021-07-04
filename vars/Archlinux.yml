@@ -73,7 +73,6 @@ prose_packages:
   - texlive-most texlive-langgreek texlive-langextra
   - pandoc
   - marked
-  - proselint
 
 btrfs_packages:
   - snapper
