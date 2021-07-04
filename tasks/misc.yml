@@ -75,7 +75,6 @@
 - name: Ensure dbus-broker is enabled on boot.
   systemd:
     name: dbus-broker
-    state: started
     enabled: true
     scope: global
   become: true
