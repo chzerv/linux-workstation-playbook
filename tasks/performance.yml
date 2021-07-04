@@ -3,26 +3,45 @@
   template:
     src: 60-ioschedulers.rules.j2
     dest: /etc/udev/rules.d/60-ioschedulers.rules
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
 
-- name: Configure earlyoom
-  lineinfile:
-    dest: /etc/default/earlyoom
-    line: >-
-      EARLYOOM_ARGS="-r 3600 -n
-      --avoid '(^|/)(systemd|Xorg|gnome-shell|Xwayland|sway|sshd)$'
-      --prefer '(^|/)(java|chromium|discord)$'"
-    mode: 0644
-    owner: root
-    group: root
+- name: Setup earlyoom.
+  block:
+    - name: Configure earlyoom
+      template:
+        src: etc/default/earlyoom.j2
+        dest: /etc/default/earlyoom
+        mode: "0644"
+        owner: root
+        group: root
 
-- name: Ensure earlyoom service is started and enabled at boot.
-  service:
-    name: earlyoom
-    state: started
-    enabled: true
+    - name: Ensure earlyoom service is started and enabled at boot.
+      service:
+        name: earlyoom
+        state: started
+        enabled: true
+  when:
+    - ansible_distribution == "Fedora"
+    - ansible_distribution_major_version | int <= 33
+
+- name: Configure systemd-oomd
+  block:
+    - name: Configure systemd-oom.
+      template:
+        src: etc/systemd/oomd.conf.j2
+        dest: /etc/systemd/oomd.conf
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Ensure systemd-oomd service is started and enabled at boot.
+      service:
+        name: systemd-oomd
+        state: started
+        enabled: true
+  when: (ansible_distribution == "Fedora" and ansible_distribution_major_version | int > 33) or (ansible_distribution == "Archlinux")
 
 - name: Find hardware watchdog kernel modules.
   shell:

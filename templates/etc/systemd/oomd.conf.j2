@@ -1,0 +1,13 @@
+# Entries in this file show the compile time defaults. Local configuration
+# should be created by either modifying this file, or by creating "drop-ins" in
+# the oomd.conf.d/ subdirectory. The latter is generally recommended.
+# Defaults can be restored by simply deleting this file and all drop-ins.
+#
+# Use 'systemd-analyze cat-config systemd/oomd.conf' to display the full config.
+#
+# See oomd.conf(5) for details
+
+[OOM]
+SwapUsedLimit=85%
+DefaultMemoryPressureLimit=50%
+DefaultMemoryPressureDurationSec=20s
