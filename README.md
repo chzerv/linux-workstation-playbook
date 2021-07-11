@@ -21,7 +21,7 @@ This playbook performs the following tasks:
 
 - Try to improve performance by:
 
-  - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom). 
+  - Tweaking Virtual Memory and swapiness, installing and configuring [earlyoom](https://github.com/rfjakob/earlyoom)/systemd-oomd.
   - Changing I/O schedulers depending on disk type (SSD v HDD v NVMe).
   - Disabling watchdogs (can also provide lower power consumption).
 
@@ -50,7 +50,6 @@ This playbook performs the following tasks:
 
   - Make `makepkg` use all available CPU cores for compiling.
   - Disable `pam_systemd_homed.so` to avoid journal spamming (**Archlinux only**). Make sure to set `disable_pam_systemd_homed` to `false` if you use `systemd-homed`.
-  - Setup `pacman` hooks for `reflector`, so the mirrorlist is automatically generated whenever there is an update. 
   - Configure `reflector`.
 
 - Minor configuration changes like:
