@@ -78,3 +78,12 @@
     enabled: true
     scope: global
   become: true
+
+- name: Enable WOL on the network adapter.
+  template:
+    src: etc/systemd/network/50-wired.link.j2
+    dest: /etc/systemd/network/50-wired.link
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
