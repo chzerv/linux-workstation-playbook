@@ -1,0 +1,70 @@
+---
+- name: Archlinux
+  block:
+    - name: Configure pacman [Arch]
+      ansible.builtin.template:
+        src: pacman.conf.j2
+        dest: /etc/pacman.conf
+        mode: "0644"
+        owner: root
+        group: root
+        backup: true
+
+    - name: Configure makepkg [Arch]
+      ansible.builtin.template:
+        src: makepkg.conf.j2
+        dest: /etc/makepkg.conf
+        mode: "0644"
+        owner: root
+        group: root
+        backup: true
+
+    - name: Ensure system is up-to-date [Arch]
+      ansible.builtin.pacman:
+        update_cache: true
+        upgrade: true
+  when: ansible_distribution == "Archlinux"
+  become: true
+
+- name: Fedora
+  block:
+    - name: Configure dnf [Fedora]
+      ansible.builtin.template:
+        src: dnf.conf.j2
+        dest: /etc/dnf/dnf.conf
+        mode: "0644"
+        owner: root
+        group: root
+        backup: true
+
+    - name: Enable RPM Fusion [Fedora].
+      ansible.builtin.dnf:
+        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      with_items:
+        - free
+        - nonfree
+
+    - name: Ensure system is up-to-date [Fedora].
+      ansible.builtin.dnf:
+        update_cache: true
+        name: "*"
+        state: latest
+
+    - name: Autoremove unneeded packages.
+      ansible.builtin.dnf:
+        autoremove: true
+
+    # The dnf module doesn't support these functions, so the shell module
+    # is used.
+    - name: Update multimedia groups after enabling RPMFusion [Fedora].
+      ansible.builtin.shell: >
+        dnf groupupdate core -y &&
+        dnf groupupdate multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin -y &&
+        dnf groupupdate sound-and-video -y
+      args:
+        warn: false
+      changed_when: true
+  when: ansible_distribution == "Fedora"
+  become: true
