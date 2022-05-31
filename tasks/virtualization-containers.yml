@@ -1,0 +1,48 @@
+---
+- name: Ensure podman is installed
+  ansible.builtin.package:
+    name:
+      - podman
+      - podman-docker
+      - podman-compose
+      - buildah
+    state: present
+
+- name: Ensure toolbox is installed
+  ansible.builtin.package:
+    name: toolbox
+    state: present
+
+- name: Rootless Podman | Allocate UIDs for the current user
+  ansible.builtin.lineinfile:
+    path: /etc/subuid
+    regexp: "^{{ ansible_user_id }}"
+    line: "{{ ansible_user_id }}:100000:65536"
+    create: true
+    mode: "0644"
+
+- name: Rootless Podman | Allocate GIDs for the current user's group
+  ansible.builtin.lineinfile:
+    path: /etc/subgid
+    regexp: "^{{ ansible_user_id }}"
+    line: "{{ ansible_user_id }}:100000:65536"
+    create: true
+    mode: "0644"
+
+- name: Update podman's search registries
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    backrefs: true
+    regexp: "^(#\ )?(unqualified-search-registries)\ =\ .*$"
+    line: '\2 = ["docker.io", "registry.fedoraproject.org", "registry.access.redhat.com", "quay.io"]'
+    backup: true
+
+# - name: Create toolbox containers
+#   ansible.builtin.shell:
+#     cmd: "yes | toolbox create --distro fedora --release f36 fedora"
+#   changed_when: false
+#   become: false
+
+- name: Install VirtualBox
+  ansible.builtin.import_role:
+    name: virtualbox
