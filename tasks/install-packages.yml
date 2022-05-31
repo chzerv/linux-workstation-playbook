@@ -60,3 +60,29 @@
     chdir: "{{ ansible_user_dir }}/.cargo/bin"
   changed_when: true
   loop: "{{ cargo_packages }}"
+
+- name: AUR
+  block:
+    - name: Ensure the $HOME/AUR directory exists.
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/AUR"
+        state: directory
+        mode: "0755"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+
+    - name: Git clone AUR package(s) [Archlinux].
+      ansible.builtin.git:
+        repo: "https://aur.archlinux.org/{{ item }}"
+        dest: "{{ ansible_user_dir }}/AUR/{{ item }}"
+      loop: "{{ aur_packages | flatten(levels = 1) }}"
+
+    - name: Install AUR packages [Archlinux].
+      ansible.builtin.command:
+        cmd: "makepkg -sirc --noconfirm"
+        chdir: "{{ ansible_user_dir }}/AUR/{{ item }}"
+      changed_when: false
+      loop: "{{ aur_packages | flatten(levels = 1) }}"
+  when:
+    - ansible_distribution == "Archlinux"
+    - aur_packages is defined

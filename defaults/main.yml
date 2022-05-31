@@ -11,6 +11,9 @@ cargo_packages:
   - name: stylua
     state: present # present/absent
 
+aur_packages:
+  - yay
+
 # Flatpak repositories to add.
 flatpak_repositories:
   - name: flathub
