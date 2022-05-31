@@ -1,0 +1,36 @@
+arch_enable_multilib: true
+npm_config_prefix: ~/.node_modules
+
+npm_packages:
+  - name: prettier
+    state: present
+    # version:
+    # executable:
+
+cargo_packages:
+  - name: stylua
+    state: present # present/absent
+
+# Flatpak repositories to add.
+flatpak_repositories:
+  - name: flathub
+    state: present #present/absent, default: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: system #system/user, default: system
+  - name: flathub-beta
+    state: present
+    flatpakrepo_url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+    method: system
+  - name: gnome-nightly
+    state: present
+    flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
+    method: system
+
+# Packages to install using flatpak.
+flatpak_packages:
+  - com.github.tchx84.Flatseal
+  - com.discordapp.Discord
+  - im.riot.Riot
+  - md.obsidian.Obsidian
+  - name: org.gnome.Builder
+    remote: gnome-nightly

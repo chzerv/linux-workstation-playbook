@@ -1,0 +1,77 @@
+---
+base_packages:
+  - git
+  - ripgrep
+  - the_silver_searcher
+  - fd-find
+  - python3-virtualenv
+  - npm
+  - hunspell
+  - hunspell-el
+  - hunspell-en-US
+  - flatpak
+  - tealdeer
+  - wireguard-tools
+  - exfatprogs
+  - moreutils
+  - bat
+  - fzf
+  - htop
+  - ncdu
+  - smartmontools
+  - python3-ansible-lint
+  - yamllint
+  - python3-black
+  - python3-isort
+  - ffmpeg
+  - ffmpeg-libs
+  - yt-dlp
+  - mpv
+  - texlive-scheme-full
+  - latexmk
+  - pandoc
+  - zsh
+  - podman
+  - lm_sensors
+
+packages_to_remove:
+  - xorg-x11-drv-ati
+  - xorg-x11-drv-intel
+  - xorg-x11-drv-nouveau
+  - xorg-x11-drv-openchrome
+  - xorg-x11-drv-qxl
+  - xorg-x11-drv-vmware
+  - gnome-tour
+  - rhythmbox
+
+services_to_disable:
+  - "raid-check.timer"
+  - "raid-check.service"
+  - "thermald.service" # Don't do this on Intel systems
+  - "NetworkManager-wait-online.service"
+  - "switcheroo-control.service" # Don't do this on multi-GPU systems
+  - "iio-sensor-proxy.service" # Breaks auto-brightness on laptops
+
+neovim_build_prerequisites:
+  - ninja-build
+  - libtool
+  - autoconf
+  - automake
+  - cmake
+  - gcc
+  - gcc-c++
+  - make
+  - pkgconfig
+  - unzip
+  - patch
+  - gettext
+  - curl
+
+neovim_required_packages:
+  - libstdc++
+  - libstdc++-static
+  - npm
+  - python3-black
+  - python3-isort
+  - yamllint
+  - python3-ansible-lint

@@ -1,0 +1,62 @@
+---
+base_packages:
+  - git
+  - ripgrep
+  - the_silver_searcher
+  - fd
+  - python-virtualenv
+  - npm
+  - hunspell
+  - hunspell-el
+  - hunspell-en_US
+  - flatpak
+  - tealdeer
+  - wireguard-tools
+  - exfatprogs
+  - moreutils
+  - bat
+  - fzf
+  - htop
+  - ncdu
+  - smartmontools
+  - yamllint
+  - ansible-lint
+  - python-black
+  - python-isort
+  - ffmpeg
+  - yt-dlp
+  - mpv
+  - texlive-most
+  - texlive-langgreek
+  - texlive-langextra
+  - pandoc
+  - podman
+  - base-devel
+  - ccache
+  - devtools
+  - pacman-contrib
+  - man-db
+  - man-pages
+  - reflector
+  - pkgfile
+  - lm_sensors
+
+multilib_packages:
+  - lib32-libindicator-gtk3
+  - lib32-libappindicator-gtk3
+
+neovim_build_prerequisites:
+  - base-devel
+  - cmake
+  - unzip
+  - ninja
+  - tree-sitter
+  - curl
+
+neovim_required_packages:
+  - gcc-libs
+  - npm
+  - yamllint
+  - ansible-lint
+  - python-black
+  - python-isort
