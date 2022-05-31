@@ -1,0 +1,21 @@
+---
+- name: Manage Flatpak remote repositories.
+  community.general.flatpak_remote:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    method: "{{ item.method | default('system') }}"
+    flatpakrepo_url: "{{ item.flatpakrepo_url }}"
+  become: "{{ 'true' if item.method == 'system' else 'false' }}"
+  loop: "{{ flatpak_repositories | flatten(levels = 1) }}"
+  when: flatpak_repositories is defined
+
+# The conditional in 'become' is supposed to catch the case where the 'method' field is not specified at all.
+- name: Install packages with Flatpak
+  community.general.flatpak:
+    name: "{{ item.name | default(item) }}"
+    remote: "{{ item.remote | default('flathub') }}"
+    method: "{{ item.method | default('system') }}"
+    state: "{{ item.state | default('present') }}"
+  become: "{{ 'true' if item.method is not defined or item.method == 'system' else 'false' }}"
+  loop: "{{ flatpak_packages | flatten(levels = 1) }}"
+  when: flatpak_packages is defined
