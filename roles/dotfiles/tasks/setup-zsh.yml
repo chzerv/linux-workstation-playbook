@@ -1,0 +1,30 @@
+---
+# Install zsh and zinit (https://github.com/zdharma-continuum/zinit).
+
+- name: Set fact about the default user.
+  set_fact:
+    default_user: "{{ ansible_user_id }}"
+
+- name: zsh setup | Ensure zsh is installed.
+  package:
+    name: zsh
+    state: present
+  become: true
+
+- name: zsh setup | Make zsh the default shell.
+  user:
+    name: "{{ default_user }}"
+    shell: /bin/zsh
+  become: true
+
+- name: zsh setup | Clone zinit repository.
+  git:
+    repo: "https://github.com/zdharma-continuum/zinit.git"
+    dest: "{{ ansible_user_dir }}/.local/share/zinit/zinit.git"
+    version: main
+
+- name: zsh setup | Symlink zshenv to $HOME.
+  file:
+    src: "{{ dotfiles_dest }}/zshenv"
+    dest: "{{ ansible_user_dir }}/.zshenv"
+    state: link

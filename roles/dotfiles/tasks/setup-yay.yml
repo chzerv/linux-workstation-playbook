@@ -1,0 +1,25 @@
+---
+# Install yay (https://github.com/Jguer/yay), my AUR helper of choice.
+
+- name: Yay setup.
+  block:
+    - name: Ensure required packages are installed.
+      pacman:
+        name:
+          - base-devel
+          - ccache
+        state: present
+      become: true
+
+    - name: yay setup | Clone yay from AUR.
+      git:
+        repo: "https://aur.archlinux.org/yay.git"
+        dest: "{{ ansible_user_dir }}/AUR/yay"
+        version: master
+
+    - name: yay setup | Build yay.
+      command: makepkg -sirc --noconfirm
+      args:
+        chdir: "{{ ansible_user_dir }}/AUR/yay"
+      changed_when: false
+  when: ansible_distribution == "Archlinux"

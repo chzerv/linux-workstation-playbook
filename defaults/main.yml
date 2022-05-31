@@ -34,3 +34,8 @@ flatpak_packages:
   - md.obsidian.Obsidian
   - name: org.gnome.Builder
     remote: gnome-nightly
+
+dotfiles_repo: https://github.com/chzerv/dotfiles.git
+dotfiles_dest: "{{ ansible_user_dir }}/dotfiles"
+dotfiles_accept_hostkey: true
+dotfiles_repo_branch: main

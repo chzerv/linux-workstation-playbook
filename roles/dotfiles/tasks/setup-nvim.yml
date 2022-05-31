@@ -1,0 +1,53 @@
+---
+# Install and configure neovim.
+
+- name: Clone neovim locally.
+  ansible.builtin.git:
+    repo: https://github.com/neovim/neovim
+    dest: "{{ ansible_user_dir }}/neovim_src"
+
+- name: Ensure build prerequisites are installed.
+  ansible.builtin.package:
+    name: "{{ neovim_build_prerequisites }}"
+    state: present
+  become: true
+
+- name: Build neovim
+  community.general.make:
+    chdir: "{{ ansible_user_dir }}/neovim_src"
+    params:
+      CMAKE_BUILD_TYPE: Release
+
+- name: Install neovim
+  community.general.make:
+    chdir: "{{ ansible_user_dir }}/neovim_src"
+    target: install
+  become: true
+
+- name: Ensure the directory for packer exists
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: "0755"
+
+- name: Clone the packer repository
+  ansible.builtin.git:
+    repo: https://github.com/wbthomason/packer.nvim
+    dest: "{{ ansible_user_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    version: master
+
+- name: Ensure required packages for plugins to work are installed.
+  ansible.builtin.package:
+    name: "{{ neovim_required_packages }}"
+    state: present
+  become: true
+
+- name: Ensure prettier is installed
+  community.general.npm:
+    name: prettier
+    state: present
+    global: true
+  environment:
+    npm_config_prefix: "{{ npm_config_prefix }}"

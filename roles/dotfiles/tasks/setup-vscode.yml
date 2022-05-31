@@ -1,0 +1,67 @@
+---
+- name: VSCode in Fedora.
+  block:
+    - name: Install Microsoft's key for VSCode [Fedora].
+      rpm_key:
+        key: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Install and enable Microsoft's third party repository for VSCode [Fedora].
+      yum_repository:
+        name: vscode
+        description: VSCode third-party repository.
+        baseurl: https://packages.microsoft.com/yumrepos/vscode
+        enabled: true
+        gpgcakey: https://packages.microsoft.com/keys/microsoft.asc
+
+    - name: Update dnf's cache [Fedora].
+      dnf:
+        update_cache: true
+    
+    - name: Install VSCode [Fedora].
+      dnf:
+        name: code
+        state: present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Install VSCode [Archlinux].
+  shell:
+    cmd: git clone https://aur.archlinux.org/visual-studio-code-bin.git && cd visual-studio-code-bin && makepkg -sirc --noconfirm
+    chdir: "{{ ansible_user_dir }}/AUR"
+  changed_when: false
+  when: ansible_distribution == "Archlinux"
+
+- name: Ensure the necessary directories exist.
+  file:
+    path: "{{ ansible_user_dir }}/.config/Code/User"
+    state: directory
+    mode: "0755"
+
+- name: Create symlinks.
+  file:
+    src: "{{ dotfiles_local_destination }}/config/Code/User/{{ item }}"
+    dest: "{{ ansible_user_dir }}/.config/Code/User/{{ item }}"
+    state: link
+    mode: "0755"
+  with_items:
+    - keybindings.json
+    - settings.json
+    - snippets
+
+- name: Install VSCode extensions.
+  command: "code --install-extension {{ item }}"
+  changed_when: false
+  with_items:
+    - tomaciazek.ansible
+    - streetsidesoftware.code-spell-checker
+    - eamodio.gitlens
+    - jdinhlife.gruvbox
+    - wholroyd.jinja
+    - james-yu.latex-workshop
+    - yzhang.markdown-all-in-one
+    - pkief.material-icon-theme
+    - ms-python.vscode-pylance
+    - ms-python.python
+    - ms-vscode-remote.remote-ssh
+    - vscodevim.vim

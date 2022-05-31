@@ -1,0 +1,8 @@
+---
+# Install bat, a replacement to cat.
+
+- name: bat setup | Ensure bat is installed
+  package:
+    name: bat
+    state: present
+  become: true

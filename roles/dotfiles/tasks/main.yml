@@ -1,0 +1,69 @@
+---
+
+- name: Ensure git is installed.
+  package:
+    name: git
+    state: present
+  become: true
+
+- name: Clone dotfiles repository.
+  git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_dest }}"
+    accept_hostkey: "{{ dotfiles_accept_hostkey }}"
+    version: "{{ dotfiles_repo_branch }}"
+
+- name: Ensure required directories exist.
+  file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  loop:
+    - .local/share
+    - .local/bin
+    - .config
+
+- name: Create symlinks to $HOME.
+  file:
+    src: "{{ dotfiles_dest }}/{{ item }}"
+    dest: "{{ ansible_user_dir }}/.{{ item }}"
+    state: link
+    mode: "0644"
+  loop:
+    - gitconfig
+    - latexmkrc
+
+- name: Create symlinks to ~/.config.
+  file:
+    src: "{{ dotfiles_dest }}/config/{{ item }}"
+    dest: "{{ ansible_user_dir }}/.config/{{ item }}"
+    state: link
+    mode: "0755"
+  loop:
+    - nvim
+    - tmux
+    - yay
+    - bat
+    - zsh
+    - electron-flags.conf
+  loop_control:
+    label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
+
+- name: Create symlinks to ~/.local/bin.
+  file:
+    src: "{{ dotfiles_dest }}/scripts/"
+    dest: "{{ ansible_user_dir }}/.local/bin/scripts"
+    state: link
+    mode: "0755"
+
+- name: In-depth setup.
+  include_tasks: "setup-{{ item }}.yml"
+  loop:
+    - nvim
+    - tmux
+    - yay
+    - bat
+    - zsh
+  loop_control:
+    label: "Setting up {{ item }}.."
