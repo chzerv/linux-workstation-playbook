@@ -1,0 +1,38 @@
+---
+- hosts:
+    - arch
+    - fedora2
+
+  vars_files:
+    - "vars/{{ ansible_distribution }}.yml"
+    - "defaults/main.yml"
+
+  tasks:
+    - import_tasks: tasks/pre-setup.yml
+      tags: [ 'always' ]
+
+    - import_tasks: tasks/debloat-Fedora.yml
+      when: ansible_distribution == "Fedora"
+      tags: ["debloat"]
+
+    - import_tasks: tasks/install-packages.yml
+      tags: ["packages"]
+
+    - import_tasks: tasks/flatpak.yml
+      tags: ["flatpak"]
+
+    - name: Setup my dotfiles
+      ansible.builtin.import_role:
+        name: dotfiles
+      tags: [ 'dotfiles' ]
+
+    - import_tasks: "tasks/virtualization-containers.yml"
+      tags: [ 'virt' ]
+      become: true
+
+    - import_tasks: "tasks/gather-facts.yml"
+      tags: [ 'always' ]
+
+    - import_tasks: "tasks/gnome-setup.yml"
+      tags: [ 'gnome' ]
+      when: "'gnome-shell' in installed_packages"
