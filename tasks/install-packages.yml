@@ -1,0 +1,62 @@
+---
+- name: Install base packages
+  ansible.builtin.package:
+    name: "{{ base_packages }}"
+    state: present
+  become: true
+
+- name: Install 32bit packages, if multilib is enabled [Arch]
+  ansible.builtin.pacman:
+    name: "{{ multilib_packages }}"
+    state: present
+  register: installed_repo_packages
+  when:
+    - ansible_distribution == "Archlinux"
+    - arch_enable_multilib | bool
+    - multilib_packages is defined
+  become: true
+
+- name: Install packages with NPM
+  community.general.npm:
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    executable: "{{ item.executable | default(omit) }}"
+    global: true
+  loop: "{{ npm_packages }}"
+  environment:
+    npm_config_prefix: "{{ npm_config_prefix }}"
+
+- name: Check if cargo is already present
+  ansible.builtin.command:
+    cmd: "command -v cargo"
+  register: cargo_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install Rust & cargo via rustup
+  block:
+    - name: Download the rustup installer.
+      ansible.builtin.get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/sh.rustup.rs
+        mode: "755"
+        force: true
+
+    - name: Run the rustup script.
+      ansible.builtin.command:
+        cmd: /tmp/sh.rustup.rs -y
+      changed_when: true
+  when: cargo_installed.stdout == ""
+
+- name: Find cargo installed packages
+  ansible.builtin.find:
+    paths: "{{ ansible_user_dir }}/.cargo/bin"
+  register: cargo_installed_packages
+
+- name: Install packages with cargo
+  ansible.builtin.command:
+    cmd: "cargo {% if item.state == 'present' %} install {% elif item.state == 'absent' %} uninstall {% endif %} {{ item.name }}"
+    chdir: "{{ ansible_user_dir }}/.cargo/bin"
+  changed_when: true
+  loop: "{{ cargo_packages }}"
