@@ -1,0 +1,11 @@
+---
+- name: Enable the VirtualBox repository
+  ansible.builtin.yum_repository:
+    name: vbox
+    description: VirtualBox repository
+    baseurl: http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch
+    gpgcheck: true
+    gpgkey: https://www.virtualbox.org/download/oracle_vbox.asc
+    state: present
+    enabled: true
+  when: ansible_distribution == "Fedora"

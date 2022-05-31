@@ -1,0 +1,13 @@
+---
+- name: Download VirtualBox Extension Pack
+  ansible.builtin.get_url:
+    url: https://download.virtualbox.org/virtualbox/6.1.34/Oracle_VM_VirtualBox_Extension_Pack-6.1.34.vbox-extpack
+    dest: /tmp//Oracle_VM_VirtualBox_Extension_Pack-6.1.34.vbox-extpack
+    mode: "0644"
+
+- name: Install VirtualBox Extension Pack
+  ansible.builtin.shell:
+    cmd: yes | VBoxManage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-6.1.34.vbox-extpack
+    chdir: /tmp
+  changed_when: true
+  become: true

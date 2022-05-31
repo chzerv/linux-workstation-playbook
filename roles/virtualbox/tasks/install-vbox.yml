@@ -1,0 +1,19 @@
+---
+- name: Fedora
+  block:
+    - name: Update dnf cache [Fedora]
+      ansible.builtin.dnf:
+        update_cache: true
+        state: present
+
+    - name: Install VirtualBox [Fedora]
+      ansible.builtin.dnf:
+        name: VirtualBox-6.1
+        state: present
+  when: ansible_distribution == "Fedora"
+
+- name: Install VirtualBox [Arch]
+  community.general.pacman:
+    name: virtualbox
+    state: present
+  when: ansible_distribution == "Archlinux"
