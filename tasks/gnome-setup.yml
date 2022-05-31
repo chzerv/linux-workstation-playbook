@@ -1,0 +1,107 @@
+---
+- name: Ensure psutil, required for the dconf module to work, and dconf are installed.
+  package:
+    name:
+      - "{{ psutil_package_name }}"
+      - dconf
+    state: present
+  become: true
+
+- name: Unbind default switch-to-application keys.
+  dconf:
+    key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
+    value: "['']"
+  with_sequence: start=1 end=9
+
+- name: Change default GNOME keybindings.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/wm/keybindings/close"
+      value: "['<Super>q']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1"
+      value: "['<Shift><Super>exclam']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2"
+      value: "['<Shift><Super>at']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3"
+      value: "['<Shift><Super>numbersign']"
+    - key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4"
+      value: "['<Shift><Super>dollar']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1"
+      value: "['<Super>1']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2"
+      value: "['<Super>2']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3"
+      value: "['<Super>3']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4"
+      value: "['<Super>4']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-applications"
+      value: "['<Alt>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
+      value: "['<Shift><Alt>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+      value: "['<Super>Tab']"
+    - key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
+      value: "['<Shift><Super>Tab']"
+
+- name: Add custom keybindings.
+  dconf:
+    key: "/org/gnome/settings-daemon/plugins/media-keys{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/custom-keybindings/custom0/binding"
+      value: "['<Super>e']"
+    - key: "/custom-keybindings/custom0/command"
+      value: "['nautilus']"
+    - key: "/custom-keybindings/custom0/name"
+      value: "['Nautilus']"
+    - key: "/custom-keybindings/custom1/binding"
+      value: "['<Super>Return']"
+    - key: "/custom-keybindings/custom1/command"
+      value: "['tilix']"
+    - key: "/custom-keybindings/custom1/name"
+      value: "['Tilix']"
+    - key: "/custom-keybindings/custom2/binding"
+      value: "['<Primary>Print']"
+    - key: "/custom-keybindings/custom2/name"
+      value: >-
+        "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/',
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/',
+        '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']"
+
+- name: Configure input sources.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/input-sources/xkb-options"
+      value: "['caps:swapescape', 'lv3:ralt_switch', 'eurosign:4']"
+    - key: "/org/gnome/desktop/input-sources/sources"
+      value: "[('xkb', 'us'), ('xkb', 'gr')]"
+
+- name: Misc tweaks.
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  with_items:
+    - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
+      value: "'flat'"
+    - key: "/org/gnome/desktop/wm/preferences/button-layout"
+      value: "'icon:maximize,close'"
+    - key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
+      value: "'minimize'"
+    - key: "/org/gnome/software/download-updates"
+      value: "false"
+    - key: "/org/gnome/nautilus/icon-view/captions"
+      value: "['size', 'date_modified_with_time', 'none']"
+    - key: "/org/gnome/nautilus/preferences/always-use-location-entry"
+      value: "false"
+    - key: "/org/gnome/desktop/wm/preferences/resize-with-right-buttom"
+      value: "true"
+    - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+      value: "true"
