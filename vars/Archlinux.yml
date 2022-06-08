@@ -1,45 +1,58 @@
 ---
 base_packages:
+  # Dev
   - git
   - ripgrep
   - the_silver_searcher
   - fd
   - python-virtualenv
   - npm
-  - hunspell
-  - hunspell-el
-  - hunspell-en_US
-  - flatpak
-  - tealdeer
-  - wireguard-tools
-  - exfatprogs
-  - moreutils
+  - podman
+  - jq
+  - curl
+  - wget
+  # cli
+  - zsh
   - bat
   - fzf
+  - git-delta
+  - ranger
+  # system
   - htop
   - ncdu
-  - smartmontools
-  - yamllint
-  - ansible-lint
-  - python-black
-  - python-isort
-  - ffmpeg
-  - yt-dlp
-  - mpv
-  - texlive-most
-  - texlive-langgreek
-  - texlive-langextra
-  - pandoc
-  - podman
+  - procps-ng
+  - lm_sensors
+  - flatpak
+  - wireguard-tools
   - base-devel
   - ccache
   - devtools
   - pacman-contrib
+  # prose
+  - hunspell
+  - hunspell-el
+  - hunspell-en_US
+  - texlive-most
+  - texlive-langgreek
+  - texlive-langextra
+  - pandoc
+  # utils
+  - tealdeer
+  - exfatprogs
+  - moreutils
+  - htop
+  - ncdu
+  - smartmontools
   - man-db
   - man-pages
   - reflector
   - pkgfile
-  - lm_sensors
+  # multimedia
+  - ffmpeg
+  - yt-dlp
+  - mpv
+  # gui
+  - foot
 
 multilib_packages:
   - lib32-libindicator-gtk3

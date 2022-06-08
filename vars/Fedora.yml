@@ -1,38 +1,49 @@
 ---
 base_packages:
+  # Dev
+  - "@Development Tools"
   - git
   - ripgrep
   - the_silver_searcher
   - fd-find
   - python3-virtualenv
   - npm
+  - podman
+  - jq
+  - curl
+  - wget
+  # cli
+  - zsh
+  - bat
+  - fzf
+  - git-delta
+  - ranger
+  # system
+  - htop
+  - ncdu
+  - procps-ng
+  - lm_sensors
+  - flatpak
+  - wireguard-tools
+  # prose
   - hunspell
   - hunspell-el
   - hunspell-en-US
-  - flatpak
+  - latexmk
+  - pandoc
+  - texlive-scheme-full
+  # utils
   - tealdeer
-  - wireguard-tools
   - exfatprogs
   - moreutils
-  - bat
-  - fzf
-  - htop
-  - ncdu
-  - smartmontools
-  - python3-ansible-lint
-  - yamllint
-  - python3-black
-  - python3-isort
+  # multimedia
+  - "@Multimedia"
   - ffmpeg
   - ffmpeg-libs
   - yt-dlp
   - mpv
-  - texlive-scheme-full
-  - latexmk
-  - pandoc
-  - zsh
-  - podman
-  - lm_sensors
+  # gui
+  - foot
 
 packages_to_remove:
   - xorg-x11-drv-ati
