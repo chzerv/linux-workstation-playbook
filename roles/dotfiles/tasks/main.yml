@@ -1,10 +1,14 @@
 ---
-
 - name: Ensure git is installed.
   package:
     name: git
     state: present
   become: true
+
+- name: Check if dotfiles are already cloned.
+  stat:
+    path: "{{ dotfiles_dest }}"
+  register: dotfiles_dest_exists
 
 - name: Clone dotfiles repository.
   git:
@@ -12,6 +16,7 @@
     dest: "{{ dotfiles_dest }}"
     accept_hostkey: "{{ dotfiles_accept_hostkey }}"
     version: "{{ dotfiles_repo_branch }}"
+  when: not dotfiles_dest_exists.stat.exists
 
 - name: Ensure required directories exist.
   file:
