@@ -60,14 +60,6 @@ multilib_packages:
   - lib32-libindicator-gtk3
   - lib32-libappindicator-gtk3
 
-neovim_build_prerequisites:
-  - base-devel
-  - cmake
-  - unzip
-  - ninja
-  - tree-sitter
-  - curl
-
 neovim_required_packages:
   - gcc-libs
   - npm

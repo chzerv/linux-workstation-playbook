@@ -48,21 +48,6 @@ base_packages:
   # gui
   - foot
 
-neovim_build_prerequisites:
-  - ninja-build
-  - libtool
-  - autoconf
-  - automake
-  - cmake
-  - gcc
-  - gcc-c++
-  - make
-  - pkgconfig
-  - unzip
-  - patch
-  - gettext
-  - curl
-
 neovim_required_packages:
   - libstdc++
   - libstdc++-static
