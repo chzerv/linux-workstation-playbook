@@ -13,6 +13,11 @@
     name: toolbox
     state: present
 
+- name: Ensure Vagrant is installed
+  ansible.builtin.package:
+    name: vagrant
+    state: present
+
 - name: Rootless Podman | Allocate UIDs for the current user
   ansible.builtin.lineinfile:
     path: /etc/subuid
