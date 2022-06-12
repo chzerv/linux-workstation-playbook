@@ -1,0 +1,49 @@
+---
+- name: Remove packages
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - libreoffice-core
+    - xorg-x11-drv-intel
+    - xorg-x11-drv-nouveau
+    - thai-scalable-fonts-common
+    - tigervnc-server-minimal
+    - fedora-bookmarks
+    - fedora-chromium-config
+    - mediawritter
+    - totem
+    - gnome-tour
+    - gnome-maps
+    - gnome-contacts
+    - gnome-initial-setup
+    - gnome-user-docs
+    - ibus-hangul
+    - khmer-os-system-fonts
+    - rhythmbox
+    - simple-scan
+    - speech-dispatcher
+    - yelp-libs
+    - thermald
+  loop_control:
+    label: "Removed {{ item }}"
+  when: item in installed_packages
+  become: true
+
+- name: Disable services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop:
+    - NetworkManager-wait-online
+    - abrtd
+  when: item in ansible_facts.services
+  become: true
+
+- name: Mask systemd services
+  ansible.builtin.systemd:
+    name: lvm2-monitor
+    masked: true
+    enabled: false
+  become: true

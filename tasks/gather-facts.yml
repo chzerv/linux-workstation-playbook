@@ -22,3 +22,6 @@
   set_fact:
     installed_packages: "{{ ansible_facts.packages }}"
   when: ansible_distribution == "Fedora"
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
