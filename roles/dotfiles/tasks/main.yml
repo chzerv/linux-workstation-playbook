@@ -51,6 +51,7 @@
     - yay
     - bat
     - zsh
+    - foot
     - electron-flags.conf
   loop_control:
     label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
@@ -70,5 +71,6 @@
     - yay
     - bat
     - zsh
+    - foot
   loop_control:
     label: "Setting up {{ item }}.."

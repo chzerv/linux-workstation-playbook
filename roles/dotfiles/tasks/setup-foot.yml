@@ -1,0 +1,5 @@
+---
+- name: foot setup | Ensure foot is installed
+  ansible.builtin.package:
+    name: foot
+    state: present
