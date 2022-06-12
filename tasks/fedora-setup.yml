@@ -43,7 +43,10 @@
 
 - name: Mask systemd services
   ansible.builtin.systemd:
-    name: lvm2-monitor
+    name: "{{ item }}"
     masked: true
     enabled: false
+  loop:
+    - lvm2-monitor
+  when: item in ansible_facts.services
   become: true
