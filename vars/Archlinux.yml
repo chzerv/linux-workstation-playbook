@@ -11,11 +11,13 @@ base_packages:
   - jq
   - curl
   - wget
+  - go
   # cli
   - zsh
   - bat
   - fzf
   - git-delta
+  - lazygit
   - ranger
   # system
   - htop
@@ -73,3 +75,5 @@ neovim_required_packages:
   - ansible-lint
   - python-black
   - python-isort
+
+psutil_package_name: python-psutil

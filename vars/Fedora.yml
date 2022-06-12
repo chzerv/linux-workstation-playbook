@@ -12,11 +12,14 @@ base_packages:
   - jq
   - curl
   - wget
+  - go
   # cli
   - zsh
   - bat
   - fzf
   - git-delta
+  - lazygit
+  - neovim
   - ranger
   # system
   - htop
@@ -45,7 +48,6 @@ base_packages:
   # gui
   - foot
 
-
 neovim_build_prerequisites:
   - ninja-build
   - libtool
@@ -64,8 +66,12 @@ neovim_build_prerequisites:
 neovim_required_packages:
   - libstdc++
   - libstdc++-static
+  - gcc
+  - gcc-c++
   - npm
   - python3-black
   - python3-isort
   - yamllint
   - python3-ansible-lint
+
+psutil_package_name: python3-psutil
