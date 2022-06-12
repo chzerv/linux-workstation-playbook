@@ -1,4 +1,34 @@
 ---
+- name: fedora stuff
+  block:
+    - name: Enable COPR repositories
+      community.general.copr:
+        name: "{{ item }}"
+        state: enabled
+      loop:
+        - atim/lazygit
+        - agriffis/neovim-nightly
+
+    - name: Enable RPM Fusion, Free and Non-Free [Fedora]
+      ansible.builtin.dnf:
+        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      with_items:
+        - free
+        - nonfree
+
+    - name: Update multimedia groups after enabling RPMFusion [Fedora]
+      ansible.builtin.shell: >
+        dnf groupupdate core -y &&
+        dnf groupupdate multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin -y &&
+        dnf groupupdate sound-and-video -y
+      args:
+        warn: false
+      changed_when: true
+  become: true
+  when: ansible_distribution == "Fedora"
+
 - name: Install base packages
   ansible.builtin.package:
     name: "{{ base_packages }}"

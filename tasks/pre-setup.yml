@@ -37,15 +37,6 @@
         group: root
         backup: true
 
-    - name: Enable RPM Fusion [Fedora].
-      ansible.builtin.dnf:
-        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-        state: present
-        disable_gpg_check: true
-      with_items:
-        - free
-        - nonfree
-
     - name: Ensure system is up-to-date [Fedora].
       ansible.builtin.dnf:
         update_cache: true
@@ -56,15 +47,5 @@
       ansible.builtin.dnf:
         autoremove: true
 
-    # The dnf module doesn't support these functions, so the shell module
-    # is used.
-    - name: Update multimedia groups after enabling RPMFusion [Fedora].
-      ansible.builtin.shell: >
-        dnf groupupdate core -y &&
-        dnf groupupdate multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin -y &&
-        dnf groupupdate sound-and-video -y
-      args:
-        warn: false
-      changed_when: true
   when: ansible_distribution == "Fedora"
   become: true
