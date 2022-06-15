@@ -1,0 +1,16 @@
+---
+- name: Download JetBrainsMono Nerd Font
+  ansible.builtin.get_url:
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/JetBrainsMono.zip
+    dest: /tmp/jb.zip
+
+- name: Ensure ~/.local/share/fonts directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.local/share/fonts"
+    state: directory
+    mode: "0755"
+
+- name: Extract JetBrainsMono into ~/.local/share/fonts
+  ansible.builtin.unarchive:
+    src: /tmp/jb.zip
+    dest: "{{ ansible_user_dir }}/.local/share/fonts"

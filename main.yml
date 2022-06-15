@@ -32,6 +32,9 @@
         name: dotfiles
       tags: ["dotfiles"]
 
+    - import_tasks: "tasks/fonts.yml"
+      tags: ["fonts"]
+
     - import_tasks: "tasks/virtualization-containers.yml"
       tags: ["virt"]
       become: true
