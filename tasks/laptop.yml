@@ -1,0 +1,41 @@
+---
+- name: Copy over power-save script
+  ansible.builtin.template:
+    src: "laptop/power-save.sh.j2"
+    dest: "/usr/local/bin/power-save"
+    owner: root
+    group: root
+    mode: "0744"
+
+- name: Network card power-savings
+  ansible.builtin.blockinfile:
+    path: /etc/modprobe.d/iwlwifi.conf
+    mode: "0644"
+    owner: root
+    group: root
+    block: |
+      options iwlwifi power_save=1
+      options iwlmvm power_scheme=3 or options iwldvm force_cam=0
+
+- name: Udev rules
+  ansible.builtin.lineinfile:
+    path: /etc/udev/rules.d/99-powersave.rules
+    mode: "0644"
+    owner: root
+    group: root
+    line: "{{ item }}"
+    create: true
+  loop:
+    - 'SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", RUN+="/usr/local/bin/power-save true"'
+    - 'SUBSYSTEM=="power_supply", ATTR{status}=="Charging", RUN+="/usr/local/bin/power-save false"'
+
+- name: Sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/99-powersave.conf
+  loop:
+    - name: kernel.nmi_watchdog
+      value: "0"

@@ -42,3 +42,7 @@
     - import_tasks: "tasks/gnome-setup.yml"
       tags: ["gnome"]
       when: "'gnome-shell' in installed_packages"
+
+    - import_tasks: "tasks/laptop.yml"
+      tags: ["laptop"]
+      become: true
