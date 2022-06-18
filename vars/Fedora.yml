@@ -51,6 +51,16 @@ base_packages:
   # gui
   - foot
 
+font_packages:
+  - google-noto-cjk-fonts-common
+  - google-noto-emoji-color-fonts
+  - google-noto-fonts-common
+  - dejavu-sans-fonts
+  - dejavu-sans-mono-fonts
+  - dejavu-serif-fonts
+  - powerline-fonts
+  - adobe-source-code-pro-fonts
+  - fontawesome-fonts
 
 neovim_required_packages:
   - libstdc++

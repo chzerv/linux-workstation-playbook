@@ -14,3 +14,9 @@
   ansible.builtin.unarchive:
     src: /tmp/jb.zip
     dest: "{{ ansible_user_dir }}/.local/share/fonts"
+
+- name: Install other fonts
+  ansible.builtin.package:
+    name: "{{ font_packages }}"
+    state: present
+  become: true

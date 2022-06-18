@@ -57,6 +57,16 @@ base_packages:
   # gui
   - foot
 
+font_packages:
+  - noto-fonts
+  - noto-fonts-cjk
+  - noto-fonts-emoji
+  - noto-fonts-extra
+  - ttf-dejavu
+  - powerline-fonts
+  - adobe-source-code-pro-fonts
+  - ttf-font-awesome
+
 multilib_packages:
   - lib32-libindicator-gtk3
   - lib32-libappindicator-gtk3
