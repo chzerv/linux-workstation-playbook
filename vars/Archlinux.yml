@@ -19,6 +19,7 @@ base_packages:
   - git-delta
   - lazygit
   - ranger
+  - vgrep
   # system
   - htop
   - ncdu

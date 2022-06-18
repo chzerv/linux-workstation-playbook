@@ -21,6 +21,7 @@ base_packages:
   - lazygit
   - neovim
   - ranger
+  - vgrep
   # system
   - htop
   - ncdu
@@ -43,10 +44,13 @@ base_packages:
   - "@Multimedia"
   - ffmpeg
   - ffmpeg-libs
+  - libva
+  - libva-utils
   - yt-dlp
   - mpv
   # gui
   - foot
+
 
 neovim_required_packages:
   - libstdc++
