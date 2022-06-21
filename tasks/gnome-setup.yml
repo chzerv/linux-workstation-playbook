@@ -10,6 +10,22 @@
     state: present
   become: true
 
+- name: Ensure ~/.local/share/themes exists
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.local/share/themes"
+    state: directory
+    mode: "0755"
+
+- name: Download the adw-gtk3 theme
+  ansible.builtin.get_url:
+    url: https://github.com/lassekongo83/adw-gtk3/releases/download/v2.0/adw-gtk3v2-0.tar.xz
+    dest: /tmp/adw-gtk3.tar.xz
+
+- name: Unpack the adw-gtk3 theme
+  ansible.builtin.unarchive:
+    src: /tmp/adw-gtk3.tar.xz
+    dest: "{{ ansible_user_dir }}/.local/share/themes/"
+
 - name: Unbind default switch-to-application keys.
   community.general.dconf:
     key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
