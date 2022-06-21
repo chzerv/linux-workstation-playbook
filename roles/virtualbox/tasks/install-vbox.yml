@@ -8,7 +8,7 @@
 
     - name: Install VirtualBox [Fedora]
       ansible.builtin.dnf:
-        name: VirtualBox-6.1
+        name: VirtualBox
         state: present
   when: ansible_distribution == "Fedora"
 
