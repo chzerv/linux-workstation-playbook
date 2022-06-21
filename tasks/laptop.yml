@@ -13,6 +13,7 @@
     mode: "0644"
     owner: root
     group: root
+    create: true
     block: |
       options iwlwifi power_save=1
       options iwlmvm power_scheme=3 or options iwldvm force_cam=0

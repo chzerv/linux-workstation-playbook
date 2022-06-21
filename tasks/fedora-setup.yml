@@ -8,6 +8,7 @@
     - xorg-x11-drv-intel
     - xorg-x11-drv-nouveau
     - thai-scalable-fonts-common
+    - tigervnc
     - tigervnc-server-minimal
     - fedora-bookmarks
     - fedora-chromium-config
@@ -37,6 +38,7 @@
     enabled: false
   loop:
     - NetworkManager-wait-online
+    - NetworkManager-dispatcher
     - abrtd
   when: item in ansible_facts.services
   become: true
