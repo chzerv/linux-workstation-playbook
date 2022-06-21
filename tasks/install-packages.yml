@@ -26,6 +26,13 @@
       args:
         warn: false
       changed_when: true
+
+    - name: Enable Tailscale repository
+      ansible.builtin.command:
+        cmd: dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+        warn: false
+      args:
+        creates: /etc/yum.repos.d/tailscale.repo
   become: true
   when: ansible_distribution == "Fedora"
 

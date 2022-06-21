@@ -27,6 +27,7 @@ base_packages:
   - lm_sensors
   - flatpak
   - wireguard-tools
+  - tailscale
   - base-devel
   - ccache
   - devtools

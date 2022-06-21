@@ -29,6 +29,7 @@ base_packages:
   - lm_sensors
   - flatpak
   - wireguard-tools
+  - tailscale
   # prose
   - hunspell
   - hunspell-el
