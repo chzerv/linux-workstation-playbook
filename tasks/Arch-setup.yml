@@ -1,0 +1,8 @@
+---
+# Not sure if this is a GNOME-only issue, but I've no way of testing it right now.
+- name: Auto-enable bluetooth on login
+  ansible.builtin.lineinfile:
+    path: /etc/bluetooth/main.conf
+    regexp: "^#AutoEnable=.*"
+    line: "AutoEnable=true"
+  become: true

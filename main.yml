@@ -14,9 +14,8 @@
     - import_tasks: "tasks/gather-facts.yml"
       tags: ["always"]
 
-    - import_tasks: tasks/fedora-setup.yml
-      when: ansible_distribution == "Fedora"
-      tags: ["fedora"]
+    - import_tasks: "tasks/{{ ansible_distribution }}-setup.yml"
+      tags: ["setup"]
 
     - import_tasks: tasks/install-packages.yml
       tags: ["packages"]
