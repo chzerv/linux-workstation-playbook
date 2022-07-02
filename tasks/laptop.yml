@@ -16,7 +16,7 @@
     create: true
     block: |
       options iwlwifi power_save=1
-      options iwlmvm power_scheme=3 or options iwldvm force_cam=0
+      options iwlmvm power_scheme=3
 
 - name: Udev rules
   ansible.builtin.lineinfile:
@@ -40,3 +40,5 @@
   loop:
     - name: kernel.nmi_watchdog
       value: "0"
+    - name: vm.dirty_writeback_centisecs
+      value: "1500"  # 15 seconds (default is 5)
