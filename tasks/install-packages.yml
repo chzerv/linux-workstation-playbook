@@ -67,6 +67,7 @@
       ansible.builtin.git:
         repo: "https://aur.archlinux.org/{{ item }}"
         dest: "{{ ansible_user_dir }}/AUR/{{ item }}"
+        force: true
       loop: "{{ aur_packages | flatten(levels = 1) }}"
 
     - name: Install AUR packages [Archlinux].

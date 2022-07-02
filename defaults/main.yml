@@ -13,6 +13,7 @@ cargo_packages:
 
 aur_packages:
   - yay
+  - libvterm-0.1
   - neovim-git
 
 # Flatpak repositories to add.

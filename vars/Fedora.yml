@@ -22,6 +22,7 @@ base_packages:
   - neovim
   - ranger
   - vgrep
+  - python3-bpython
   # system
   - htop
   - ncdu
@@ -42,13 +43,28 @@ base_packages:
   - exfatprogs
   - moreutils
   # multimedia
+  - yt-dlp
+  - mpv
   - "@Multimedia"
   - ffmpeg
   - ffmpeg-libs
   - libva
   - libva-utils
-  - yt-dlp
-  - mpv
+  - libva-vdpau-driver
+  - libvdpau-va-gl
+  - gstreamer1-libav
+  - gstreamer1-plugins-bad-free
+  - gstreamer1-plugins-bad-freeworld
+  - gstreamer1-plugins-base
+  - gstreamer1-plugins-base-tools
+  - gstreamer1-plugins-good
+  - gstreamer1-plugins-good-extras
+  - gstreamer1-plugins-ugly
+  - gstreamer1-plugins-ugly-free
+  - gstreamer1-svt-av1
+  - gstreamer1-svt-vp9
+  - gstreamer1-vaapi
+  - vlc
   # gui
   - foot
 
