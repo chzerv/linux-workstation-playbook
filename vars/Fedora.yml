@@ -42,7 +42,10 @@ base_packages:
   - tealdeer
   - exfatprogs
   - moreutils
-  # multimedia
+  # gui
+  - foot
+
+multimedia_packages:
   - yt-dlp
   - mpv
   - "@Multimedia"
@@ -65,8 +68,6 @@ base_packages:
   - gstreamer1-svt-vp9
   - gstreamer1-vaapi
   - vlc
-  # gui
-  - foot
 
 font_packages:
   - google-noto-cjk-fonts-common
