@@ -7,25 +7,38 @@
     - libreoffice-core
     - xorg-x11-drv-intel
     - xorg-x11-drv-nouveau
+    - xorg-x11-drv-vmware
     - thai-scalable-fonts-common
-    - tigervnc
-    - tigervnc-server-minimal
     - fedora-bookmarks
     - fedora-chromium-config
     - mediawritter
-    - totem
     - gnome-tour
     - gnome-maps
     - gnome-contacts
     - gnome-initial-setup
+    - gnome-logs
     - gnome-user-docs
     - ibus-hangul
+    - ibus-libzhuyin
+    - ibus-libpinyin
     - khmer-os-system-fonts
     - rhythmbox
     - simple-scan
     - speech-dispatcher
     - yelp-libs
     - thermald
+    - abrt
+    - chrome-gnome-shell
+    - hyperv-daemons
+    - hyperv-daemons-license
+    - hypervfcopyd
+    - hypervkvpd
+    - hypervvssd
+    - gnome-shell-extension-background-logo
+    - sgpio 
+    - open-vm-tools
+    - gnome-terminal
+    - gnome-abrt
   loop_control:
     label: "Removed {{ item }}"
   when: item in installed_packages
@@ -39,8 +52,16 @@
   loop:
     - NetworkManager-wait-online
     - NetworkManager-dispatcher
-    - abrtd
-  when: item in ansible_facts.services
+    - iscsi-onboot
+    - iscsi
+    - mcelog
+    - mdmonitor
+    - switcheroo-control
+    - lvm2-monitor
+    - vboxservice
+    - pcscd.socket
+    - nfs-convert
+  #when: item in ansible_facts.services
   become: true
 
 - name: Mask systemd services
@@ -50,5 +71,6 @@
     enabled: false
   loop:
     - lvm2-monitor
+    - nfs-convert
   when: item in ansible_facts.services
   become: true
