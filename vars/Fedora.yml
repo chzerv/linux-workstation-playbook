@@ -44,6 +44,9 @@ base_packages:
   - moreutils
   # gui
   - foot
+  - keepassxc
+  - gnome-console
+  - gnome-console-nautilus
 
 multimedia_packages:
   - yt-dlp
