@@ -47,6 +47,6 @@
       tags: never,gnome
       when: "'gnome-shell' in installed_packages"
 
-    - import_tasks: "tasks/laptop.yml"
-      tags: never,laptop
+    - import_tasks: "tasks/powersaving.yml"
+      tags: never,powersaving
       become: true

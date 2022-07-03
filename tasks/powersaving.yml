@@ -1,4 +1,11 @@
 ---
+- name: Install power-management related packages
+  ansible.builtin.dnf:
+    name:
+      - acpi
+      - powertop
+    state: present
+
 - name: Copy over power-save script
   ansible.builtin.template:
     src: "laptop/power-save.sh.j2"
@@ -8,15 +15,13 @@
     mode: "0744"
 
 - name: Network card power-savings
-  ansible.builtin.blockinfile:
+  ansible.builtin.lineinfile:
     path: /etc/modprobe.d/iwlwifi.conf
     mode: "0644"
     owner: root
     group: root
     create: true
-    block: |
-      options iwlwifi power_save=1
-      options iwlmvm power_scheme=3
+    line: "options iwlwifi power_save=1 iwlmvm power_scheme=3"
 
 - name: Udev rules
   ansible.builtin.lineinfile:
@@ -29,6 +34,8 @@
   loop:
     - 'SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", RUN+="/usr/local/bin/power-save true"'
     - 'SUBSYSTEM=="power_supply", ATTR{status}=="Charging", RUN+="/usr/local/bin/power-save false"'
+    - 'ACTION=="add", SUBSYSTEM=="pci", ATTR{power/control}="auto"'
+    - 'ACTION=="add", SUBSYSTEM=="i2c", ATTR{power/control}="auto"'
 
 - name: Sysctl values
   ansible.posix.sysctl:
@@ -41,4 +48,4 @@
     - name: kernel.nmi_watchdog
       value: "0"
     - name: vm.dirty_writeback_centisecs
-      value: "1500"  # 15 seconds (default is 5)
+      value: "4000"  # 40 seconds (default is 5)
