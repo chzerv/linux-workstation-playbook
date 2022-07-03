@@ -9,19 +9,24 @@
 
   tasks:
     - import_tasks: tasks/pre-setup.yml
-      tags: ["always"]
+      tags: always
 
     - import_tasks: "tasks/gather-facts.yml"
-      tags: ["always"]
+      tags: always
 
-    - import_tasks: "tasks/{{ ansible_distribution }}-setup.yml"
-      tags: ["setup"]
+    - import_tasks: "tasks/Fedora-setup.yml"
+      when: ansible_distribution == "Fedora"
+      tags: setup
+
+    - import_tasks: "tasks/Arch-setup.yml"
+      when: ansible_distribution == "Archlinux"
+      tags: setup
 
     - import_tasks: tasks/install-packages.yml
-      tags: ["packages"]
+      tags: never,packages
 
     - import_tasks: tasks/flatpak.yml
-      tags: ["flatpak"]
+      tags: never,flatpak
 
     - import_tasks: "tasks/gather-facts.yml"
       tags: ["always"]
@@ -29,19 +34,19 @@
     - name: Setup my dotfiles
       ansible.builtin.import_role:
         name: dotfiles
-      tags: ["dotfiles"]
+      tags: never,dotfiles
 
     - import_tasks: "tasks/fonts.yml"
-      tags: ["fonts"]
+      tags: never,fonts
 
     - import_tasks: "tasks/virtualization-containers.yml"
-      tags: ["virt"]
+      tags: never,virt
       become: true
 
     - import_tasks: "tasks/gnome-setup.yml"
-      tags: ["gnome"]
+      tags: never,gnome
       when: "'gnome-shell' in installed_packages"
 
     - import_tasks: "tasks/laptop.yml"
-      tags: ["laptop"]
+      tags: never,laptop
       become: true
