@@ -21,6 +21,7 @@
         state: enabled
       loop:
         - atim/lazygit
+        - atim/bottom
         - agriffis/neovim-nightly
 
     - name: Enable Tailscale repository

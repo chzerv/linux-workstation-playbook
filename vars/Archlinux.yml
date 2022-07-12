@@ -21,6 +21,7 @@ base_packages:
   - ranger
   # system
   - htop
+  - bottom
   - ncdu
   - procps-ng
   - lm_sensors
