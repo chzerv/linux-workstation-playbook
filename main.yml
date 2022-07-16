@@ -42,6 +42,17 @@
       tags: never,gnome
       when: "'gnome-shell' in installed_packages"
 
+    - import_tasks: "tasks/sway-setup.yml"
+      tags: never,sway
+      when: ansible_distribution == "Fedora"
+
+    - name: Sway setup
+      ansible.builtin.import_role:
+        name: dotfiles
+        tasks_from: sway-setup
+      tags: never,sway
+      when: ansible_distribution == "Fedora"
+
     - import_tasks: "tasks/powersaving.yml"
       tags: never,powersaving
       become: true

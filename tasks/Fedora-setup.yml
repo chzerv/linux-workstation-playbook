@@ -35,7 +35,7 @@
     - hypervkvpd
     - hypervvssd
     - gnome-shell-extension-background-logo
-    - sgpio 
+    - sgpio
     - open-vm-tools
     - gnome-terminal
     - gnome-abrt
