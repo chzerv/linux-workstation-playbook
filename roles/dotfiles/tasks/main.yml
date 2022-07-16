@@ -56,19 +56,12 @@
   loop_control:
     label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
 
-- name: Find scripts
-  ansible.builtin.find:
-    paths: "{{ dotfiles_dest }}/scripts/"
-  register: scripts
-
-- name: Create symlinks to ~/.local/bin.
+- name: Create symlinks to ~/.local/bin/scripts
   file:
-    src: "{{ item.path }}"
-    dest: "{{ lookup('env', 'HOME') }}/.local/bin/{{ item.path | basename }}"
+    src: "{{ dotfiles_dest }}/scripts"
+    dest: "{{ ansible_user_dir }}/.local/bin/scripts"
     state: link
-  loop: "{{ scripts.files }}"
-  loop_control:
-    label: "Symlinked dotfiles/scripts/{{ item.path | basename }} to ~/.local/bin/{{ item.path | basename }}"
+    mode: "0755"
 
 - name: In-depth setup.
   include_tasks: "setup-{{ item }}.yml"

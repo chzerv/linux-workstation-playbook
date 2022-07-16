@@ -1,7 +1,7 @@
 ---
 - name: fedora stuff
   block:
-    - name: Enable RPM Fusion, Free and Non-Free [Fedora]
+    - name: Fedora | Enable RPM Fusion, Free and Non-Free
       ansible.builtin.dnf:
         name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
         state: present
@@ -10,12 +10,12 @@
         - free
         - nonfree
 
-    - name: Install multimedia packages (codecs etc)
+    - name: Fedora | Install multimedia packages (codecs etc)
       ansible.builtin.dnf:
         name: "{{ multimedia_packages }}"
         state: present
 
-    - name: Enable COPR repositories
+    - name: Fedora | Enable COPR repositories
       community.general.copr:
         name: "{{ item }}"
         state: enabled
@@ -24,7 +24,7 @@
         - atim/bottom
         - agriffis/neovim-nightly
 
-    - name: Enable Tailscale repository
+    - name: Fedora | Enable Tailscale repository
       ansible.builtin.command:
         cmd: dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo
         warn: false
@@ -39,7 +39,7 @@
     state: present
   become: true
 
-- name: Install 32bit packages, if multilib is enabled [Arch]
+- name: Archlinux | Install 32bit packages, if multilib is enabled
   ansible.builtin.pacman:
     name: "{{ multilib_packages }}"
     state: present
@@ -52,7 +52,7 @@
 
 - name: AUR
   block:
-    - name: Ensure the $HOME/AUR directory exists.
+    - name: Archlinux | Ensure the $HOME/AUR directory exists.
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/AUR"
         state: directory
@@ -60,14 +60,14 @@
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
 
-    - name: Git clone AUR package(s) [Archlinux].
+    - name: Archlinux | Git clone AUR package(s)
       ansible.builtin.git:
         repo: "https://aur.archlinux.org/{{ item }}"
         dest: "{{ ansible_user_dir }}/AUR/{{ item }}"
         force: true
       loop: "{{ aur_packages | flatten(levels = 1) }}"
 
-    - name: Install AUR packages [Archlinux].
+    - name: Archlinux | Install AUR packages
       ansible.builtin.command:
         cmd: "makepkg -sirc --noconfirm"
         chdir: "{{ ansible_user_dir }}/AUR/{{ item }}"

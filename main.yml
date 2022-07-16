@@ -31,11 +31,6 @@
     - import_tasks: "tasks/gather-facts.yml"
       tags: ["always"]
 
-    - name: Setup my dotfiles
-      ansible.builtin.import_role:
-        name: dotfiles
-      tags: never,dotfiles
-
     - import_tasks: "tasks/fonts.yml"
       tags: never,fonts
 
@@ -50,3 +45,8 @@
     - import_tasks: "tasks/powersaving.yml"
       tags: never,powersaving
       become: true
+
+    - name: Setup my dotfiles
+      ansible.builtin.import_role:
+        name: dotfiles
+      tags: never,dotfiles
