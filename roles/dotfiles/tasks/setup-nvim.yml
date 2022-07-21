@@ -1,18 +1,40 @@
 ---
-# Install and configure neovim.
+- name: Clone neovim locally.
+  ansible.builtin.git:
+    repo: https://github.com/neovim/neovim
+    dest: "{{ ansible_env.HOME }}/neovim_src"
+    force: true
+
+- name: Ensure build prerequisites are installed.
+  ansible.builtin.package:
+    name: "{{ neovim_build_prerequisites }}"
+    state: present
+  become: true
+
+- name: Build neovim
+  community.general.make:
+    chdir: "{{ ansible_env.HOME }}/neovim_src"
+    params:
+      CMAKE_BUILD_TYPE: Release
+
+- name: Install neovim
+  community.general.make:
+    chdir: "{{ ansible_env.HOME }}/neovim_src"
+    target: install
+  become: true
 
 - name: Ensure the directory for packer exists
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
     mode: "0755"
 
 - name: Clone the packer repository
   ansible.builtin.git:
     repo: https://github.com/wbthomason/packer.nvim
-    dest: "{{ ansible_user_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    dest: "{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     version: master
 
 - name: Ensure required packages for plugins to work are installed.
@@ -21,9 +43,11 @@
     state: present
   become: true
 
-- name: Ensure prettier is installed
+- name: Install prettier and the Ansible LSP server
   community.general.npm:
-    name: prettier
+    name:
+      - prettier
+      - "@ansible/ansible-language-server"
     state: present
     global: true
   environment:

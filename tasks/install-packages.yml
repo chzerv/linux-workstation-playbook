@@ -1,5 +1,5 @@
 ---
-- name: fedora stuff
+- name: Fedora stuff
   block:
     - name: Fedora | Enable RPM Fusion, Free and Non-Free
       ansible.builtin.dnf:
@@ -22,7 +22,6 @@
       loop:
         - atim/lazygit
         - atim/bottom
-        - agriffis/neovim-nightly
 
     - name: Fedora | Enable Tailscale repository
       ansible.builtin.command:
