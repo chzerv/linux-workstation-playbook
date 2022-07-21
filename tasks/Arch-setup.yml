@@ -1,8 +1,14 @@
 ---
 # Not sure if this is a GNOME-only issue, but I've no way of testing it right now.
+- name: Check if /etc/bluetooth exists
+  ansible.builtin.stat:
+    path: /etc/bluetooth
+  register: etc_blt
+
 - name: Auto-enable bluetooth on login
   ansible.builtin.lineinfile:
     path: /etc/bluetooth/main.conf
     regexp: "^#AutoEnable=.*"
     line: "AutoEnable=true"
   become: true
+  when: etc_blt.stat.exists

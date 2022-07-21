@@ -61,7 +61,7 @@
     - vboxservice
     - pcscd.socket
     - nfs-convert
-  #when: item in ansible_facts.services
+  when: item in ansible_facts.services
   become: true
 
 - name: Mask systemd services
