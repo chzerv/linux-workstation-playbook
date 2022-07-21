@@ -1,5 +1,5 @@
 arch_enable_multilib: true
-npm_config_prefix: ~/.node_modules
+npm_config_prefix: "{{ ansible_env.HOME }}/.node_modules"
 
 npm_packages:
   - name: prettier
@@ -17,28 +17,19 @@ aur_packages:
 # Flatpak repositories to add.
 flatpak_repositories:
   - name: flathub
-    state: present #present/absent, default: present
-    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-    method: system #system/user, default: system
+    url: https://dl.flathub.org/repo/flathub.flatpakrepo
   - name: flathub-beta
-    state: present
-    flatpakrepo_url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
-    method: system
-  - name: gnome-nightly
-    state: present
-    flatpakrepo_url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
-    method: system
+    url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
 
-# Packages to install using flatpak.
+# Packages to install using flatpak (installation is done for the current user)
 flatpak_packages:
   - com.github.tchx84.Flatseal
-  - com.discordapp.Discord
-  - im.riot.Riot
   - md.obsidian.Obsidian
-  - name: org.gnome.Builder
-    remote: gnome-nightly
+  - name: org.mozilla.Thunderbird
+    remote: flathub-beta
+    method: user
 
 dotfiles_repo: https://github.com/chzerv/dotfiles.git
-dotfiles_dest: "{{ ansible_user_dir }}/dotfiles"
+dotfiles_dest: "{{ ansible_env.HOME }}/dotfiles"
 dotfiles_accept_hostkey: true
 dotfiles_repo_branch: main
