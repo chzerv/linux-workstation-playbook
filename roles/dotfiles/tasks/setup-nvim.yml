@@ -1,27 +1,35 @@
 ---
-- name: Clone neovim locally.
-  ansible.builtin.git:
-    repo: https://github.com/neovim/neovim
-    dest: "{{ ansible_env.HOME }}/neovim_src"
-    force: true
+- name: Check if ~/neovim_src exists
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/neovim_src"
+  register: neovim_src_stat
 
-- name: Ensure build prerequisites are installed.
-  ansible.builtin.package:
-    name: "{{ neovim_build_prerequisites }}"
-    state: present
-  become: true
+- name: Setup neovim
+  block:
+    - name: Clone neovim locally.
+      ansible.builtin.git:
+        repo: https://github.com/neovim/neovim
+        dest: "{{ ansible_env.HOME }}/neovim_src"
+        force: true
 
-- name: Build neovim
-  community.general.make:
-    chdir: "{{ ansible_env.HOME }}/neovim_src"
-    params:
-      CMAKE_BUILD_TYPE: Release
+    - name: Ensure build prerequisites are installed.
+      ansible.builtin.package:
+        name: "{{ neovim_build_prerequisites }}"
+        state: present
+      become: true
 
-- name: Install neovim
-  community.general.make:
-    chdir: "{{ ansible_env.HOME }}/neovim_src"
-    target: install
-  become: true
+    - name: Build neovim
+      community.general.make:
+        chdir: "{{ ansible_env.HOME }}/neovim_src"
+        params:
+          CMAKE_BUILD_TYPE: Release
+
+    - name: Install neovim
+      community.general.make:
+        chdir: "{{ ansible_env.HOME }}/neovim_src"
+        target: install
+      become: true
+  when: not neovim_src_stat.stat.exists
 
 - name: Ensure the directory for packer exists
   ansible.builtin.file:
@@ -45,10 +53,11 @@
 
 - name: Install prettier and the Ansible LSP server
   community.general.npm:
-    name:
-      - prettier
-      - "@ansible/ansible-language-server"
+    name: "{{ item }}"
     state: present
     global: true
   environment:
     npm_config_prefix: "{{ npm_config_prefix }}"
+  loop:
+    - prettier
+    - "@ansible/ansible-language-server"
