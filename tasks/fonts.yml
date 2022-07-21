@@ -15,9 +15,21 @@
   ansible.builtin.get_url:
     url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/JetBrainsMono.zip
     dest: /tmp/jb.zip
+
 - name: Extract JetBrainsMono into ~/.local/share/fonts
   ansible.builtin.unarchive:
     src: /tmp/jb.zip
+    remote_src: true
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+
+- name: Download Hasklig Nerd Font
+  ansible.builtin.get_url:
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hasklig.zip
+    dest: /tmp/hasklig.zip
+
+- name: Extract Hasklig into ~/.local/share/fonts
+  ansible.builtin.unarchive:
+    src: /tmp/hasklig.zip
     remote_src: true
     dest: "{{ ansible_env.HOME }}/.local/share/fonts"
 
