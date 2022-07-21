@@ -49,29 +49,7 @@
     - multilib_packages is defined
   become: true
 
-- name: AUR
-  block:
-    - name: Archlinux | Ensure the $HOME/AUR directory exists.
-      ansible.builtin.file:
-        path: "{{ ansible_user_dir }}/AUR"
-        state: directory
-        mode: "0755"
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
-
-    - name: Archlinux | Git clone AUR package(s)
-      ansible.builtin.git:
-        repo: "https://aur.archlinux.org/{{ item }}"
-        dest: "{{ ansible_user_dir }}/AUR/{{ item }}"
-        force: true
-      loop: "{{ aur_packages | flatten(levels = 1) }}"
-
-    - name: Archlinux | Install AUR packages
-      ansible.builtin.command:
-        cmd: "makepkg -sirc --noconfirm"
-        chdir: "{{ ansible_user_dir }}/AUR/{{ item }}"
-      changed_when: false
-      loop: "{{ aur_packages | flatten(levels = 1) }}"
+- import_tasks: tasks/aur.yml
   when:
     - ansible_distribution == "Archlinux"
     - aur_packages is defined

@@ -1,0 +1,28 @@
+---
+- name: AUR | Ensure the $HOME/AUR directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/AUR"
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+
+- name: AUR | Ensure the "base-devel" package group is installed
+  community.general.pacman:
+    name: base-devel
+    state: present
+  become: true
+
+- name: AUR | Clone AUR package(s)
+  ansible.builtin.git:
+    repo: "https://aur.archlinux.org/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/AUR/{{ item }}"
+    force: true
+  loop: "{{ aur_packages | flatten(levels=1) }}"
+
+- name: AUR | Build AUR package(s)
+  ansible.builtin.command:
+    cmd: "makepkg -sirc --noconfirm"
+    chdir: "{{ ansible_env.HOME }}/AUR/{{ item }}"
+  changed_when: true
+  loop: "{{ aur_packages | flatten(levels=1) }}"
