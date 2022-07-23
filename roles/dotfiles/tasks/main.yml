@@ -53,6 +53,7 @@
     - zsh
     - foot
     - electron-flags.conf
+    - starship.toml
   loop_control:
     label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
 
