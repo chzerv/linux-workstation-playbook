@@ -21,5 +21,8 @@
       - swappy
       - network-manager-applet
       - blueman
+      - wob
+      - wf-recorder
+      - slurp
     state: present
   become: true
