@@ -13,6 +13,7 @@ base_packages:
   - curl
   - wget
   - go
+  - nodejs-bash-language-server
   # cli
   - zsh
   - bat

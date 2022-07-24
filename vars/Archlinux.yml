@@ -12,6 +12,7 @@ base_packages:
   - curl
   - wget
   - go
+  - bash-language-server
   # cli
   - zsh
   - bat
