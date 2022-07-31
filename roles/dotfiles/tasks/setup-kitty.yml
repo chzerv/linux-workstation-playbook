@@ -1,0 +1,6 @@
+---
+- name: kitty setup | Ensure kitty is installed
+  ansible.builtin.package:
+    name: kitty
+    state: present
+  become: true

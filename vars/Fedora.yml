@@ -44,7 +44,7 @@ base_packages:
   - exfatprogs
   - moreutils
   # gui
-  - foot
+  - kitty
   - keepassxc
   - gnome-console
   - gnome-console-nautilus

@@ -57,7 +57,7 @@ base_packages:
   - yt-dlp
   - mpv
   # gui
-  - foot
+  - kitty
   - keepassxc
 
 font_packages:

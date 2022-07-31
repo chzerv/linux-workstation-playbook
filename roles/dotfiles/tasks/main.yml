@@ -51,7 +51,7 @@
     - yay
     - bat
     - zsh
-    - foot
+    - kitty
     - electron-flags.conf
     - starship.toml
     - ripgrep.conf
@@ -73,6 +73,6 @@
     - yay
     - bat
     - zsh
-    - foot
+    - kitty
   loop_control:
     label: "Setting up {{ item }}.."
