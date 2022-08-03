@@ -1,7 +1,7 @@
 ---
 - name: Check if ~/neovim_src exists
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/neovim_src"
+    path: "{{ home }}/neovim_src"
   register: neovim_src_stat
 
 - name: Setup neovim
@@ -9,7 +9,7 @@
     - name: Clone neovim locally.
       ansible.builtin.git:
         repo: https://github.com/neovim/neovim
-        dest: "{{ ansible_env.HOME }}/neovim_src"
+        dest: "{{ home }}/neovim_src"
         force: true
 
     - name: Ensure build prerequisites are installed.
@@ -20,13 +20,13 @@
 
     - name: Build neovim
       community.general.make:
-        chdir: "{{ ansible_env.HOME }}/neovim_src"
+        chdir: "{{ home }}/neovim_src"
         params:
           CMAKE_BUILD_TYPE: Release
 
     - name: Install neovim
       community.general.make:
-        chdir: "{{ ansible_env.HOME }}/neovim_src"
+        chdir: "{{ home }}/neovim_src"
         target: install
       become: true
   when: not neovim_src_stat.stat.exists
@@ -42,7 +42,7 @@
 - name: Clone the packer repository
   ansible.builtin.git:
     repo: https://github.com/wbthomason/packer.nvim
-    dest: "{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    dest: "{{ home }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     version: master
 
 - name: Ensure required packages for plugins to work are installed.

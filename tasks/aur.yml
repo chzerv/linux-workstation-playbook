@@ -1,7 +1,7 @@
 ---
 - name: AUR | Ensure the $HOME/AUR directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/AUR"
+    path: "{{ home }}/AUR"
     state: directory
     mode: "0755"
     owner: "{{ ansible_env.USER }}"
@@ -16,13 +16,13 @@
 - name: AUR | Clone AUR package(s)
   ansible.builtin.git:
     repo: "https://aur.archlinux.org/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/AUR/{{ item }}"
+    dest: "{{ home }}/AUR/{{ item }}"
     force: true
   loop: "{{ aur_packages | flatten(levels=1) }}"
 
 - name: AUR | Build AUR package(s)
   ansible.builtin.command:
     cmd: "makepkg -sirc --noconfirm"
-    chdir: "{{ ansible_env.HOME }}/AUR/{{ item }}"
+    chdir: "{{ home }}/AUR/{{ item }}"
   changed_when: true
   loop: "{{ aur_packages | flatten(levels=1) }}"

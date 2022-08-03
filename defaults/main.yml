@@ -1,5 +1,7 @@
+home: "{{ ansible_env.HOME }}"
+
 arch_enable_multilib: true
-npm_config_prefix: "{{ ansible_env.HOME }}/.node_modules"
+npm_config_prefix: "{{ home }}/.node_modules"
 
 npm_packages:
   - name: prettier
@@ -30,6 +32,6 @@ flatpak_packages:
     method: user
 
 dotfiles_repo: https://github.com/chzerv/dotfiles.git
-dotfiles_dest: "{{ ansible_env.HOME }}/dotfiles"
+dotfiles_dest: "{{ home }}/dotfiles"
 dotfiles_accept_hostkey: true
 dotfiles_repo_branch: main

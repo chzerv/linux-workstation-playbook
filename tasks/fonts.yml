@@ -1,7 +1,7 @@
 ---
 - name: Ensure ~/.local/share/fonts directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    path: "{{ home }}/.local/share/fonts"
     state: directory
     mode: "0755"
 
@@ -20,7 +20,7 @@
   ansible.builtin.unarchive:
     src: /tmp/jb.zip
     remote_src: true
-    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    dest: "{{ home }}/.local/share/fonts"
 
 - name: Download Hasklig Nerd Font
   ansible.builtin.get_url:
@@ -31,7 +31,7 @@
   ansible.builtin.unarchive:
     src: /tmp/hasklig.zip
     remote_src: true
-    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    dest: "{{ home }}/.local/share/fonts"
 
 - name: Install other fonts
   ansible.builtin.package:

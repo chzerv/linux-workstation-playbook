@@ -68,12 +68,12 @@
 
 - name: Check if ~/.cargo is already present
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.cargo"
+    path: "{{ home }}/.cargo"
   register: cargo_dir
 
 - name: Check if ~/.rustup is already present
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.cargo"
+    path: "{{ home }}/.cargo"
   register: rustup_dir
 
 - name: Install Rust
@@ -99,4 +99,4 @@
   loop: "{{ cargo_packages }}"
   when: cargo_packages is defined
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin"
+    PATH: "{{ home }}/.cargo/bin"
