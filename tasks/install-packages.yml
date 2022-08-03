@@ -97,3 +97,9 @@
   environment:
     PATH: "{{ home }}/.cargo/bin:{{ ansible_env.PATH }}"
   when: ansible_distribution == "Fedora"
+
+- name: Install rust-analyzer nightly
+  ansible.builtin.command:
+    cmd: ./rustup +nightly component add rust-analyzer-preview
+    creates: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
+    chdir: "{{ home }}/.cargo/bin"
