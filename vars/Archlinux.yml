@@ -12,7 +12,7 @@ base_packages:
   - curl
   - wget
   - go
-  - bash-language-server
+  - stylua
   # cli
   - zsh
   - bat
@@ -20,6 +20,7 @@ base_packages:
   - git-delta
   - lazygit
   - ranger
+  - starship
   # system
   - htop
   - bottom

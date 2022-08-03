@@ -5,7 +5,6 @@ base_packages:
   - git
   - ripgrep
   - the_silver_searcher
-  - fd-find
   - python3-virtualenv
   - npm
   - podman
@@ -13,7 +12,6 @@ base_packages:
   - curl
   - wget
   - go
-  - nodejs-bash-language-server
   # cli
   - zsh
   - bat

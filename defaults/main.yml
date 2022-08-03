@@ -9,10 +9,6 @@ npm_packages:
     # version:
     # executable:
 
-cargo_packages:
-  - name: stylua
-    state: present # present/absent
-
 aur_packages:
   - yay
 
