@@ -30,13 +30,10 @@
     name: "{{ item }}"
     state: present
     path: "{{ home }}/.cargo/bin"
-  loop:
-    - starship
-    - stylua
-    - fd-find
+  loop: "{{ cargo_packages }}"
   environment:
     PATH: "{{ home }}/.cargo/bin:{{ ansible_env.PATH }}"
-  when: ansible_distribution == "Fedora"
+  when: cargo_packages is defined
 
 - name: Install rust-analyzer nightly
   ansible.builtin.command:

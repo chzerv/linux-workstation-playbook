@@ -83,6 +83,12 @@ font_packages:
   - adobe-source-code-pro-fonts
   - fontawesome-fonts
 
+# These packages are either extremely outdated or non existent in Fedora repos
+cargo_packages:
+    - starship
+    - stylua
+    - fd-find
+
 neovim_build_prerequisites:
   - ninja-build
   - libtool
