@@ -1,0 +1,35 @@
+---
+- name: Set fact about the default user
+  ansible.builtin.set_fact:
+    default_user: "{{ ansible_user_id }}"
+
+- name: zsh setup | Ensure zsh is installed
+  ansible.builtin.package:
+    name: zsh
+    state: present
+  become: true
+
+- name: zsh setup | Make zsh the default shell
+  ansible.builtin.user:
+    name: "{{ default_user }}"
+    shell: /bin/zsh
+  become: true
+
+- name: zsh setup | Clone zinit repository
+  ansible.builtin.git:
+    repo: "https://github.com/zdharma-continuum/zinit.git"
+    dest: "{{ home }}/.local/share/zinit/zinit.git"
+    version: main
+
+- name: zsh setup | Symlink zshenv to $HOME
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/zshenv"
+    dest: "{{ home }}/.zshenv"
+    state: link
+
+- name: zsh setup | Symlink zsh to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/zsh"
+    dest: "{{ home }}/.config/zsh"
+    state: link
+    mode: "0755"

@@ -31,3 +31,17 @@ dotfiles_repo: https://github.com/chzerv/dotfiles.git
 dotfiles_dest: "{{ home }}/dotfiles"
 dotfiles_accept_hostkey: true
 dotfiles_repo_branch: main
+
+dotfiles_setup:
+  - gitconfig
+  # - latexmk
+  - electron-flags
+  - ripgrep
+  - starship
+  # - yay
+  - bat
+  - kitty
+  - tmux
+  - fish
+  # - zsh
+  - nvim

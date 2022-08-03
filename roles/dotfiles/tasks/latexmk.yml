@@ -1,0 +1,23 @@
+---
+- name: latexmk setup | latexmk package for Fedora
+  ansible.builtin.set_fact:
+    latexmk_package: latexmk
+  when: ansible_distribution == "Fedora"
+
+- name: latexmk setup | latexmk package for Archlinux
+  ansible.builtin.set_fact:
+    latexmk_package: texlive-core
+  when: ansible_distribution == "Archlinux"
+
+- name: latexmk setup | Ensure latexmk is installed
+  ansible.builtin.package:
+    name: "{{ latexmk_package }}"
+    state: present
+  become: true
+
+- name: latexmk setup | Symlink latexmk to $HOME
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/latexmkrc"
+    dest: "{{ home }}/.latexmkrc"
+    state: link
+    mode: "0644"

@@ -1,0 +1,31 @@
+---
+- name: Yay setup.
+  block:
+    - name: yay setup | Ensure required packages are installed.
+      community.general.pacman:
+        name:
+          - base-devel
+          - ccache
+          - glibc
+        state: present
+      become: true
+
+    - name: yay setup | Clone yay from AUR.
+      ansible.builtin.git:
+        repo: "https://aur.archlinux.org/yay.git"
+        dest: "{{ home }}/AUR/yay"
+        version: master
+
+    - name: yay setup | Build yay.
+      ansible.builtin.command: makepkg -sirc --noconfirm
+      args:
+        chdir: "{{ home }}/AUR/yay"
+      changed_when: false
+
+    - name: yay setup | Symlink yay to ~/.config
+      ansible.builtin.file:
+        src: "{{ dotfiles_dest }}/config/yay"
+        dest: "{{ home }}/.config/yay"
+        state: link
+        mode: "0755"
+  when: ansible_distribution == "Archlinux"

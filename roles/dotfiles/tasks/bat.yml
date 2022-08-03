@@ -1,0 +1,13 @@
+---
+- name: bat setup | Ensure bat is installed
+  package:
+    name: bat
+    state: present
+  become: true
+
+- name: bat setup | Symlink bat to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/bat"
+    dest: "{{ home }}/.config/bat"
+    state: link
+    mode: "0755"

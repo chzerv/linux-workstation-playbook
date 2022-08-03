@@ -1,0 +1,7 @@
+---
+- name: electron-flags setup | Symlink electronf-flags.conf to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/electron-flags.conf"
+    dest: "{{ home }}/.config/electron-flags.conf"
+    state: link
+    mode: "0644"

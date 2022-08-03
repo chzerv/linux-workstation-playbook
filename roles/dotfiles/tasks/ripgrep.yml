@@ -1,0 +1,13 @@
+---
+- name: ripgrep setup | Ensure ripgrep is installed
+  ansible.builtin.package:
+    name: ripgrep
+    state: present
+  become: true
+
+- name: ripgrep setup | Symlink ripgrep.conf to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/ripgrep.conf"
+    dest: "{{ home }}/.config/ripgrep.conf"
+    state: link
+    mode: "0644"

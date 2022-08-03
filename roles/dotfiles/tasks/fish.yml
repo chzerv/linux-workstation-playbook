@@ -1,0 +1,36 @@
+---
+- name: Set fact about the default user.
+  ansible.builtin.set_fact:
+    default_user: "{{ ansible_user_id }}"
+
+- name: fish setup | Ensure fish is installed.
+  ansible.builtin.package:
+    name: fish
+    state: present
+  become: true
+
+- name: fish setup | Make fish the default shell.
+  ansible.builtin.user:
+    name: "{{ default_user }}"
+    shell: /usr/bin/fish
+  become: true
+
+- name: fish setup | Symlink fish to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/fish"
+    dest: "{{ home }}/.config/fish"
+    state: link
+    mode: "0755"
+
+- name: Download fisher
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/jorgebucaran/fisher/HEAD/functions/fisher.fish
+    dest: /tmp/fisher.fish
+
+- name: fish setup | Install fisher
+  ansible.builtin.shell: |
+    source /tmp/fisher.fish
+    fisher install jorgebucaran/fisher
+  args:
+    executable: /usr/bin/fish
+    creates: "{{ home }}/.config/fish/functions/fisher.fish"

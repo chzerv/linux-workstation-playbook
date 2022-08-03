@@ -58,3 +58,10 @@
       - prettier
       - bash-language-server
       - "@ansible/ansible-language-server"
+
+- name: nvim setup | Symlink nvim to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/nvim"
+    dest: "{{ home }}/.config/nvim"
+    state: link
+    mode: "0755"

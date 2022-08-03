@@ -1,0 +1,13 @@
+---
+- name: kitty setup | Ensure kitty is installed
+  ansible.builtin.package:
+    name: kitty
+    state: present
+  become: true
+
+- name: kitty setup | Symlink kitty to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/kitty"
+    dest: "{{ home }}/.config/kitty"
+    state: link
+    mode: "0755"

@@ -1,0 +1,21 @@
+---
+- name: starship setup | Ensure starship is installed on Fedora
+  ansible.builtin.import_tasks: ../../../tasks/rust-cargo.yml
+  vars:
+    cargo_packages:
+      - starship
+  when: ansible_distribution == "Fedora"
+
+- name: starship setup | Ensure starship is installed on Archlinux
+  community.general.pacman:
+    name: starship
+    state: present
+  become: true
+  when: ansible_distribution == "Archlinux"
+
+- name: starship setup | Symlink starship.conf to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/starship.toml"
+    dest: "{{ home }}/.config/starship.toml"
+    state: link
+    mode: "0644"

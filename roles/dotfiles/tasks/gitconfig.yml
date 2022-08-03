@@ -1,0 +1,13 @@
+---
+- name: gitconfig setup | Ensure git-delta is installed
+  ansible.builtin.package:
+    name: git-delta
+    state: present
+  become: true
+
+- name: gitconfig setup | Symlink gitconfig to $HOME
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/gitconfig"
+    dest: "{{ home }}/.gitconfig"
+    state: link
+    mode: "0644"
