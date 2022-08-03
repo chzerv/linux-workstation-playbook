@@ -59,47 +59,5 @@
   when:
     - npm_packages is defined
 
-- name: Check if ~/.cargo is already present
-  ansible.builtin.stat:
-    path: "{{ home }}/.cargo"
-  register: cargo_dir
-
-- name: Check if ~/.rustup is already present
-  ansible.builtin.stat:
-    path: "{{ home }}/.rustup"
-  register: rustup_dir
-
-- name: Install Rust
-  block:
-    - name: Download the rustup installer.
-      ansible.builtin.get_url:
-        url: https://sh.rustup.rs
-        dest: /tmp/sh.rustup.rs
-        mode: "755"
-        force: true
-
-    - name: Run the rustup script.
-      ansible.builtin.command:
-        cmd: /tmp/sh.rustup.rs -y --no-modify-path
-      register: installer_output
-      changed_when: "'stable-x86_64-unknown-linux-gnu installed' in installer_output.stdout"
-  when: not cargo_dir.stat.exists and not rustup_dir.stat.exists
-
-- name: Install packages with Cargo
-  community.general.cargo:
-    name: "{{ item }}"
-    state: present
-    path: "{{ home }}/.cargo/bin"
-  loop:
-    - starship
-    - stylua
-    - fd-find
-  environment:
-    PATH: "{{ home }}/.cargo/bin:{{ ansible_env.PATH }}"
-  when: ansible_distribution == "Fedora"
-
-- name: Install rust-analyzer nightly
-  ansible.builtin.command:
-    cmd: ./rustup +nightly component add rust-analyzer-preview
-    creates: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
-    chdir: "{{ home }}/.cargo/bin"
+- name: Setup Rust and install packages with cargo
+  import_tasks: tasks/rust-cargo.yml
