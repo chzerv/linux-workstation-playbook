@@ -1,37 +1,37 @@
 ---
-- name: Check if ~/neovim_src exists
+- name: neovim setup | Check if ~/neovim_src exists
   ansible.builtin.stat:
     path: "{{ home }}/neovim_src"
   register: neovim_src_stat
 
 - name: Setup neovim
   block:
-    - name: Clone neovim locally.
+    - name: neovim setup | Clone neovim locally.
       ansible.builtin.git:
         repo: https://github.com/neovim/neovim
         dest: "{{ home }}/neovim_src"
         force: true
 
-    - name: Ensure build prerequisites are installed.
+    - name: neovim setup | Ensure build prerequisites are installed.
       ansible.builtin.package:
         name: "{{ neovim_build_prerequisites }}"
         state: present
       become: true
 
-    - name: Build neovim
+    - name: neovim setup | Build neovim
       community.general.make:
         chdir: "{{ home }}/neovim_src"
         params:
           CMAKE_BUILD_TYPE: Release
 
-    - name: Install neovim
+    - name: neovim setup | Install neovim
       community.general.make:
         chdir: "{{ home }}/neovim_src"
         target: install
       become: true
   when: not neovim_src_stat.stat.exists
 
-- name: Ensure the directory for packer exists
+- name: neovim setup | Ensure the directory for packer exists
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     state: directory
@@ -39,25 +39,22 @@
     group: "{{ ansible_env.USER }}"
     mode: "0755"
 
-- name: Clone the packer repository
+- name: neovim setup | Clone the packer repository
   ansible.builtin.git:
     repo: https://github.com/wbthomason/packer.nvim
     dest: "{{ home }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     version: master
 
-- name: Ensure required packages for plugins to work are installed.
+- name: neovim setup | Ensure required packages for plugins to work are installed.
   ansible.builtin.package:
     name: "{{ neovim_required_packages }}"
     state: present
   become: true
 
-- name: Install prettier and the Ansible LSP server
-  community.general.npm:
-    name: "{{ item }}"
-    state: present
-    global: true
-  environment:
-    npm_config_prefix: "{{ npm_config_prefix }}"
-  loop:
-    - prettier
-    - "@ansible/ansible-language-server"
+- name: neovim setup | Install packages using npm
+  import_tasks: tasks/npm.yml
+  vars:
+    npm_packages:
+      - prettier
+      - bash-language-server
+      - "@ansible/ansible-language-server"

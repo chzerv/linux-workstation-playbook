@@ -55,16 +55,9 @@
     - aur_packages is defined
 
 - name: Install packages with NPM
-  community.general.npm:
-    name: "{{ item.name | default(item) }}"
-    state: "{{ item.state | default('present') }}"
-    version: "{{ item.version | default(omit) }}"
-    executable: "{{ item.executable | default(omit) }}"
-    global: true
-  loop: "{{ npm_packages }}"
-  environment:
-    npm_config_prefix: "{{ npm_config_prefix }}"
-  when: npm_packages is defined
+  import_tasks: tasks/npm.yml
+  when:
+    - npm_packages is defined
 
 - name: Check if ~/.cargo is already present
   ansible.builtin.stat:
