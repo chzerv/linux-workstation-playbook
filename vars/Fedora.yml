@@ -30,22 +30,23 @@ base_packages:
   - flatpak
   - wireguard-tools
   - tailscale
-  # prose
-  - hunspell
-  - hunspell-el
-  - hunspell-en-US
-  - latexmk
-  - pandoc
-  - texlive-scheme-full
   # utils
   - tealdeer
   - exfatprogs
   - moreutils
+  - hunspell
+  - hunspell-el
+  - hunspell-en-US
   # gui
   - kitty
   - keepassxc
   - gnome-console
   - gnome-console-nautilus
+
+latex_packages:
+  - latexmk
+  - pandoc
+  - texlive-scheme-full
 
 multimedia_packages:
   - yt-dlp

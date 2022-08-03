@@ -34,14 +34,6 @@ base_packages:
   - ccache
   - devtools
   - pacman-contrib
-  # prose
-  - hunspell
-  - hunspell-el
-  - hunspell-en_US
-  - texlive-most
-  - texlive-langgreek
-  - texlive-langextra
-  - pandoc
   # utils
   - tealdeer
   - exfatprogs
@@ -53,6 +45,9 @@ base_packages:
   - man-pages
   - reflector
   - pkgfile
+  - hunspell
+  - hunspell-el
+  - hunspell-en_US
   # multimedia
   - ffmpeg
   - yt-dlp
@@ -60,6 +55,12 @@ base_packages:
   # gui
   - kitty
   - keepassxc
+
+latex_packages:
+  - texlive-most
+  - texlive-langgreek
+  - texlive-langextra
+  - pandoc
 
 font_packages:
   - noto-fonts
