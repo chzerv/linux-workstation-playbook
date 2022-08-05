@@ -1,0 +1,22 @@
+- name: logiops setup | Ensure logiops is installed (Fedora)
+  ansible.builtin.dnf:
+    name: logiops
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: logiops setup | Ensure logiops is installed (Archlinux)
+  ansible.builtin.import_tasks: tasks/aur.yml
+  vars:
+    aur_packages:
+      - logiops-git
+  when: ansible_distribution == "Archlinux"
+
+- name: Copy over logiops configuration file
+  ansible.builtin.template:
+    src: logid.cfg
+    dest: /etc/logid.cfg
+    owner: root
+    group: root
+    mode: "0644"
+  become: true

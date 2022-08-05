@@ -44,5 +44,6 @@ dotfiles_setup:
   - tmux
   - fish
   # - zsh
-  - nvim
+  # - nvim
   - sway
+  - logiops

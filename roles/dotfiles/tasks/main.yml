@@ -30,7 +30,7 @@
     - .local/bin
     - .config
 
-- name: Symlink configuration files
+- name: Dotfiles setup
   include_tasks: "{{ item }}.yml"
   loop: "{{ dotfiles_setup }}"
   ignore_errors: true
