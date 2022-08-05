@@ -23,7 +23,7 @@
         cmd: /tmp/sh.rustup.rs -y --no-modify-path
       register: installer_output
       changed_when: "'stable-x86_64-unknown-linux-gnu installed' in installer_output.stdout"
-  when: not cargo_dir.stat.exists and not rustup_dir.stat.exists
+  when: not (cargo_dir.stat.exists and rustup_dir.stat.exists)
 
 - name: Ensure gcc is installed
   ansible.builtin.package:
