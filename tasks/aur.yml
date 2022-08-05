@@ -7,9 +7,11 @@
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
 
-- name: AUR | Ensure the "base-devel" package group is installed
+- name: AUR | Ensure "base-devel" and "git" are installed
   community.general.pacman:
-    name: base-devel
+    name:
+      - base-devel
+      - git
     state: present
   become: true
 
