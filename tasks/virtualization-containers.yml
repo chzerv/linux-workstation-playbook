@@ -13,11 +13,6 @@
     name: toolbox
     state: present
 
-- name: Ensure Vagrant is installed
-  ansible.builtin.package:
-    name: vagrant
-    state: present
-
 - name: Rootless Podman | Allocate UIDs for the current user
   ansible.builtin.lineinfile:
     path: /etc/subuid
@@ -50,6 +45,23 @@
 #   changed_when: false
 #   become: false
 
-- name: Install VirtualBox
+    #- name: Install VirtualBox
+    #ansible.builtin.import_role:
+    #name: virtualbox
+
+- name: Install libvirt
   ansible.builtin.import_role:
-    name: virtualbox
+    name: ansible-role-libvirt
+  vars:
+    libvirt_users_in_libvirt_group:
+      - "{{ ansible_env.USER }}"
+  become: true
+
+- name: Ensure Vagrant is installed
+  ansible.builtin.package:
+    name: vagrant
+    state: present
+
+- name: Ensure the vagrant-libvirt plugin is installed
+  ansible.builtin.command: vagrant plugin install vagrant-libvirt
+  changed_when: true
