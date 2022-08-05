@@ -1,20 +1,6 @@
 ---
 - name: Fedora stuff
   block:
-    - name: Fedora | Enable RPM Fusion, Free and Non-Free
-      ansible.builtin.dnf:
-        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-        state: present
-        disable_gpg_check: true
-      with_items:
-        - free
-        - nonfree
-
-    - name: Fedora | Install multimedia packages (codecs etc)
-      ansible.builtin.dnf:
-        name: "{{ multimedia_packages }}"
-        state: present
-
     - name: Fedora | Enable COPR repositories
       community.general.copr:
         name: "{{ item }}"
@@ -39,7 +25,7 @@
   become: true
 
 - name: Archlinux | Install 32bit packages, if multilib is enabled
-  ansible.builtin.pacman:
+  community.general.pacman:
     name: "{{ multilib_packages }}"
     state: present
   register: installed_repo_packages

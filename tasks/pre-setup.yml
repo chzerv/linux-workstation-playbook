@@ -37,11 +37,26 @@
         group: root
         backup: true
 
+    - name: Fedora | Enable RPM Fusion, Free and Non-Free
+      ansible.builtin.dnf:
+        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      with_items:
+        - free
+        - nonfree
+
     - name: Ensure system is up-to-date [Fedora].
       ansible.builtin.dnf:
         update_cache: true
         name: "*"
         state: latest
+
+    - name: Fedora | Install multimedia packages (codecs etc)
+      ansible.builtin.dnf:
+        name: "{{ multimedia_packages }}"
+        state: present
+
 
     - name: Autoremove unneeded packages.
       ansible.builtin.dnf:
