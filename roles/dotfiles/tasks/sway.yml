@@ -34,8 +34,19 @@
       - wob
       - rofi-wayland
       - wev
+      - qt5-qtwayland
+      - qt6-qtwayland
   become: true
   when: ansible_distribution == "Fedora"
+
+- name: Ensure required packages are installed (Arch only)
+  community.general.pacman:
+    name:
+      - qt5-wayland
+      - qt6-wayland
+    state: present
+  become: true
+  when: ansible_distribution == "Archlinux"
 
 - name: Ensure required packages are installed (Arch only, via the AUR)
   import_tasks: tasks/aur.yml
