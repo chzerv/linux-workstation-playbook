@@ -12,3 +12,26 @@
     line: "AutoEnable=true"
   become: true
   when: etc_blt.stat.exists
+- name: Install Pipewire + WirePlumber
+  ansible.builtin.shell: "yes | pacman -S {{ item }}"
+  changed_when: false
+  loop:
+      - pipewire
+      - pipewire-alsa
+      - pipewire-pulse
+      - pipewire-jack
+      - wireplumber
+      - wireplumber-docs
+  become: true
+
+- name: Ensure pipewire/wireplumber services are enabled
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+    daemon_reload: false
+    scope: user
+  loop:
+    - pipewire
+    - pipewire-pulse
+    - wireplumber
