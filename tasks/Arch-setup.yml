@@ -12,6 +12,7 @@
     line: "AutoEnable=true"
   become: true
   when: etc_blt.stat.exists
+
 - name: Install Pipewire + WirePlumber
   ansible.builtin.shell: "yes | pacman -S {{ item }}"
   changed_when: false
@@ -35,3 +36,27 @@
     - pipewire
     - pipewire-pulse
     - wireplumber
+
+- name: Remove iptables (replaced by iptables-nft)
+  community.general.pacman:
+    name: iptables
+    state: absent
+    force: true  # --nodeps --nodeps
+  become: true
+
+- name: Install firewalld
+  community.general.pacman:
+    name:
+      - firewalld
+      - iptables-nft
+    state: present
+  become: true
+
+- name: Ensure firewalld is started and enabled at boot
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+    daemon_reload: false
+    scope: system
+  become: true
