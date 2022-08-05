@@ -45,3 +45,4 @@ dotfiles_setup:
   - fish
   # - zsh
   - nvim
+  - sway
