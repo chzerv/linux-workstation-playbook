@@ -7,11 +7,12 @@
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
 
-- name: AUR | Ensure "base-devel" and "git" are installed
+- name: AUR | Ensure base-devel, git and ccache are installed
   community.general.pacman:
     name:
       - base-devel
       - git
+      - ccache
     state: present
   become: true
 
