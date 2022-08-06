@@ -6,10 +6,12 @@ if [[ $1 == "false" ]]; then
     echo 1 > /sys/devices/system/cpu/cpufreq/boost
     echo balanced > /sys/class/drm/${card}/device/power_dpm_state
     echo auto > /sys/class/drm/${card}/device/power_dpm_force_performance_level
+    echo 'balanced' > /sys/firmware/acpi/platform_profile
 else
     /usr/bin/powerprofilesctl set power-saver
     echo 0 > /sys/devices/system/cpu/cpufreq/boost
     echo battery > /sys/class/drm/${card}/device/power_dpm_state
     echo low > /sys/class/drm/${card}/device/power_dpm_force_performance_level
+    echo 'low-power' > /sys/firmware/acpi/platform_profile
 fi
 

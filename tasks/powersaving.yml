@@ -1,6 +1,6 @@
 ---
 - name: Install power-management related packages
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
       - acpi
       - powertop
@@ -34,6 +34,7 @@
   loop:
     - 'SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", RUN+="/usr/local/bin/power-save true"'
     - 'SUBSYSTEM=="power_supply", ATTR{status}=="Charging", RUN+="/usr/local/bin/power-save false"'
+    - 'SUBSYSTEM=="power_supply", ATTR{status}=="Unknown", RUN+="/usr/local/bin/power-save false"'
     - 'ACTION=="add", SUBSYSTEM=="pci", ATTR{power/control}="auto"'
     - 'ACTION=="add", SUBSYSTEM=="i2c", ATTR{power/control}="auto"'
 
