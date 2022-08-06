@@ -60,3 +60,25 @@
     daemon_reload: false
     scope: system
   become: true
+
+- name: Install zram-generator
+  community.general.pacman:
+    name: zram-generator
+    state: present
+  become: true
+
+- name: Create zram-generator configuration
+  ansible.builtin.template:
+    src: zram-generator.conf.j2
+    dest: /etc/systemd/zram-generator.conf
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Enable /dev/zram0
+  ansible.builtin.systemd:
+    name: /dev/zram0
+    state: started
+    daemon_reload: true
+  become: true
