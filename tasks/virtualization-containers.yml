@@ -55,7 +55,6 @@
   vars:
     libvirt_users_in_libvirt_group:
       - "{{ ansible_env.USER }}"
-  become: true
 
 - name: Ensure Vagrant is installed
   ansible.builtin.package:
@@ -65,3 +64,4 @@
 - name: Ensure the vagrant-libvirt plugin is installed
   ansible.builtin.command: vagrant plugin install vagrant-libvirt
   changed_when: true
+  become: false
