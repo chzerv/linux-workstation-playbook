@@ -13,6 +13,14 @@
     name: toolbox
     state: present
 
+- name: Rootless Podman | Install required for Archlinux
+  community.general.pacman:
+    name:
+      - fuse-overlayfs
+      - slirp4netns
+    state: present
+  when: ansible_distribution == "Archlinux"
+
 - name: Rootless Podman | Allocate UIDs for the current user
   ansible.builtin.lineinfile:
     path: /etc/subuid
