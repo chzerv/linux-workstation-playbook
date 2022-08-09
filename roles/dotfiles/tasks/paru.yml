@@ -1,0 +1,16 @@
+---
+- name: paru setup
+  block:
+    - name: paru setup | Download and build paru from the AUR
+      import_tasks: tasks/aur.yml
+      vars:
+        aur_packages:
+          - paru
+
+    - name: paru setup | Symlink paru to ~/.config
+      ansible.builtin.file:
+        src: "{{ dotfiles_dest }}/config/paru"
+        dest: "{{ home }}/.config/paru"
+        state: link
+        mode: "0755"
+  when: ansible_distribution == "Archlinux"

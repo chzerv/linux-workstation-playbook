@@ -10,7 +10,7 @@ npm_packages:
     # executable:
 
 aur_packages:
-  - yay
+  - paru
 
 # Flatpak repositories to add.
 flatpak_repositories:
@@ -38,7 +38,7 @@ dotfiles_setup:
   - electron-flags
   - ripgrep
   - starship
-  # - yay
+  - paru
   - bat
   - kitty
   - tmux
