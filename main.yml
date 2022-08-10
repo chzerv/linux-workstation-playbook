@@ -22,6 +22,10 @@
       when: ansible_distribution == "Archlinux"
       tags: never,setup
 
+    - import_tasks: "tasks/distro-setup.yml"
+      tags: never,setup
+      become: true
+
     - import_tasks: tasks/install-packages.yml
       tags: never,packages
 
@@ -41,10 +45,6 @@
     - import_tasks: "tasks/gnome-setup.yml"
       tags: never,gnome
       when: "'gnome-shell' in installed_packages"
-
-    - import_tasks: "tasks/powersaving-performance.yml"
-      tags: never,pp
-      become: true
 
     - name: Setup my dotfiles
       ansible.builtin.import_role:
