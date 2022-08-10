@@ -42,8 +42,8 @@
       tags: never,gnome
       when: "'gnome-shell' in installed_packages"
 
-    - import_tasks: "tasks/powersaving.yml"
-      tags: never,powersaving
+    - import_tasks: "tasks/powersaving-performance.yml"
+      tags: never,pp
       become: true
 
     - name: Setup my dotfiles
