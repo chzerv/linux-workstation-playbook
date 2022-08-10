@@ -5,6 +5,21 @@
     path: /etc/bluetooth
   register: etc_blt
 
+- name: Install required packages for bluetooth to work
+  community.general.pacman:
+    name:
+      - bluez
+      - bluez-utils
+    state: present
+  become: true
+
+- name: Ensure bluetooth.service is enabled at boot
+  ansible.builtin.systemd:
+    name: bluetooth.service
+    state: started
+    enabled: true
+  become: true
+
 - name: Auto-enable bluetooth on login
   ansible.builtin.lineinfile:
     path: /etc/bluetooth/main.conf
