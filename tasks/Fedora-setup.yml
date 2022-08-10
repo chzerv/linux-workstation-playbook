@@ -11,9 +11,12 @@
     - thai-scalable-fonts-common
     - fedora-bookmarks
     - fedora-chromium-config
-    - mediawritter
+    - mediawriter
     - gnome-tour
     - gnome-maps
+    - gnome-weather
+    - totem
+    - gnome-photos
     - gnome-contacts
     - gnome-initial-setup
     - gnome-logs
@@ -39,12 +42,13 @@
     - open-vm-tools
     - gnome-terminal
     - gnome-abrt
+    - gamemode
   loop_control:
     label: "Removed {{ item }}"
   when: item in installed_packages
   become: true
 
-- name: Disable services
+- name: Disable systemd services and timers
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
@@ -52,25 +56,39 @@
   loop:
     - NetworkManager-wait-online
     - NetworkManager-dispatcher
-    - iscsi-onboot
-    - iscsi
     - mcelog
     - mdmonitor
-    - switcheroo-control
     - lvm2-monitor
     - vboxservice
+    - vboxclient
     - pcscd.socket
     - nfs-convert
-  when: item in ansible_facts.services
+    - raid-check.timer
+  # when: item in ansible_facts.services
   become: true
 
-- name: Mask systemd services
+- name: Mask systemd services and timers
   ansible.builtin.systemd:
     name: "{{ item }}"
     masked: true
     enabled: false
+    state: stopped
+    daemon_reload: true
   loop:
     - lvm2-monitor
-    - nfs-convert
-  when: item in ansible_facts.services
+    - switcheroo-control
+    - unbound-anchor.timer
+    - livesys-late
+    - livesys
+    - kdump
+    - import-state
+    - dnf-makecache.timer
+    - auditd
+    - pcscd
+    - mdcheck_start.timer
+    - mdcheck_continue.timer
+    - mdmonitor-oneshot.timer
+    - zfs-fuse-scrub.timer
+    - flatpak-add-fedora-repos
+  # when: item in ansible_facts.services
   become: true

@@ -56,6 +56,10 @@ multimedia_packages:
   - "@Multimedia"
   - ffmpeg
   - ffmpeg-libs
+  - compat-ffmpeg28
+  - compat-ffmpeg28-devel
+  - flac
+  - flac-libs
   - libva
   - libva-utils
   - libva-vdpau-driver
