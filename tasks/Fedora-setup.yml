@@ -92,3 +92,25 @@
     - flatpak-add-fedora-repos
   # when: item in ansible_facts.services
   become: true
+
+- name: Check if /etc/crypttab exists
+  ansible.builtin.stat:
+    path: /etc/crypttab
+  register: crypttab
+
+- name: crypptab performance tuning
+  ansible.builtin.replace:
+    path: /etc/crypttab
+    regexp: "none discard$"
+    replace: "none discard,no-read-workqueue,no-write-workqueue"
+    backup: true
+  when: crypttab.stat.exists
+  become: true
+
+- name: fstab performance tuning
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: "x-systemd.device-timeout=0"
+    replace: "x-systemd.device-timeout=0,noatime,ssd,discard=async"
+    backup: true
+  become: true
