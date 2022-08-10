@@ -16,11 +16,11 @@
 
     - import_tasks: "tasks/Fedora-setup.yml"
       when: ansible_distribution == "Fedora"
-      tags: setup
+      tags: never,setup
 
     - import_tasks: "tasks/Arch-setup.yml"
       when: ansible_distribution == "Archlinux"
-      tags: setup
+      tags: never,setup
 
     - import_tasks: tasks/install-packages.yml
       tags: never,packages
@@ -29,7 +29,7 @@
       tags: never,flatpak
 
     - import_tasks: "tasks/gather-facts.yml"
-      tags: ["always"]
+      tags: always
 
     - import_tasks: "tasks/fonts.yml"
       tags: never,fonts
