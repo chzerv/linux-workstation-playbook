@@ -7,7 +7,6 @@
       - "{{ psutil_package_name }}"
       - dconf
       - gnome-shell-extension-appindicator
-      - gnome-extensions-app
     state: present
   become: true
 

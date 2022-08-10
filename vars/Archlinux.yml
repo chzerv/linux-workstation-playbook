@@ -13,14 +13,16 @@ base_packages:
   - wget
   - go
   - stylua
+  - shellcheck
   # cli
   - zsh
   - bat
   - fzf
   - git-delta
   - lazygit
-  - ranger
+  - nnn
   - starship
+  - trash-cli
   # system
   - htop
   - bottom
@@ -54,13 +56,15 @@ base_packages:
   - mpv
   # gui
   - kitty
-  - keepassxc
 
 latex_packages:
   - texlive-most
   - texlive-langgreek
   - texlive-langextra
   - pandoc
+
+cargo_packages:
+  - navi
 
 font_packages:
   - noto-fonts

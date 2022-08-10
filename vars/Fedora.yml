@@ -12,13 +12,16 @@ base_packages:
   - curl
   - wget
   - go
+  - ShellCheck
   # cli
   - zsh
   - bat
   - fzf
   - git-delta
   - lazygit
-  - ranger
+  - navi
+  - nnn
+  - trash-cli
   - vgrep
   - python3-bpython
   # system
@@ -39,7 +42,6 @@ base_packages:
   - hunspell-en-US
   # gui
   - kitty
-  - keepassxc
   - gnome-console
   - gnome-console-nautilus
 
