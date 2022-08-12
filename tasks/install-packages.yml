@@ -35,11 +35,6 @@
     - multilib_packages is defined
   become: true
 
-- import_tasks: tasks/aur.yml
-  when:
-    - ansible_distribution == "Archlinux"
-    - aur_packages is defined
-
 - name: Install packages with NPM
   import_tasks: tasks/npm.yml
   when:
@@ -47,3 +42,8 @@
 
 - name: Setup Rust and install packages with cargo
   import_tasks: tasks/rust-cargo.yml
+
+- import_tasks: tasks/aur.yml
+  when:
+    - ansible_distribution == "Archlinux"
+    - aur_packages is defined
