@@ -1,7 +1,7 @@
 ---
 - name: Archlinux
   block:
-    - name: Configure pacman [Arch]
+    - name: Configure acman [Arch]
       ansible.builtin.template:
         src: pacman.conf.j2
         dest: /etc/pacman.conf
@@ -20,7 +20,7 @@
         backup: true
 
     - name: Ensure system is up-to-date [Arch]
-      ansible.builtin.pacman:
+      community.general.pacman:
         update_cache: true
         upgrade: true
   when: ansible_distribution == "Archlinux"

@@ -1,2 +1,5 @@
 skip_list:
   - '106'
+  - git-latest
+  - package-latest
+  - yaml

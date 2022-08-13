@@ -1,6 +1,6 @@
 ---
 - name: bat setup | Ensure bat is installed
-  package:
+  ansible.builtin.package:
     name: bat
     state: present
   become: true

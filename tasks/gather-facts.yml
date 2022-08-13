@@ -1,12 +1,12 @@
 ---
 # package_facts does NOT work for pacman (Archlinux)
 - name: Find installed packages (Fedora)
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
   when: ansible_distribution == "Fedora"
 
 - name: Find installed packages (Archlinux)
-  command: pacman -Qn
+  ansible.builtin.command: pacman -Qn
   register: arch_installed_packages
   no_log: true
   failed_when: false
@@ -14,12 +14,12 @@
   when: ansible_distribution == "Archlinux"
 
 - name: Set fact about installed packages in Archlinux.
-  set_fact:
+  ansible.builtin.set_fact:
     installed_packages: "{{ arch_installed_packages.stdout }}"
   when: ansible_distribution == "Archlinux"
 
 - name: Set fact about installed packages in Fedora.
-  set_fact:
+  ansible.builtin.set_fact:
     installed_packages: "{{ ansible_facts.packages }}"
   when: ansible_distribution == "Fedora"
 

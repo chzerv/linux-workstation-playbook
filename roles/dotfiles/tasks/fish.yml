@@ -26,6 +26,7 @@
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/jorgebucaran/fisher/HEAD/functions/fisher.fish
     dest: /tmp/fisher.fish
+    mode: "0644"
 
 - name: fish setup | Install fisher
   ansible.builtin.shell: |

@@ -15,6 +15,7 @@
   ansible.builtin.get_url:
     url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/JetBrainsMono.zip
     dest: /tmp/jb.zip
+    mode: "0644"
 
 - name: Extract JetBrainsMono into ~/.local/share/fonts
   ansible.builtin.unarchive:
@@ -26,6 +27,7 @@
   ansible.builtin.get_url:
     url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hasklig.zip
     dest: /tmp/hasklig.zip
+    mode: "0644"
 
 - name: Extract Hasklig into ~/.local/share/fonts
   ansible.builtin.unarchive:
