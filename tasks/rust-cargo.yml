@@ -1,48 +1,73 @@
 ---
-- name: Check if ~/.cargo is already present
+- name: Rust setup | Check if ~/.cargo is already present
   ansible.builtin.stat:
     path: "{{ home }}/.cargo"
   register: cargo_dir
 
-- name: Check if ~/.rustup is already present
+- name: Rust setup | Check if ~/.rustup is already present
   ansible.builtin.stat:
     path: "{{ home }}/.rustup"
   register: rustup_dir
 
-- name: Install Rust
+- name: Rust setup | Check if the nightly toolchain is installed
+  ansible.builtin.stat:
+    path: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu"
+  register: rust_nightly
+
+- name: Rust setup | Rust installation not found
   block:
-    - name: Download the rustup installer.
+    - name: Rust setup > new install | Download the rustup installer
       ansible.builtin.get_url:
         url: https://sh.rustup.rs
         dest: /tmp/sh.rustup.rs
         mode: "755"
         force: true
 
-    - name: Run the rustup script.
+    - name: Rust setup > new install| Run the rustup script
       ansible.builtin.command:
         cmd: /tmp/sh.rustup.rs -y --no-modify-path
       register: installer_output
       changed_when: "'stable-x86_64-unknown-linux-gnu installed' in installer_output.stdout"
   when: not (cargo_dir.stat.exists and rustup_dir.stat.exists)
 
-- name: Ensure gcc is installed
+- name: Rust setup > existing install | Update the stable toolchain
+  ansible.builtin.command:
+    cmd: ./rustup update stable
+    chdir: "{{ home }}/.cargo/bin"
+  changed_when: true
+  when: cargo_dir.stat.exists and rustup_dir.stat.exists
+
+- name: Rust setup > new install | Install the nightly toolchain
+  ansible.builtin.command:
+    cmd: ./rustup toolchain install nightly
+    chdir: "{{ home }}/.cargo/bin"
+  changed_when: true
+  when: not rust_nightly.stat.exists
+
+- name: Rust setup > existing install | Update the nightly toolchain
+  ansible.builtin.command:
+    cmd: ./rustup update nightly
+    chdir: "{{ home }}/.cargo/bin"
+  changed_when: true
+  when: rust_nightly.stat.exists
+
+- name: Rust setup | Install rust-analyzer nightly
+  ansible.builtin.command:
+    cmd: ./rustup +nightly component add rust-analyzer-preview
+    creates: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
+    chdir: "{{ home }}/.cargo/bin"
+
+- name: Rust setup | Ensure gcc is installed
   ansible.builtin.package:
     name: gcc
     state: present
   become: true
 
-- name: Install packages with Cargo
+- name: Rust setup | Install packages with Cargo
   community.general.cargo:
     name: "{{ item }}"
     state: present
-    path: "{{ home }}/.cargo/bin"
   loop: "{{ cargo_packages }}"
   environment:
     PATH: "{{ home }}/.cargo/bin:{{ ansible_env.PATH }}"
   when: cargo_packages is defined
-
-- name: Install rust-analyzer nightly
-  ansible.builtin.command:
-    cmd: ./rustup +nightly component add rust-analyzer-preview
-    creates: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
-    chdir: "{{ home }}/.cargo/bin"
