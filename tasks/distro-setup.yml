@@ -59,3 +59,14 @@
       value: "5"
     - name: kernel.sysrq
       value: "1"
+
+- name: Enable systemd user delegation
+  ansible.builtin.blockinfile:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/delegate.conf"
+    block: >
+      [Service]
+      Delegate=cpu cpuset io
+    create: true
+    mode: "0644"
+    owner: root
+    group: root
