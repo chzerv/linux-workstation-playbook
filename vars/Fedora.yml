@@ -33,6 +33,7 @@ base_packages:
   - flatpak
   - wireguard-tools
   - tailscale
+  - qemu
   # utils
   - tealdeer
   - exfatprogs

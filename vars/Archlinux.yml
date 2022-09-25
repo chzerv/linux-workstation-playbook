@@ -36,6 +36,7 @@ base_packages:
   - ccache
   - devtools
   - pacman-contrib
+  - qemu-full
   # utils
   - tealdeer
   - exfatprogs
