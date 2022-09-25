@@ -1,0 +1,147 @@
+---
+- name: Archlinux | Configure pacman
+  ansible.builtin.template:
+    src: pacman.conf.j2
+    dest: /etc/pacman.conf
+    mode: "0644"
+    owner: root
+    group: root
+    backup: true
+  become: true
+
+- name: Archlinux | Configure makepkg
+  ansible.builtin.template:
+    src: makepkg.conf.j2
+    dest: /etc/makepkg.conf
+    mode: "0644"
+    owner: root
+    group: root
+    backup: true
+  become: true
+
+- name: Archlinux | Ensure system is up-to-date
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  become: true
+
+- name: Archlinux | Check if CPPC is supported
+  ansible.builtin.shell: lscpu | grep -o cppc 2>/dev/null
+  register: cppc_supported
+  ignore_errors: true
+  changed_when: true
+
+- name: Archlinux | Check if amd_pstate is already active
+  ansible.builtin.slurp:
+    src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+  register: amd_pstate_status
+  when: cppc_supported.stdout | length > 0
+
+- name: Archlinux | Load the amd_pstate module
+  ansible.builtin.lineinfile:
+    path: /etc/modules-load.d/amd-pstate.conf
+    line: amd_pstate
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  when: amd_pstate_status['content'] | b64decode | trim != "amd-pstate"
+
+- name: Archlinux | Check if /etc/bluetooth exists
+  ansible.builtin.stat:
+    path: /etc/bluetooth
+  register: etc_blt
+
+- name: Archlinux | Install required packages for bluetooth to work
+  community.general.pacman:
+    name: Archlinux |
+      - bluez
+      - bluez-utils
+    state: present
+  become: true
+
+- name: Archlinux | Ensure bluetooth.service is enabled at boot
+  ansible.builtin.systemd:
+    name: Archlinux | bluetooth.service
+    state: started
+    enabled: true
+  become: true
+
+- name: Archlinux | Auto-enable bluetooth on login
+  ansible.builtin.lineinfile:
+    path: /etc/bluetooth/main.conf
+    regexp: "^#AutoEnable=.*"
+    line: "AutoEnable=true"
+  become: true
+  when: etc_blt.stat.exists
+
+- name: Archlinux | Install Pipewire + WirePlumber
+  ansible.builtin.shell: "yes | pacman -S {{ item }}"
+  changed_when: false
+  loop:
+    - pipewire
+    - pipewire-alsa
+    - pipewire-pulse
+    - pipewire-jack
+    - wireplumber
+    - wireplumber-docs
+  become: true
+
+- name: Archlinux | Ensure pipewire/wireplumber services are enabled
+  ansible.builtin.systemd:
+    name: Archlinux | "{{ item }}"
+    state: started
+    enabled: true
+    daemon_reload: false
+    scope: user
+  loop:
+    - pipewire
+    - pipewire-pulse
+    - wireplumber
+
+- name: Archlinux | Remove iptables (replaced by iptables-nft)
+  community.general.pacman:
+    name: Archlinux | iptables
+    state: absent
+    force: true # --nodeps --nodeps
+  become: true
+
+- name: Archlinux | Install firewalld
+  community.general.pacman:
+    name: Archlinux |
+      - firewalld
+      - iptables-nft
+    state: present
+  become: true
+
+- name: Archlinux | Ensure firewalld is started and enabled at boot
+  ansible.builtin.systemd:
+    name: Archlinux | firewalld
+    state: started
+    enabled: true
+    daemon_reload: false
+    scope: system
+  become: true
+
+- name: Archlinux | Install zram-generator
+  community.general.pacman:
+    name: Archlinux | zram-generator
+    state: present
+  become: true
+
+- name: Archlinux | Create zram-generator configuration
+  ansible.builtin.template:
+    src: zram-generator.conf.j2
+    dest: /etc/systemd/zram-generator.conf
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Archlinux | Enable /dev/zram0
+  ansible.builtin.systemd:
+    name: Archlinux | /dev/zram0
+    state: started
+    daemon_reload: true
+  become: true

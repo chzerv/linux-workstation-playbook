@@ -1,5 +1,43 @@
 ---
-- name: Remove packages
+- name: Fedora | Configure dnf
+  ansible.builtin.template:
+    src: dnf.conf.j2
+    dest: /etc/dnf/dnf.conf
+    mode: "0644"
+    owner: root
+    group: root
+    backup: true
+  become: true
+
+- name: Fedora | Enable RPM Fusion
+  ansible.builtin.dnf:
+    name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+    state: present
+    disable_gpg_check: true
+  with_items:
+    - free
+    - nonfree
+  become: true
+
+- name: Fedora | Ensure system is up-to-date
+  ansible.builtin.dnf:
+    update_cache: true
+    name: "*"
+    state: latest
+
+- name: Fedora | Install multimedia packages (codecs etc)
+  ansible.builtin.dnf:
+    name: "{{ multimedia_packages }}"
+    state: present
+  become: true
+
+- name: Fedora | Autoremove unneeded packages.
+  ansible.builtin.dnf:
+    autoremove: true
+  when: ansible_distribution == "Fedora"
+  become: true
+
+- name: Fedora | Remove packages
   ansible.builtin.dnf:
     name: "{{ item }}"
     state: absent
@@ -48,7 +86,7 @@
   when: item in installed_packages
   become: true
 
-- name: Disable systemd services and timers
+- name: Fedora | Disable systemd services and timers
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
@@ -67,7 +105,7 @@
   # when: item in ansible_facts.services
   become: true
 
-- name: Mask systemd services and timers
+- name: Fedora | Mask systemd services and timers
   ansible.builtin.systemd:
     name: "{{ item }}"
     masked: true
@@ -93,21 +131,7 @@
   # when: item in ansible_facts.services
   become: true
 
-- name: Check if /etc/crypttab exists
-  ansible.builtin.stat:
-    path: /etc/crypttab
-  register: crypttab
-
-- name: crypptab performance tuning
-  ansible.builtin.replace:
-    path: /etc/crypttab
-    regexp: "none discard$"
-    replace: "none discard,no-read-workqueue,no-write-workqueue"
-    backup: true
-  when: crypttab.stat.exists
-  become: true
-
-- name: fstab performance tuning
+- name: Fedora | fstab performance tuning
   ansible.builtin.replace:
     path: /etc/fstab
     regexp: "x-systemd.device-timeout=0"
