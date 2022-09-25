@@ -1,7 +1,7 @@
 ---
 - name: GNOME | Install some GNOME specific packages
   ansible.builtin.package:
-    name: GNOME |
+    name:
       - gnome-tweaks
       - dconf-editor
       - "{{ psutil_package_name }}"

@@ -24,6 +24,7 @@
     update_cache: true
     name: "*"
     state: latest
+  become: true
 
 - name: Fedora | Install multimedia packages (codecs etc)
   ansible.builtin.dnf:
