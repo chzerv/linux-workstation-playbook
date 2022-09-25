@@ -1,0 +1,36 @@
+---
+# https://sysctl-explorer.net/
+- name: Sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/99-sysctl.conf
+  loop:
+    - name: kernel.nmi_watchdog
+      value: "0"
+    - name: vm.swappiness
+      value: "5"
+    - name: vm.vfs_cache_pressure
+      value: "50"
+    - name: vm.dirty_writeback_centisecs
+      value: "1500"
+    - name: vm.laptop_mode
+      value: "5"
+    - name: kernel.sysrq
+      value: "1"
+
+- name: Enable systemd user delegation
+  ansible.builtin.blockinfile:
+    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/delegate.conf"
+    block: >
+      [Service]
+      Delegate=cpu cpuset io
+    create: true
+    mode: "0644"
+    owner: root
+    group: root
+
+- include_tasks: power-management.yml
+

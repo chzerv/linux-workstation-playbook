@@ -1,20 +1,20 @@
 ---
-- name: Install power-management related packages
+- name: Power Management | Install power-management related packages
   ansible.builtin.package:
     name:
       - acpi
       - powertop
     state: present
 
-- name: Copy over power-save script
+- name: Power Management | Copy over power-save script
   ansible.builtin.template:
-    src: "laptop/power-save.sh.j2"
+    src: "power-save.sh.j2"
     dest: "/usr/local/bin/power-save"
     owner: root
     group: root
     mode: "0744"
 
-- name: Network card power-savings
+- name: Power Management | Network card power-savings
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/iwlwifi.conf
     mode: "0644"
@@ -23,7 +23,7 @@
     create: true
     line: "options iwlwifi power_save=1 iwlmvm power_scheme=3"
 
-- name: Udev rules
+- name: Power Management | Udev rules
   ansible.builtin.lineinfile:
     path: /etc/udev/rules.d/99-powersave.rules
     mode: "0644"
@@ -37,36 +37,3 @@
     - 'ACTION=="add|change", SUBSYSTEM=="i2c", ATTR{power/control}="auto"'
     - 'ACTION=="add|change", SUBSYSTEM=="pci", ATTR{power/control}="auto"'
     - 'ACTION=="add|change", SUBSYSTEM=="usb", ATTR{power/autosuspend}="1"'
-
-# https://sysctl-explorer.net/
-- name: Sysctl values
-  ansible.posix.sysctl:
-    name: "{{ item.name }}"
-    value: "{{ item.value }}"
-    state: present
-    sysctl_set: true
-    sysctl_file: /etc/sysctl.d/99-sysctl.conf
-  loop:
-    - name: kernel.nmi_watchdog
-      value: "0"
-    - name: vm.swappiness
-      value: "5"
-    - name: vm.vfs_cache_pressure
-      value: "50"
-    - name: vm.dirty_writeback_centisecs
-      value: "1500"
-    - name: vm.laptop_mode
-      value: "5"
-    - name: kernel.sysrq
-      value: "1"
-
-- name: Enable systemd user delegation
-  ansible.builtin.blockinfile:
-    path: "/etc/systemd/system/user@{{ ansible_user_uid }}.service.d/delegate.conf"
-    block: >
-      [Service]
-      Delegate=cpu cpuset io
-    create: true
-    mode: "0644"
-    owner: root
-    group: root
