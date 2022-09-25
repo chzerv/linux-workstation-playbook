@@ -1,4 +1,4 @@
-- name: Add the flathub flatpak repository remote to the user installation
+- name: Add flatpak repositories
   community.general.flatpak_remote:
     name: "{{ item.name }}"
     state: present

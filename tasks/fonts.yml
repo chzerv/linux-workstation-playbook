@@ -1,5 +1,5 @@
 ---
-- name: Ensure ~/.local/share/fonts directory exists
+- name: Ensure the ~/.local/share/fonts directory exists
   ansible.builtin.file:
     path: "{{ home }}/.local/share/fonts"
     state: directory
