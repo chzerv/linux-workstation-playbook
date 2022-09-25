@@ -8,45 +8,67 @@
     - "defaults/main.yml"
 
   tasks:
-    - import_tasks: tasks/pre-setup.yml
-      tags: always
-
-    - import_tasks: "tasks/gather-facts.yml"
-      tags: always
-
-    - import_tasks: "tasks/Fedora-setup.yml"
-      when: ansible_distribution == "Fedora"
-      tags: never,setup
-
-    - import_tasks: "tasks/Arch-setup.yml"
-      when: ansible_distribution == "Archlinux"
-      tags: never,setup
-
-    - import_tasks: "tasks/distro-setup.yml"
-      tags: never,setup
-      become: true
+    - name: Distribution specific tweaks
+      ansible.builtin.import_role:
+        name: distro-setup
+      tags: never, distro
 
     - import_tasks: tasks/install-packages.yml
-      tags: never,packages
+      tags: never, packages
 
     - import_tasks: tasks/flatpak.yml
-      tags: never,flatpak
-
-    - import_tasks: "tasks/gather-facts.yml"
-      tags: always
+      tags: never, flatpak
 
     - import_tasks: "tasks/fonts.yml"
-      tags: never,fonts
+      tags: never, fonts
 
-    - import_tasks: "tasks/virtualization-containers.yml"
-      tags: never,virt
+    - name: Power management and system tweaks
+      ansible.builtin.import_role:
+        name: system
+      tags: never, system
       become: true
-
-    - import_tasks: "tasks/gnome-setup.yml"
-      tags: never,gnome
-      when: "'gnome-shell' in installed_packages"
 
     - name: Setup my dotfiles
       ansible.builtin.import_role:
         name: dotfiles
-      tags: never,dotfiles
+      tags: never, dotfiles
+
+    - name: Setup podman
+      ansible.builtin.import_role:
+        name: podman
+      tags: never, podman
+
+    - name: Setup distrobox
+      ansible.builtin.import_role:
+        name: distrobox
+      tags: never, distrobox
+
+    - name: Install VirtualBox
+      ansible.builtin.import_role:
+        name: virtualbox
+      tags: never, vbox
+
+    - name: Install libvirt
+      ansible.builtin.import_role:
+        name: ansible-role-libvirt
+      vars:
+        libvirt_users_in_libvirt_group:
+          - "{{ ansible_env.USER }}"
+      tags: never, libvirt
+      become: true
+
+    - name: Setup vagrant
+      ansible.builtin.import_role:
+        name: vagrant
+      tags: never, vagrant
+
+    - name: Security
+      ansible.builtin.import_role:
+        name: ansible-role-security
+      tags: never, security
+      become: true
+
+    - name: GNOME setup
+      ansible.builtin.import_role:
+        name: gnome
+      tags: never, gnome
