@@ -1,0 +1,48 @@
+---
+- name: Ensure podman is installed
+  ansible.builtin.package:
+    name:
+      - podman
+      - podman-docker
+      - podman-compose
+      - buildah
+    state: present
+  become: true
+
+- name: Rootless Podman | Install required for Archlinux
+  community.general.pacman:
+    name:
+      - fuse-overlayfs
+      - slirp4netns
+    state: present
+  when: ansible_distribution == "Archlinux"
+  become: true
+
+- name: Rootless Podman | Allocate UIDs for the current user
+  ansible.builtin.lineinfile:
+    path: /etc/subuid
+    regexp: "^{{ ansible_user_id }}"
+    line: "{{ ansible_user_id }}:100000:65536"
+    create: true
+    mode: "0644"
+  when: ansible_distribution != "Fedora"
+  become: true
+
+- name: Rootless Podman | Allocate GIDs for the current user's group
+  ansible.builtin.lineinfile:
+    path: /etc/subgid
+    regexp: "^{{ ansible_user_id }}"
+    line: "{{ ansible_user_id }}:100000:65536"
+    create: true
+    mode: "0644"
+  when: ansible_distribution != "Fedora"
+  become: true
+
+- name: Update podman's search registries
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    backrefs: true
+    regexp: "^(#\ )?(unqualified-search-registries)\ =\ .*$"
+    line: '\2 = ["docker.io", "registry.fedoraproject.org", "registry.access.redhat.com", "quay.io"]'
+    backup: true
+  become: true

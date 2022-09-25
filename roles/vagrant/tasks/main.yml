@@ -1,0 +1,23 @@
+- name: Ensure Vagrant is installed
+  ansible.builtin.package:
+    name: vagrant
+    state: present
+  become: true
+
+- name: Ensure required packages for the vagrant-libvirt are installed
+  ansible.builtin.dnf:
+    name:
+      - libvirt
+      - libguestfs-tools
+      - gcc
+      - libvirt-devel
+      - libxml2-devel
+      - make
+      - ruby-devel
+    state: present
+  when: ansible_distribution == "Fedora"
+  become: true
+
+- name: Ensure the vagrant-libvirt plugin is installed
+  ansible.builtin.command: vagrant plugin install vagrant-libvirt
+  changed_when: true

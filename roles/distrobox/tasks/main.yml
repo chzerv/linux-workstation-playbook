@@ -1,0 +1,37 @@
+---
+- name: Ensure distrobox is installed (Fedora)
+  ansible.builtin.dnf:
+    name: distrobox
+    state: present
+  when: ansible_distribution == "Fedora"
+  become: true
+
+- name: Ensure distrobox is installed (Archlinux)
+  import_tasks: tasks/aur.yml
+  vars:
+    aur_packages:
+      - distrobox
+  when: ansible_distribution == "Archlinux"
+  become: false
+
+- name: Pull container images for distrobox containers
+  containers.podman.podman_image:
+    name: "{{ item.image }}"
+    tag: "{{ item.tag }}"
+    pull: true
+  loop:
+    - image: archlinux
+      tag: latest
+    - image: fedora
+      tag: rawhide
+  become: false
+
+- name: Create distrobox containers
+  ansible.builtin.command: "distrobox-create --image {{ item.image }} -n {{ item.name }}"
+  changed_when: true
+  loop:
+    - image: archlinux:latest
+      name: arch
+    - image: fedora:rawhide
+      name: fedora
+  become: false
