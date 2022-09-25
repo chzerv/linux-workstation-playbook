@@ -5,7 +5,7 @@
       import_tasks: tasks/aur.yml
       vars:
         aur_packages:
-          - paru
+          - paru-bin
 
     - name: paru setup | Symlink paru to ~/.config
       ansible.builtin.file:
