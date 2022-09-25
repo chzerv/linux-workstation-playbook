@@ -1,7 +1,7 @@
 ---
-- name: Install some GNOME specific packages
+- name: GNOME | Install some GNOME specific packages
   ansible.builtin.package:
-    name:
+    name: GNOME |
       - gnome-tweaks
       - dconf-editor
       - "{{ psutil_package_name }}"
@@ -10,29 +10,29 @@
     state: present
   become: true
 
-- name: Ensure ~/.local/share/themes exists
+- name: GNOME | Ensure ~/.local/share/themes exists
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/share/themes"
     state: directory
     mode: "0755"
 
-- name: Download the adw-gtk3 theme
+- name: GNOME | Download the adw-gtk3 theme
   ansible.builtin.get_url:
     url: https://github.com/lassekongo83/adw-gtk3/releases/download/v2.0/adw-gtk3v2-0.tar.xz
     dest: /tmp/adw-gtk3.tar.xz
 
-- name: Unpack the adw-gtk3 theme
+- name: GNOME | Unpack the adw-gtk3 theme
   ansible.builtin.unarchive:
     src: /tmp/adw-gtk3.tar.xz
     dest: "{{ ansible_user_dir }}/.local/share/themes/"
 
-- name: Unbind default switch-to-application keys.
+- name: GNOME | Unbind default switch-to-application keys.
   community.general.dconf:
     key: "/org/gnome/shell/keybindings/switch-to-application-{{ item }}"
     value: "['']"
   with_sequence: start=1 end=9
 
-- name: Nautilus preferences
+- name: GNOME | Nautilus preferences
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -45,7 +45,7 @@
     - key: /org/gnome/nautilus/preferences/show-delete-permanently
       value: "true"
 
-- name: Configure input sources.
+- name: GNOME | Configure input sources.
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -56,7 +56,7 @@
     - key: "/org/gnome/desktop/input-sources/sources"
       value: "[('xkb', 'us'), ('xkb', 'gr')]"
 
-- name: Peripherals
+- name: GNOME | Peripherals
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -67,7 +67,7 @@
     - key: "/org/gnome/desktop/peripherals/touchpad/tap-to-click"
       value: "true"
 
-- name: Window manager preferences
+- name: GNOME | Window manager preferences
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -80,7 +80,7 @@
     - key: "/org/gnome/desktop/wm/preferences/resize-with-right-button"
       value: "true"
 
-- name: Change default GNOME keybindings.
+- name: GNOME | Change default GNOME keybindings.
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value }}"
