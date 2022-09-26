@@ -51,10 +51,6 @@ base_packages:
   - hunspell
   - hunspell-el
   - hunspell-en_US
-  # multimedia
-  - ffmpeg
-  - yt-dlp
-  - mpv
   # gui
   - kitty
 
@@ -63,6 +59,20 @@ latex_packages:
   - texlive-langgreek
   - texlive-langextra
   - pandoc
+
+multimedia_packages:
+  - yt-dlp
+  - mpv
+  - ffmpeg
+  - flac
+  - libva-mesa-driver
+  - gstreamer
+  - gstreamer-vaapi
+  - gst-libav
+  - gst-plugins-bad
+  - gst-plugins-base
+  - gst-plugins-good
+  - gst-plugins-ugly
 
 cargo_packages:
   - navi

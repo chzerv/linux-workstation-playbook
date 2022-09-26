@@ -25,6 +25,12 @@
     upgrade: true
   become: true
 
+- name: Archlinux | Install multimedia packages (codecs etc)
+  community.general.pacman:
+    name: "{{ multimedia_packages }}"
+    state: present
+  become: true
+
 - name: Archlinux | Check if CPPC is supported
   ansible.builtin.shell: lscpu | grep -o cppc 2>/dev/null
   register: cppc_supported
