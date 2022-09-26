@@ -23,6 +23,15 @@
     create: true
     line: "options iwlwifi power_save=1 iwlmvm power_scheme=3"
 
+- name: Power Management | Audio power saving
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/audio_powersave.conf
+    mode: "0644"
+    owner: root
+    group: root
+    create: true
+    line: "options snd_hda_intel power_save=1"
+
 - name: Power Management | Udev rules
   ansible.builtin.lineinfile:
     path: /etc/udev/rules.d/99-powersave.rules
