@@ -36,6 +36,7 @@
       - wev
       - qt5-qtwayland
       - qt6-qtwayland
+      - python3-i3ipc
   become: true
   when: ansible_distribution == "Fedora"
 
@@ -44,6 +45,7 @@
     name:
       - qt5-wayland
       - qt6-wayland
+      - python-i3ipc
     state: present
   become: true
   when: ansible_distribution == "Archlinux"
@@ -72,3 +74,9 @@
     - rofi
   loop_control:
     label: "Symlinked dotfiles/config/{{ item }} to ~/.config/{{ item }}"
+
+- name: Download the autotiling script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/nwg-piotr/autotiling/master/autotiling/main.py
+    dest: "{{ home }}/.local/bin/autotiling"
+    mode: "0755"
