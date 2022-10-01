@@ -72,3 +72,8 @@
       ansible.builtin.import_role:
         name: gnome
       tags: never, gnome
+
+    - name: Rust
+      ansible.builtin.import_role:
+        name: rust
+      tags: never, rust

@@ -40,9 +40,6 @@
   when:
     - npm_packages is defined
 
-- name: Setup Rust and install packages with cargo
-  import_tasks: tasks/rust-cargo.yml
-
 - import_tasks: tasks/aur.yml
   when:
     - ansible_distribution == "Archlinux"

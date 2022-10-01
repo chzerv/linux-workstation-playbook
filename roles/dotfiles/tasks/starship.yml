@@ -1,6 +1,7 @@
 ---
 - name: starship setup | Ensure starship is installed on Fedora
-  ansible.builtin.import_tasks: ../../../tasks/rust-cargo.yml
+  ansible.builtin.import_role:
+    name: rust
   vars:
     cargo_packages:
       - starship

@@ -33,4 +33,3 @@
     group: root
 
 - include_tasks: power-management.yml
-
