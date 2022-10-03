@@ -23,6 +23,7 @@ base_packages:
   - nnn
   - starship
   - trash-cli
+  - exa
   # system
   - htop
   - bottom
