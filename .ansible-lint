@@ -3,3 +3,5 @@ skip_list:
   - git-latest
   - package-latest
   - yaml
+  - name
+  - key-order
