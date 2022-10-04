@@ -9,6 +9,7 @@ base_packages:
   - npm
   - podman
   - jq
+  - python3-jmespath
   - curl
   - wget
   - go
@@ -35,6 +36,7 @@ base_packages:
   - wireguard-tools
   - tailscale
   - qemu
+  - bind-utils
   # utils
   - tealdeer
   - exfatprogs
@@ -46,6 +48,7 @@ base_packages:
   - kitty
   - gnome-console
   - gnome-console-nautilus
+  - qalculate-gtk
 
 latex_packages:
   - latexmk
