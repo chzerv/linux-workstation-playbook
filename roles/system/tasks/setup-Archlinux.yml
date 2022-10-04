@@ -1,26 +1,19 @@
 ---
-- name: Archlinux | Configure pacman
+- name: Archlinux | Configure pacman and makepkg
   ansible.builtin.template:
-    src: pacman.conf.j2
-    dest: /etc/pacman.conf
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
     mode: "0644"
     owner: root
     group: root
     backup: true
-  become: true
-
-- name: Archlinux | Configure makepkg
-  ansible.builtin.template:
-    src: makepkg.conf.j2
-    dest: /etc/makepkg.conf
-    mode: "0644"
-    owner: root
-    group: root
-    backup: true
+  loop:
+    - makepkg.conf
+    - pacman.conf
   become: true
 
 - name: Archlinux | Check if CPPC is supported
-  ansible.builtin.shell: lscpu | grep -o cppc 2>/dev/null
+  ansible.builtin.shell: lscpu | grep -o cppc
   register: cppc_supported
   ignore_errors: true
   changed_when: true
