@@ -1,0 +1,15 @@
+---
+- name: Create ~/.local/share/{{ item }}
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts/{{ item }}"
+    state: directory
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: "0755"
+
+- name: Download and extract {{ item }}
+  ansible.builtin.unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/{{ item }}.zip"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts/{{ item }}"
+    remote_src: true
+  notify: update font cache

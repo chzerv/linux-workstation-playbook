@@ -19,7 +19,9 @@
     - import_tasks: tasks/flatpak.yml
       tags: never, flatpak
 
-    - import_tasks: "tasks/fonts.yml"
+    - name: Install fonts
+      ansible.builtin.import_role:
+        name: fonts
       tags: never, fonts
 
     - name: Power management and system tweaks
