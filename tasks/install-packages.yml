@@ -15,6 +15,44 @@
         warn: false
       args:
         creates: /etc/yum.repos.d/tailscale.repo
+
+    - name: Fedora | Enable RPM Fusion
+      ansible.builtin.dnf:
+        name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      loop:
+        - free
+        - nonfree
+
+    - name: Fedora | Ensure system is up-to-date
+      ansible.builtin.dnf:
+        update_cache: true
+        name: "*"
+        state: latest
+
+    - name: Fedora | Install multimedia packages (codecs etc)
+      ansible.builtin.dnf:
+        name: "{{ multimedia_packages }}"
+        state: present
+
+    - name: Fedora | Autoremove unneeded packages.
+      ansible.builtin.dnf:
+        autoremove: true
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Archlinux stuff
+  block:
+    - name: Archlinux | Ensure system is up-to-date
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+
+    - name: Archlinux | Install multimedia packages (codecs etc)
+      community.general.pacman:
+        name: "{{ multimedia_packages }}"
+        state: present
   become: true
   when: ansible_distribution == "Fedora"
 

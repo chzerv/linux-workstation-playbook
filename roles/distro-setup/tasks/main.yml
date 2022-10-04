@@ -1,3 +1,0 @@
----
-- include_tasks: gather-facts.yml
-- include_tasks: "{{ ansible_distribution }}.yml"

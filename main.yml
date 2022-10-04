@@ -8,10 +8,10 @@
     - "defaults/main.yml"
 
   tasks:
-    - name: Distribution specific tweaks
+    - name: Power management and system tweaks
       ansible.builtin.import_role:
-        name: distro-setup
-      tags: never, distro
+        name: system
+      tags: never, system
 
     - import_tasks: tasks/install-packages.yml
       tags: never, packages
@@ -23,12 +23,6 @@
       ansible.builtin.import_role:
         name: fonts
       tags: never, fonts
-
-    - name: Power management and system tweaks
-      ansible.builtin.import_role:
-        name: system
-      tags: never, system
-      become: true
 
     - name: Setup my dotfiles
       ansible.builtin.import_role:

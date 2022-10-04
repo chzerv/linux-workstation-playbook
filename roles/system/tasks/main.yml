@@ -1,4 +1,7 @@
 ---
+- name: Distribution specific setup
+  include_tasks: "setup-{{ ansible_distribution }}.yml"
+
 # https://sysctl-explorer.net/
 - name: Sysctl values
   ansible.posix.sysctl:
@@ -20,6 +23,7 @@
       value: "5"
     - name: kernel.sysrq
       value: "1"
+  become: true
 
 - name: Enable systemd user delegation
   ansible.builtin.blockinfile:
@@ -31,5 +35,6 @@
     mode: "0644"
     owner: root
     group: root
+  become: true
 
 - include_tasks: power-management.yml

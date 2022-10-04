@@ -9,34 +9,12 @@
     backup: true
   become: true
 
-- name: Fedora | Enable RPM Fusion
-  ansible.builtin.dnf:
-    name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-    state: present
-    disable_gpg_check: true
-  with_items:
-    - free
-    - nonfree
-  become: true
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
 
-- name: Fedora | Ensure system is up-to-date
-  ansible.builtin.dnf:
-    update_cache: true
-    name: "*"
-    state: latest
-  become: true
-
-- name: Fedora | Install multimedia packages (codecs etc)
-  ansible.builtin.dnf:
-    name: "{{ multimedia_packages }}"
-    state: present
-  become: true
-
-- name: Fedora | Autoremove unneeded packages.
-  ansible.builtin.dnf:
-    autoremove: true
-  when: ansible_distribution == "Fedora"
-  become: true
+- name: Gather service facts
+  ansible.builtin.service_facts:
 
 - name: Fedora | Remove packages
   ansible.builtin.dnf:
@@ -53,8 +31,6 @@
     - mediawriter
     - gnome-tour
     - gnome-maps
-    - gnome-weather
-    - totem
     - gnome-photos
     - gnome-contacts
     - gnome-initial-setup
@@ -84,7 +60,7 @@
     - gamemode
   loop_control:
     label: "Removed {{ item }}"
-  when: item in installed_packages
+  # when: item in ansible_facts.packages
   become: true
 
 - name: Fedora | Disable systemd services and timers
@@ -129,7 +105,7 @@
     - mdmonitor-oneshot.timer
     - zfs-fuse-scrub.timer
     - flatpak-add-fedora-repos
-  # when: item in ansible_facts.services
+  when: item in ansible_facts.services
   become: true
 
 - name: Fedora | fstab performance tuning

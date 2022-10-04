@@ -5,6 +5,7 @@
       - acpi
       - powertop
     state: present
+  become: true
 
 - name: Power Management | Copy over power-save script
   ansible.builtin.template:
@@ -13,6 +14,7 @@
     owner: root
     group: root
     mode: "0744"
+  become: true
 
 - name: Power Management | Network card power-savings
   ansible.builtin.lineinfile:
@@ -22,6 +24,7 @@
     group: root
     create: true
     line: "options iwlwifi power_save=1 iwlmvm power_scheme=3"
+  become: true
 
 - name: Power Management | Audio power saving
   ansible.builtin.lineinfile:
@@ -31,6 +34,7 @@
     group: root
     create: true
     line: "options snd_hda_intel power_save=1"
+  become: true
 
 - name: Power Management | Udev rules
   ansible.builtin.lineinfile:
@@ -46,3 +50,4 @@
     - 'ACTION=="add|change", SUBSYSTEM=="i2c", ATTR{power/control}="auto"'
     - 'ACTION=="add|change", SUBSYSTEM=="pci", ATTR{power/control}="auto"'
     - 'ACTION=="add|change", SUBSYSTEM=="usb", ATTR{power/autosuspend}="1"'
+  become: true
