@@ -5,7 +5,7 @@
 
   vars_files:
     - "vars/{{ ansible_distribution }}.yml"
-    - "defaults/main.yml"
+    - "example-config.yml"
 
   tasks:
     - name: Base

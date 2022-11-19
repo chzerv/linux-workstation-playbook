@@ -1,3 +1,4 @@
 Vagrantfile
 **/.vagrant
-**/private.yml
+config.yml
+
