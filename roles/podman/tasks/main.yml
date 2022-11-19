@@ -9,7 +9,7 @@
     state: present
   become: true
 
-- name: Rootless Podman | Install required for Archlinux
+- name: Rootless Podman | Install required packages for Archlinux
   community.general.pacman:
     name:
       - fuse-overlayfs
