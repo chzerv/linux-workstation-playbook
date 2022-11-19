@@ -1,32 +1,54 @@
 ---
-- name: Install mesa-va from RPMFusion (Fedora only)
-  ansible.builtin.command: dnf swap mesa-va-drivers mesa-va-drivers-freeworld
-  changed_when: true
+- name: Fedora specific
+  block:
+    - name: Ensure system is up-to-date (Fedora)
+      ansible.builtin.dnf:
+        update_cache: true
+        name: "*"
+        state: latest
+
+    - name: Install mesa-va from RPMFusion (Fedora)
+      ansible.builtin.command: dnf swap mesa-va-drivers mesa-va-drivers-freeworld
+      changed_when: true
+
+    - name: Install mesa-vdpau from RPMFusion (Fedora)
+      ansible.builtin.command: dnf swap mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
+      changed_when: true
   become: true
   when: ansible_distribution == "Fedora"
 
-- name: Install mesa-vdpau from RPMFusion (Fedora only)
-  ansible.builtin.command: dnf swap mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
-  changed_when: true
-  become: true
-  when: ansible_distribution == "Fedora"
+- name: Archlinux specific
+  block:
+    - name: Ensure system is up-to-date (Archlinux)
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
 
-- name: Install graphics drivers (Archlinux only)
-  community.general.pacman:
-    name:
-      - mesa
-      - xf86-video-amdgpu
-      - vulkan-icd-loader
-      - vulkan-radeon
-      - libva-mesa-driver
-      - libva-utils
-      - mesa-vdpau
-    state: present
-    update_cache: yes
+    - name: Install graphics drivers (Archlinux)
+      community.general.pacman:
+        name:
+          - mesa
+          - xf86-video-amdgpu
+          - vulkan-icd-loader
+          - vulkan-radeon
+          - libva-mesa-driver
+          - libva-utils
+          - mesa-vdpau
+        state: present
+        update_cache: yes
+
+    - name: Install 32bit packages, if multilib is enabled (Archlinux)
+      community.general.pacman:
+        name: "{{ multilib_packages }}"
+        state: present
+      register: installed_repo_packages
+      when:
+        - arch_enable_multilib | bool
+        - multilib_packages is defined
   become: true
   when: ansible_distribution == "Archlinux"
 
-- name: Install multimedia packages (codecs etc)
+- name: Install multimedia packages and codecs
   ansible.builtin.package:
     name: "{{ multimedia_packages }}"
     state: present
@@ -36,15 +58,4 @@
   ansible.builtin.package:
     name: "{{ base_packages }}"
     state: present
-  become: true
-
-- name: Install 32bit packages, if multilib is enabled (Archlinux only)
-  community.general.pacman:
-    name: "{{ multilib_packages }}"
-    state: present
-  register: installed_repo_packages
-  when:
-    - ansible_distribution == "Archlinux"
-    - arch_enable_multilib | bool
-    - multilib_packages is defined
   become: true

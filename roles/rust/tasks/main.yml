@@ -1,17 +1,21 @@
 ---
+- name: Set the "home" variable
+  ansible.builtin.set_fact:
+    home: "{{ ansible_env.HOME }}"
+
 - name: Rust | Check if ~/.cargo exists
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.cargo"
+    path: "{{ home }}/.cargo"
   register: rust_cargo_dir
 
 - name: Rust | Check if ~/.rustup exists
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.rustup"
+    path: "{{ home }}/.rustup"
   register: rust_rustup_dir
 
 - name: Rust | Check if the nightly toolchain is installed
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu"
+    path: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu"
   register: rust_nightly_toolchain
 
 - name: Rust | New installation
