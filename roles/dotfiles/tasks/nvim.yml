@@ -65,15 +65,3 @@
     dest: "{{ home }}/.config/nvim"
     state: link
     mode: "0755"
-
-- name: neovim setup | Download cargo nextest
-  ansible.builtin.get_url:
-    url: https://github.com/nextest-rs/nextest/releases/download/cargo-nextest-0.9.33/cargo-nextest-0.9.33-x86_64-unknown-linux-gnu.tar.gz
-    dest: /tmp/nextest.tar.gz
-    mode: "0644"
-
-- name: neovim setup | Extract cargo nextest
-  ansible.builtin.unarchive:
-    src: /tmp/nextest.tar.gz
-    remote_src: true
-    dest: "{{ home }}/.cargo/bin"

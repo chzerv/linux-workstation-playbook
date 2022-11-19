@@ -1,0 +1,13 @@
+---
+- name: bottom setup | Ensure bottom is installed
+  ansible.builtin.package:
+    name: bottom
+    state: present
+  become: true
+
+- name: fish setup | Symlink bottom config to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/bottom"
+    dest: "{{ home }}/.config/bottom"
+    state: link
+    mode: "0755"

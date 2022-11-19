@@ -43,7 +43,7 @@ dotfiles_setup:
   - kitty
   - tmux
   - fish
-  # - zsh
   # - nvim
   - sway
   - logiops
+  - bottom
