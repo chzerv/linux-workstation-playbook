@@ -1,6 +1,12 @@
 ---
 - name: Distribution specific setup
-  include_tasks: "setup-{{ ansible_distribution }}.yml"
+  ansible.builtin.include_tasks: "setup-{{ ansible_distribution }}.yml"
+
+- name: Setup bluetooth
+  ansible.builtin.include_tasks: "bluetooth.yml"
+
+- name: Power management tweaks
+  ansible.builtin.include_tasks: power-management.yml
 
 # https://sysctl-explorer.net/
 - name: Sysctl values
@@ -36,5 +42,3 @@
     owner: root
     group: root
   become: true
-
-- include_tasks: power-management.yml

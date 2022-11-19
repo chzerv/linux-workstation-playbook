@@ -8,36 +8,10 @@
     - "defaults/main.yml"
 
   tasks:
-    - name: Power management and system tweaks
+    - name: Base
       ansible.builtin.import_role:
-        name: system
-      tags: never, system
-
-    - import_tasks: tasks/install-packages.yml
-      tags: never, packages
-
-    - import_tasks: tasks/flatpak.yml
-      tags: never, flatpak
-
-    - name: Install fonts
-      ansible.builtin.import_role:
-        name: fonts
-      tags: never, fonts
-
-    - name: Setup my dotfiles
-      ansible.builtin.import_role:
-        name: dotfiles
-      tags: never, dotfiles
-
-    - name: Setup podman
-      ansible.builtin.import_role:
-        name: podman
-      tags: never, podman
-
-    - name: Setup distrobox
-      ansible.builtin.import_role:
-        name: distrobox
-      tags: never, distrobox
+        name: base
+      tags: never, base
 
     - name: Install VirtualBox
       ansible.builtin.import_role:

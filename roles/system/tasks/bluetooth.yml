@@ -1,0 +1,39 @@
+---
+- name: Check if /etc/bluetooth exists
+  ansible.builtin.stat:
+    path: /etc/bluetooth
+  register: etc_blt
+
+- name: Install required packages for bluetooth to work (Archlinux)
+  community.general.pacman:
+    name:
+      - bluez
+      - bluez-utils
+    state: present
+  become: true
+  when: ansible_distribution == "Archlinux"
+
+- name: Install required packages for bluetooth to work (Fedora)
+  ansible.builtin.dnf:
+    name:
+      - bluez
+      - bluez-libs
+      - bluez-tools
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Ensure bluetooth.service is enabled at boot
+  ansible.builtin.systemd:
+    name: bluetooth.service
+    state: started
+    enabled: true
+  become: true
+
+- name: Auto-enable bluetooth on login
+  ansible.builtin.lineinfile:
+    path: /etc/bluetooth/main.conf
+    regexp: "^#AutoEnable=.*"
+    line: "AutoEnable=true"
+  become: true
+  when: etc_blt.stat.exists

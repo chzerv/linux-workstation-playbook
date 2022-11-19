@@ -1,53 +1,29 @@
 ---
-- name: Power Management | Install power-management related packages
+- name: Install power-management related packages
   ansible.builtin.package:
     name:
       - acpi
       - powertop
+      - tlp
     state: present
   become: true
 
-- name: Power Management | Copy over power-save script
-  ansible.builtin.template:
-    src: "power-save.sh.j2"
-    dest: "/usr/local/bin/power-save"
-    owner: root
-    group: root
-    mode: "0744"
+- name: Make sure tlp is started and enabled on boot
+  ansible.builtin.systemd:
+    name: tlp
+    state: started
+    enabled: true
+    scope: system
   become: true
 
-- name: Power Management | Network card power-savings
-  ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/iwlwifi.conf
-    mode: "0644"
-    owner: root
-    group: root
-    create: true
-    line: "options iwlwifi power_save=1 iwlmvm power_scheme=3"
+- name: Ensure systemd-rfkill.service is masked
+  ansible.builtin.systemd:
+    name: systemd-rfkill.service
+    masked: true
   become: true
 
-- name: Power Management | Audio power saving
-  ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/audio_powersave.conf
-    mode: "0644"
-    owner: root
-    group: root
-    create: true
-    line: "options snd_hda_intel power_save=1"
-  become: true
-
-- name: Power Management | Udev rules
-  ansible.builtin.lineinfile:
-    path: /etc/udev/rules.d/99-powersave.rules
-    mode: "0644"
-    owner: root
-    group: root
-    line: "{{ item }}"
-    create: true
-  loop:
-    - 'ATTR{online}=="0", ACTION=="change", SUBSYSTEM=="power_supply", RUN+="/usr/local/bin/power-save true"'
-    - 'ATTR{online}=="1", ACTION=="change", SUBSYSTEM=="power_supply", RUN+="/usr/local/bin/power-save false"'
-    - 'ACTION=="add|change", SUBSYSTEM=="i2c", ATTR{power/control}="auto"'
-    - 'ACTION=="add|change", SUBSYSTEM=="pci", ATTR{power/control}="auto"'
-    - 'ACTION=="add|change", SUBSYSTEM=="usb", ATTR{power/autosuspend}="1"'
+- name: Ensure systemd-rfkill.socket is masked
+  ansible.builtin.systemd:
+    name: systemd-rfkill.socket
+    masked: true
   become: true

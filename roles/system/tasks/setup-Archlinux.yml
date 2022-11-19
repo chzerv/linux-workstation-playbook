@@ -1,17 +1,4 @@
 ---
-- name: Archlinux | Configure pacman and makepkg
-  ansible.builtin.template:
-    src: "{{ item }}.j2"
-    dest: "/etc/{{ item }}"
-    mode: "0644"
-    owner: root
-    group: root
-    backup: true
-  loop:
-    - makepkg.conf
-    - pacman.conf
-  become: true
-
 - name: Archlinux | Check if CPPC is supported
   ansible.builtin.shell: lscpu | grep -o cppc
   register: cppc_supported
@@ -36,34 +23,6 @@
   when:
     - cppc_supported.rc == 0
     - amd_pstate_status['content'] | b64decode | trim != "amd-pstate"
-
-- name: Archlinux | Check if /etc/bluetooth exists
-  ansible.builtin.stat:
-    path: /etc/bluetooth
-  register: etc_blt
-
-- name: Archlinux | Install required packages for bluetooth to work
-  community.general.pacman:
-    name:
-      - bluez
-      - bluez-utils
-    state: present
-  become: true
-
-- name: Archlinux | Ensure bluetooth.service is enabled at boot
-  ansible.builtin.systemd:
-    name: bluetooth.service
-    state: started
-    enabled: true
-  become: true
-
-- name: Archlinux | Auto-enable bluetooth on login
-  ansible.builtin.lineinfile:
-    path: /etc/bluetooth/main.conf
-    regexp: "^#AutoEnable=.*"
-    line: "AutoEnable=true"
-  become: true
-  when: etc_blt.stat.exists
 
 - name: Archlinux | Install Pipewire + WirePlumber
   ansible.builtin.shell: "yes | pacman -S {{ item }}"
@@ -93,7 +52,7 @@
   community.general.pacman:
     name: iptables
     state: absent
-    force: true # --nodeps --nodeps
+    force: true # pacman -Rns --nodeps --nodeps
   become: true
 
 - name: Archlinux | Install firewalld

@@ -1,0 +1,43 @@
+---
+- name: Archlinux | Configure pacman and makepkg
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+    mode: "0644"
+    owner: root
+    group: root
+    backup: true
+  loop:
+    - makepkg.conf
+    - pacman.conf
+  become: true
+
+- name: Archlinux | Ensure system is up-to-date
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  become: true
+
+- name: Archlinux | Ensure reflector is installed
+  community.general.pacman:
+    name: reflector
+    state: present
+  become: true
+
+- name: Archlinux | Reflector configuration
+  ansible.builtin.template:
+    src: reflector.conf.j2
+    dest: /etc/xdg/reflector/reflector.conf
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Archlinux | Ensure reflector.timer is enabled
+  ansible.builtin.systemd:
+    name: reflector.timer
+    state: started
+    enabled: true
+    daemon_reload: false
+    scope: system
+  become: true
