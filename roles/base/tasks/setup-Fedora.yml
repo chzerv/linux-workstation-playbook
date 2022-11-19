@@ -1,4 +1,4 @@
-- name: Fedora prep | Configure dnf
+- name: Fedora | Configure dnf
   ansible.builtin.template:
     src: dnf.conf.j2
     dest: /etc/dnf/dnf.conf
@@ -8,17 +8,7 @@
     backup: true
   become: true
 
-- name: Fedora prep | Enable RPM Fusion
-  ansible.builtin.dnf:
-    name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-    state: present
-    disable_gpg_check: true
-  loop:
-    - free
-    - nonfree
-  become: true
-
-- name: Fedora prep | Ensure system is up-to-date
+- name: Fedora | Ensure system is up-to-date
   ansible.builtin.dnf:
     update_cache: true
     name: "*"

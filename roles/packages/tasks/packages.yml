@@ -1,0 +1,50 @@
+---
+- name: Install mesa-va from RPMFusion (Fedora only)
+  ansible.builtin.command: dnf swap mesa-va-drivers mesa-va-drivers-freeworld
+  changed_when: true
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Install mesa-vdpau from RPMFusion (Fedora only)
+  ansible.builtin.command: dnf swap mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
+  changed_when: true
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- name: Install graphics drivers (Archlinux only)
+  community.general.pacman:
+    name:
+      - mesa
+      - xf86-video-amdgpu
+      - vulkan-icd-loader
+      - vulkan-radeon
+      - libva-mesa-driver
+      - libva-utils
+      - mesa-vdpau
+    state: present
+    update_cache: yes
+  become: true
+  when: ansible_distribution == "Archlinux"
+
+- name: Install multimedia packages (codecs etc)
+  ansible.builtin.package:
+    name: "{{ multimedia_packages }}"
+    state: present
+  become: true
+
+- name: Install base packages
+  ansible.builtin.package:
+    name: "{{ base_packages }}"
+    state: present
+  become: true
+
+- name: Install 32bit packages, if multilib is enabled (Archlinux only)
+  community.general.pacman:
+    name: "{{ multilib_packages }}"
+    state: present
+  register: installed_repo_packages
+  when:
+    - ansible_distribution == "Archlinux"
+    - arch_enable_multilib | bool
+    - multilib_packages is defined
+  become: true

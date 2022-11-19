@@ -7,7 +7,9 @@
   become: true
 
 - name: Ensure distrobox is installed (Archlinux)
-  import_tasks: tasks/aur.yml
+  ansible.builtin.import_role:
+    name: packages
+    tasks_from: aur.yml
   vars:
     aur_packages:
       - distrobox

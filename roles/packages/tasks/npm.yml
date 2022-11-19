@@ -1,4 +1,10 @@
 ---
+- name: Ensure npm is installed
+  ansible.builtin.package:
+    name: npm
+    state: present
+  become: true
+
 - name: Install packages with NPM
   community.general.npm:
     name: "{{ item.name | default(item) }}"

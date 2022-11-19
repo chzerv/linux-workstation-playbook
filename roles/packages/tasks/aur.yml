@@ -1,5 +1,5 @@
 ---
-- name: AUR | Ensure the $HOME/AUR directory exists
+- name: Ensure the $HOME/AUR directory exists
   ansible.builtin.file:
     path: "{{ home }}/AUR"
     state: directory
@@ -7,7 +7,7 @@
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
 
-- name: AUR | Ensure base-devel, git and ccache are installed
+- name: Ensure base-devel, git and ccache are installed
   community.general.pacman:
     name:
       - base-devel
@@ -16,14 +16,14 @@
     state: present
   become: true
 
-- name: AUR | Clone AUR package(s)
+- name: Clone AUR package(s)
   ansible.builtin.git:
     repo: "https://aur.archlinux.org/{{ item }}"
     dest: "{{ home }}/AUR/{{ item }}"
     force: true
   loop: "{{ aur_packages | flatten(levels=1) }}"
 
-- name: AUR | Build AUR package(s)
+- name: Build AUR package(s)
   ansible.builtin.command:
     cmd: "makepkg -sirc --noconfirm"
     chdir: "{{ home }}/AUR/{{ item }}"

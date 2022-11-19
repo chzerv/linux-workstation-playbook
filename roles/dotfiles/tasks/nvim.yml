@@ -45,6 +45,13 @@
     dest: "{{ home }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
     version: master
 
+- name: nvim setup | Symlink nvim to ~/.config
+  ansible.builtin.file:
+    src: "{{ dotfiles_dest }}/config/nvim"
+    dest: "{{ home }}/.config/nvim"
+    state: link
+    mode: "0755"
+
 - name: neovim setup | Ensure required packages for plugins to work are installed.
   ansible.builtin.package:
     name: "{{ neovim_required_packages }}"
@@ -52,16 +59,11 @@
   become: true
 
 - name: neovim setup | Install packages using npm
-  import_tasks: tasks/npm.yml
+  ansible.builtin.import_role:
+    name: packages
+    tasks_from: npm.yml
   vars:
     npm_packages:
       - prettier
       - bash-language-server
       - "@ansible/ansible-language-server"
-
-- name: nvim setup | Symlink nvim to ~/.config
-  ansible.builtin.file:
-    src: "{{ dotfiles_dest }}/config/nvim"
-    dest: "{{ home }}/.config/nvim"
-    state: link
-    mode: "0755"

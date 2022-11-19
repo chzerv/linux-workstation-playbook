@@ -16,7 +16,7 @@ base_packages:
   - stylua
   - shellcheck
   # cli
-  - zsh
+  - fish
   - bat
   - fzf
   - git-delta
@@ -26,7 +26,6 @@ base_packages:
   - trash-cli
   - exa
   # system
-  - htop
   - bottom
   - ncdu
   - procps-ng
@@ -58,12 +57,6 @@ base_packages:
   - kitty
   - qalculate-gtk
 
-latex_packages:
-  - texlive-most
-  - texlive-langgreek
-  - texlive-langextra
-  - pandoc
-
 multimedia_packages:
   - yt-dlp
   - mpv
@@ -77,6 +70,12 @@ multimedia_packages:
   - gst-plugins-base
   - gst-plugins-good
   - gst-plugins-ugly
+
+latex_packages:
+  - texlive-most
+  - texlive-langgreek
+  - texlive-langextra
+  - pandoc
 
 cargo_packages:
   - navi

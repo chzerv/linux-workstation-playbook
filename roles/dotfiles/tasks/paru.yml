@@ -2,7 +2,9 @@
 - name: paru setup
   block:
     - name: paru setup | Download and build paru from the AUR
-      import_tasks: tasks/aur.yml
+      ansible.builtin.import_role:
+        name: packages
+        tasks_from: aur.yml
       vars:
         aur_packages:
           - paru-bin

@@ -15,7 +15,7 @@ base_packages:
   - go
   - ShellCheck
   # cli
-  - zsh
+  - fish
   - bat
   - fzf
   - git-delta
@@ -24,10 +24,8 @@ base_packages:
   - nnn
   - trash-cli
   - vgrep
-  - python3-bpython
   - exa
   # system
-  - htop
   - bottom
   - ncdu
   - procps-ng
@@ -46,23 +44,15 @@ base_packages:
   - hunspell-en-US
   # gui
   - kitty
-  - gnome-console
-  - gnome-console-nautilus
   - qalculate-gtk
 
-latex_packages:
-  - latexmk
-  - pandoc
-  - texlive-scheme-full
-
 multimedia_packages:
+  - "@Multimedia"
   - yt-dlp
   - mpv
-  - "@Multimedia"
+  - vlc
   - ffmpeg
   - ffmpeg-libs
-  - compat-ffmpeg28
-  - compat-ffmpeg28-devel
   - flac
   - flac-libs
   - libva
@@ -81,7 +71,11 @@ multimedia_packages:
   - gstreamer1-svt-av1
   - gstreamer1-svt-vp9
   - gstreamer1-vaapi
-  - vlc
+
+latex_packages:
+  - latexmk
+  - pandoc
+  - texlive-scheme-full
 
 font_packages:
   - google-noto-cjk-fonts-common
@@ -96,9 +90,9 @@ font_packages:
 
 # These packages are either extremely outdated or non existent in Fedora repos
 cargo_packages:
-    - starship
-    - stylua
-    - fd-find
+  - starship
+  - stylua
+  - fd-find
 
 neovim_build_prerequisites:
   - ninja-build

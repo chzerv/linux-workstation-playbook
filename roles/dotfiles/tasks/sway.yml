@@ -51,11 +51,12 @@
   when: ansible_distribution == "Archlinux"
 
 - name: Ensure required packages are installed (Arch only, via the AUR)
-  import_tasks: tasks/aur.yml
+  ansible.builtin.import_role:
+    name: packages
+    tasks_from: aur.yml
   vars:
     aur_packages:
       - clipman
-      # - wob
       - grimshot
       - rofi-lbonn-wayland-git
       - wev

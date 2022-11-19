@@ -1,0 +1,19 @@
+---
+- name: Enable additional repositories
+  ansible.builtin.include_tasks: "add-repos.yml"
+
+- name: Install packages using the distro's package manager
+  ansible.builtin.include_tasks: "packages.yml"
+
+- name: Install packages via npm
+  ansible.builtin.include_tasks: "npm.yml"
+  when: npm_packages is defined
+
+- name: Install packages via flatpak
+  ansible.builtin.include_tasks: "flatpak.yml"
+
+- name: Install packages from the Archlinux User Repository (AUR)
+  ansible.builtin.include_tasks: "aur.yml"
+  when:
+    - ansible_distribution == "Archlinux"
+    - aur_packages is defined
