@@ -31,7 +31,7 @@
     - .config
 
 - name: Dotfiles setup
-  include_tasks: "{{ item }}.yml"
+  ansible.builtin.include_tasks: "{{ item }}.yml"
   loop: "{{ dotfiles_setup }}"
   ignore_errors: true
   loop_control:

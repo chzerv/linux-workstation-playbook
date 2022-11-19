@@ -23,6 +23,7 @@
       - wf-recorder
       - slurp
       - playerctl
+      - gammastep
     state: present
   become: true
 

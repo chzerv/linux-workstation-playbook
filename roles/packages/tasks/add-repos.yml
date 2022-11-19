@@ -18,10 +18,16 @@
         - atim/lazygit
         - atim/bottom
 
-    - name: Enable Tailscale repository
+    - name: Enable Tailscale's repository
       ansible.builtin.command:
         cmd: dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/tailscale.repo
         creates: /etc/yum.repos.d/tailscale.repo
+      changed_when: true
+
+    - name: Enable Hashicorp's repository
+      ansible.builtin.command:
+        cmd: dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+        creates: /etc/yum.repos.d/hashicorp.repo
       changed_when: true
 
   become: true
