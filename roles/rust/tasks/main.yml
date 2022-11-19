@@ -61,6 +61,14 @@
     creates: "{{ home }}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
     chdir: "{{ home }}/.cargo/bin"
 
+- name: Rust | Configure cargo
+  ansible.builtin.template:
+    src: cargo_conf.toml.j2
+    dest: "{{ home }}/.cargo/config.toml"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: "0644"
+
 - name: Rust | Ensure gcc is installed
   ansible.builtin.package:
     name: gcc
